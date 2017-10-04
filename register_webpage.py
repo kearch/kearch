@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import subprocess
 import nltk
 from nltk.corpus import stopwords
