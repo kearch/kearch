@@ -6,7 +6,7 @@ from nltk.corpus import stopwords
 from collections import Counter
 
 def url_to_main_text(url):
-    cmd = "w3m " + url
+    cmd = 'w3m "' + url + '"'
     text = subprocess.Popen(cmd, stdout=subprocess.PIPE,shell=True).communicate()[0]
     text = remove_non_ascii_character(text)
     return text
