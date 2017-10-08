@@ -8,6 +8,9 @@ def make_average_document(links):
     conn = sqlite3.connect(dbname)
     cur = conn.cursor()
 
+    size = len(links)
+    cur.execute("""INSERT INTO size_of_average_document VALUES (?)""",(size,))
+
     for l in links:
         t = register_webpage.url_to_main_text(l)
         ws = list(set(register_webpage.text_to_words(t)))
