@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import sqlite3
+import sys
 
 def retrieve(query):
     dbname = 'keach.db'
@@ -14,6 +15,7 @@ def retrieve(query):
     return res
 
 if __name__ == '__main__':
-    res = retrieve('bird')
+    res = retrieve(sys.argv[1])
+    res.sort(key=lambda x:x[1],reverse=True)
     print(res)
 

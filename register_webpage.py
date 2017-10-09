@@ -59,6 +59,9 @@ def register(url):
         else:
             idf = math.log2(float(size_of_average_document)/1.0)
         tfidf.append((w,tf*idf))
+    
+    delete = """DELETE FROM tfidf WHERE link = ? """
+    cur.execute(delete,(url,))
 
     for w,r in tfidf:
         insert = """INSERT INTO tfidf VALUES (?,?,?)"""
