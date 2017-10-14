@@ -6,7 +6,7 @@ def retrieve(query):
     dbname = 'keach.db'
     conn = sqlite3.connect(dbname)
     cur = conn.cursor()
-    search = """SELECT * FROM tfidf WHERE word = ? ORDER BY tfidf"""
+    search = """SELECT * FROM tfidf WHERE word = ? ORDER BY tfidf DESC"""
     cur.execute(search,(query,))
     rows = cur.fetchall()
     res = list()
