@@ -6,6 +6,25 @@ import nltk
 from nltk.corpus import stopwords
 from collections import Counter
 import math
+import urllib.request
+from bs4 import BeautifulSoup
+import re
+
+def url_to_title(url):
+    try:
+        soup = BeautifulSoup(urllib.request.urlopen(url),"lxml")
+        if soup == None:
+            return url
+        return soup.title.string
+    except:
+        print("get exception")
+        return url
+
+def url_to_summary(url):
+    text = url_to_main_text(url)
+    words = nltk.word_tokenize(text)
+    text = " ".join(words)
+    return " ".join(words)[0:500]
 
 def url_to_main_text(url):
     cmd = 'w3m "' + url + '"'
@@ -68,6 +87,16 @@ def register(url):
         cur.execute(insert,(w,url,r))
     conn.commit()
 
+    delete = """DELETE FROM summary WHERE link = ? """
+    cur.execute(delete,(url,))
+    summary = url_to_summary(url)
+    print("url=",url)
+    print("summary=",summary)
+    title = url_to_title(url)
+    insert = """INSERT INTO summary VALUES (?,?,?)"""
+    cur.execute(insert,(url,title,summary))
+    conn.commit()
+
 if __name__ == '__main__':
      # text = url_to_main_text('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
      # words = text_to_words(text)
@@ -75,5 +104,7 @@ if __name__ == '__main__':
      # for w,c in counter.most_common():
          # print(w,c)
      # print(words)
-     tfidf = register('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
-     print(tfidf)
+     # main_text = url_to_main_text('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
+     # url_to_title('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
+     print(url_to_summary('https://en.wikipedia.org/wiki/2005_Azores_subtropical_storm'))
+     # print(main_text)

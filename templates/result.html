@@ -1,11 +1,46 @@
 <html>
-<body>
-    query is {{ query }}
-<hr>
-<ul>
-{% for r in results %}
-<li><a href="{{ r }}">{{ r }}</a></li>
-{% endfor %}
-</ul>
-</body>
+    <head>
+        <style type="text/css">
+p { margin: 0; }
+
+.query{
+    margin-left: 170px;
+    font-size: large;
+    margin-bottom: 20px;
+}
+
+.entry{
+    margin-left: 170px;
+    margin-bottom: 30px;
+}
+
+.title{
+    font-size: large;
+    margin: 2px;
+}
+
+.url{
+    color: green;
+    margin: 2px;
+}
+
+.summary{
+
+    width: 500px;
+    font-size: small;
+    word-wrap: normal;
+    margin: 2px;
+}
+        </style>
+    </head>
+    <body>
+        <div class="query"><p>Results for the query "{{ query }}"</p></div>
+        {% for r in results %}
+        <div class="entry">
+        <div class="title"><a href="{{ r[0] }}">{{ r[1] }}</a></div>
+        <div class="url"><p>{{ r[0] }}</p></div>
+        <div class="summary"><p>{{ r[2] }}</p></div>
+        </div>
+        {% endfor %}
+    </body>
 </html>

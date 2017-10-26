@@ -6,14 +6,18 @@ from bs4 import BeautifulSoup
 import time
 import requests
 import register_webpage
+import argparse
+import traceback
 
 def get_derive_link(url):
+    print("get_derive_link")
     html = ""
+
     try:
         html = (requests.get(url)).content
-    finally:
+    except:
+        traceback.print_exc()
         return []
-
     soup = BeautifulSoup(html,"html.parser")
     res = list()
     for link in soup.findAll("a"):
@@ -50,9 +54,10 @@ def crawl(initial_url_list):
             conn.commit()
             register_webpage.register(u)
             ds = get_derive_link(u)
+            print("ds=",ds)
             derives.extend(ds)
         derives = list(set(derives))
-        derives = filter(lambda x:x[:4]=='http',derives)
+        derives = list(filter(lambda x:x[:4]=='http',derives))
         print("derives=",derives)
         for u in derives:
             cur.execute(search,(u,))
@@ -61,4 +66,11 @@ def crawl(initial_url_list):
                 cur.execute(insert_crawler,(u,0))
 
 if __name__ == '__main__':
-    crawl(["https://stackoverflow.com/questions/36516183/what-should-i-use-instead-of-urlopen-in-urllib3"])
+    parser = argparse.ArgumentParser()
+    parser.add_argument("seed_url_list", help="initial url list to start crawl")
+    args = parser.parse_args()
+    with open(args.seed_url_list, 'r') as f:
+        s = f.readlines()
+        s = list(map(lambda x:x.replace('\n',''),s))
+    f.close()
+    crawl(s)

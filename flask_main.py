@@ -7,7 +7,7 @@ app = Flask(__name__)
 def post():
     if request.method == 'GET':
         query = request.args['query']
-        results = map(lambda x:x[0],retrieve(query))
+        results = retrieve(query)
         return render_template('result.html',results=results,query=query)
     else:
         return redirect(url_for('index.html'))

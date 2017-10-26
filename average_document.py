@@ -11,27 +11,27 @@ def make_average_document(links):
     size = len(links)
     cur.execute("""INSERT INTO size_of_average_document VALUES (?)""",(size,))
 
+    word_count = dict()
+
     for l in links:
         t = register_webpage.url_to_main_text(l)
         ws = list(set(register_webpage.text_to_words(t)))
-        search = """SELECT * FROM average_document WHERE word = ?"""
-        insert = """INSERT INTO average_document VALUES (?,?)"""
-        update = """UPDATE average_document SET number_of_document = ? WHERE word = ?"""
         for w in ws:
-            cur.execute(search,(w,))
-            rows = cur.fetchall()
-            if [] == rows:
-                cur.execute(insert,(w,1))
-                conn.commit()
+            if w not in word_count:
+                word_count[w]=1
             else:
-                c = rows[0][1]
-                cur.execute(update,(c+1,w))
-                conn.commit()
+                word_count[w]+=1
 
+    search = """SELECT * FROM average_document WHERE word = ?"""
+    insert = """INSERT INTO average_document VALUES (?,?)"""
+    update = """UPDATE average_document SET number_of_document = ? WHERE word = ?"""
+    for (w,c) in word_count.items():
+        cur.execute(insert,(w,c))
+    conn.commit()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-l','--document-list-file',required=True)
+    parser.add_argument('document_list_file')
     args = parser.parse_args()
 
     with open(args.document_list_file, 'r') as f:
