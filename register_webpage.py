@@ -21,10 +21,14 @@ def url_to_title(url):
         return url
 
 def url_to_summary(url):
-    text = url_to_main_text(url)
-    words = nltk.word_tokenize(text)
-    text = " ".join(words)
-    return " ".join(words)[0:500]
+    try:
+        soup = BeautifulSoup(urllib.request.urlopen(url),"lxml")
+        text = soup.body.text
+        text = ' '.join(filter(lambda x:not x=='',re.split('\s', text)))
+        return text[:500]
+    except:
+        print("Cannot summarize the url = ",url)
+        return ""
 
 def url_to_main_text(url):
     cmd = 'w3m "' + url + '"'

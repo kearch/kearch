@@ -9,6 +9,23 @@ p { margin: 0; }
     margin-bottom: 20px;
 }
 
+.input{
+    width: 300px;
+    font-size: 20px;
+}
+
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 6px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+}
+
 .entry{
     margin-left: 170px;
     margin-bottom: 30px;
@@ -31,15 +48,30 @@ p { margin: 0; }
     word-wrap: normal;
     margin: 2px;
 }
+
+.logo{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 40px;
+    margin-right: 30px;
+    width: 100px;
+    height: 30px;
+    position: relative;
+        top: 10px;
+}
         </style>
     </head>
     <body>
-        <div class="query"><p>Results for the query "{{ query }}"</p></div>
+        <form action="/search" method="get">
+            <img src="{{url_for('static', filename='logo.png')}}" alt="logo" title="keach logo" class="logo">
+            <input class="input" name="query" value="{{ query }}">
+            <button class="button">retrieve</button>
+        </form>
         {% for r in results %}
         <div class="entry">
-        <div class="title"><a href="{{ r[0] }}">{{ r[1] }}</a></div>
-        <div class="url"><p>{{ r[0] }}</p></div>
-        <div class="summary"><p>{{ r[2] }}</p></div>
+            <div class="title"><a href="{{ r[0] }}">{{ r[1] }}</a></div>
+            <div class="url"><p>{{ r[0] }}</p></div>
+            <div class="summary"><p>{{ r[2] }}</p></div>
         </div>
         {% endfor %}
     </body>

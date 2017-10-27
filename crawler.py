@@ -8,9 +8,9 @@ import requests
 import register_webpage
 import argparse
 import traceback
+from urllib.parse import urlparse
 
 def get_derive_link(url):
-    print("get_derive_link")
     html = ""
 
     try:
@@ -21,8 +21,10 @@ def get_derive_link(url):
     soup = BeautifulSoup(html,"html.parser")
     res = list()
     for link in soup.findAll("a"):
-        if link.get("href") != None and ":" in link.get("href"):
-            res.append(link.get("href"))
+        l = link.get("href")
+        if l != None and ":" in l and l[:4]=='http':
+            l = urlparse(l)
+            res.append(l.scheme + '://' + l.netloc + l.path)
     return res
 
 def crawl(initial_url_list):
@@ -54,10 +56,8 @@ def crawl(initial_url_list):
             conn.commit()
             register_webpage.register(u)
             ds = get_derive_link(u)
-            print("ds=",ds)
             derives.extend(ds)
         derives = list(set(derives))
-        derives = list(filter(lambda x:x[:4]=='http',derives))
         print("derives=",derives)
         for u in derives:
             cur.execute(search,(u,))
