@@ -41,7 +41,7 @@ def crawl(initial_url_list):
             cur.execute(insert_crawler,(url,0))
     conn.commit()
 
-    select_crawler =  """SELECT * FROM crawler WHERE last_date < ? ORDER BY last_date DESC LIMIT 1000"""
+    select_crawler =  """SELECT * FROM crawler WHERE last_date < ? ORDER BY last_date LIMIT 10"""
     update_crawler = """UPDATE crawler SET last_date = ? WHERE link = ?"""
     while True:
         cur.execute(select_crawler,(time.time()-24*60*60,))

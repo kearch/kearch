@@ -9,6 +9,8 @@ import math
 import urllib.request
 from bs4 import BeautifulSoup
 import re
+from readability.readability import Document
+import html2text
 
 def url_to_title(url):
     try:
@@ -17,7 +19,7 @@ def url_to_title(url):
             return url
         return soup.title.string
     except:
-        print("get exception")
+        print("get exception in url_to_title")
         return url
 
 def url_to_summary(url):
@@ -31,8 +33,14 @@ def url_to_summary(url):
         return ""
 
 def url_to_main_text(url):
-    cmd = 'w3m "' + url + '"'
-    text = subprocess.Popen(cmd, stdout=subprocess.PIPE,shell=True).communicate()[0]
+    try:
+        soup = BeautifulSoup(urllib.request.urlopen(url),"lxml")
+        text = soup.body.text
+        text = ' '.join(filter(lambda x:not x=='',re.split('\s', text)))
+    except:
+        print('Cannot extract main text')
+        text = ''
+
     text = remove_non_ascii_character(text)
     return text
 
@@ -47,8 +55,8 @@ def text_to_words(text):
 def remove_non_ascii_character(text):
     ret = ""
     for c in list(text):
-        if c<128:
-            ret += chr(c)
+        if ord(c)<128:
+            ret += c
         else:
             ret += " "
     return ret
@@ -110,5 +118,6 @@ if __name__ == '__main__':
      # print(words)
      # main_text = url_to_main_text('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
      # url_to_title('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
-     print(url_to_summary('https://en.wikipedia.org/wiki/2005_Azores_subtropical_storm'))
+     # print(url_to_summary('https://en.wikipedia.org/wiki/2005_Azores_subtropical_storm'))
+     print(url_to_main_text('https://en.wikipedia.org/wiki/2005_Azores_subtropical_storm'))
      # print(main_text)
