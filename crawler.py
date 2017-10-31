@@ -22,7 +22,7 @@ def get_derive_link(url):
     res = list()
     for link in soup.findAll("a"):
         l = link.get("href")
-        if l != None and ":" in l and l[:4]=='http':
+        if l != None and ":" in l and l[:4]=='http' and l[-3:]!='pdf':
             l = urlparse(l)
             res.append(l.scheme + '://' + l.netloc + l.path)
     return res
