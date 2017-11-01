@@ -2,6 +2,7 @@
 import register_webpage
 import argparse
 import sqlite3
+from crawler import create_webpage
 
 def make_average_document(links):
     dbname = 'keach.db'
@@ -14,7 +15,8 @@ def make_average_document(links):
     word_count = dict()
 
     for l in links:
-        t = register_webpage.url_to_main_text(l)
+        webpage = create_webpage(l)
+        t = register_webpage.url_to_main_text(webpage)
         ws = list(set(register_webpage.text_to_words(t)))
         for w in ws:
             if w not in word_count:

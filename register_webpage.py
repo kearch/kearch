@@ -11,30 +11,34 @@ from bs4 import BeautifulSoup
 import re
 from readability.readability import Document
 import html2text
+from crawler import Webpage
+import sys
 
-def url_to_title(url):
+sys.setrecursionlimit(1000000)
+
+def url_to_title(w):
     try:
-        soup = BeautifulSoup(urllib.request.urlopen(url),"lxml")
+        soup = BeautifulSoup(w.content,"lxml")
         if soup == None:
-            return url
+            return w.url
         return soup.title.string
     except:
         print("get exception in url_to_title")
-        return url
+        return w.url
 
-def url_to_summary(url):
+def url_to_summary(w):
     try:
-        soup = BeautifulSoup(urllib.request.urlopen(url),"lxml")
+        soup = BeautifulSoup(w.content,"lxml")
         text = soup.body.text
         text = ' '.join(filter(lambda x:not x=='',re.split('\s', text)))
         return text[:500]
     except:
-        print("Cannot summarize the url = ",url)
+        print("Cannot summarize the url = ",w.url)
         return ""
 
-def url_to_main_text(url):
+def url_to_main_text(w):
     try:
-        soup = BeautifulSoup(urllib.request.urlopen(url),"lxml")
+        soup = BeautifulSoup(w.content,"lxml")
         text = soup.body.text
         text = ' '.join(filter(lambda x:not x=='',re.split('\s', text)))
     except:
@@ -61,8 +65,8 @@ def remove_non_ascii_character(text):
             ret += " "
     return ret
 
-def register(url):
-    text = url_to_main_text(url)
+def register(webpage):
+    text = url_to_main_text(webpage)
     words = text_to_words(text)
     counter = list(Counter(words).most_common())
     sum_count = 0
@@ -91,25 +95,31 @@ def register(url):
             idf = math.log2(float(size_of_average_document)/1.0)
         tfidf.append((w,tf*idf))
     
+    sqls = list()
     delete = """DELETE FROM tfidf WHERE link = ? """
-    cur.execute(delete,(url,))
+    sqls.append((delete,(webpage.url,)))
+    # cur.execute(delete,(webpage.url,))
 
-    for w,r in tfidf:
+    tfidf = sorted(tfidf,key=lambda x:x[1])
+    for w,r in tfidf[0:100]:
         insert = """INSERT INTO tfidf VALUES (?,?,?)"""
-        cur.execute(insert,(w,url,r))
-    conn.commit()
+        # cur.execute(insert,(w,webpage.url,r))
+        sqls.append((insert,(w,webpage.url,r)))
 
     delete = """DELETE FROM summary WHERE link = ? """
-    cur.execute(delete,(url,))
-    summary = url_to_summary(url)
-    print("url=",url)
-    print("summary=",summary)
-    title = url_to_title(url)
+    # cur.execute(delete,(webpage.url,))
+    sqls.append((delete,(webpage.url,)))
+    summary = url_to_summary(webpage)
+    # print("url=",webpage.url)
+    # print("summary=",summary)
+    title = url_to_title(webpage)
     insert = """INSERT INTO summary VALUES (?,?,?)"""
-    cur.execute(insert,(url,title,summary))
-    conn.commit()
+    # cur.execute(insert,(webpage.url,title,summary))
+    sqls.append((insert,(webpage.url,title,summary)))
+    # conn.commit()
+    return sqls
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
      # text = url_to_main_text('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
      # words = text_to_words(text)
      # counter = Counter(words)
@@ -119,5 +129,5 @@ if __name__ == '__main__':
      # main_text = url_to_main_text('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
      # url_to_title('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
      # print(url_to_summary('https://en.wikipedia.org/wiki/2005_Azores_subtropical_storm'))
-     print(url_to_main_text('https://en.wikipedia.org/wiki/2005_Azores_subtropical_storm'))
+     # print(url_to_main_text('https://en.wikipedia.org/wiki/2005_Azores_subtropical_storm'))
      # print(main_text)
