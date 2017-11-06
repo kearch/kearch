@@ -11,6 +11,7 @@ import traceback
 from urllib.parse import urlparse
 import multiprocessing as mult
 import datetime
+from bs4 import BeautifulSoup
 
 class Webpage(object):
     def __init__(self, url, content):
@@ -19,8 +20,7 @@ class Webpage(object):
 
 def get_derive_link(w):
     try:
-        html = w.content
-        soup = BeautifulSoup(html,"html.parser")
+        soup = BeautifulSoup(w.content,"lxml")
     except:
         traceback.print_exc()
         return []
@@ -102,11 +102,15 @@ def crawl(initial_url_list):
         derives = list(set(derives))
 
         print("Sql proccess  start",datetime.datetime.today())
+        sqls = list()
         for u in derives:
             cur.execute(search,(u,))
             rows = cur.fetchall()
             if len(rows) == 0:
-                cur.execute(insert_crawler,(u,0))
+                sqls.append((insert_crawler,(u,0)))
+        for s in sqls:
+            cur.execute(s[0],s[1])
+        conn.commit()
         print("Sql proccess  end  ",datetime.datetime.today())
 
         crawl_end = datetime.datetime.today()

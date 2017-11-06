@@ -21,6 +21,8 @@
 14. JaveScriptをscriptタグを検出して除く
 15. linkをInt型に変換してデータベースに保存する
 17. 同一ドメインへの連続アクセスを避ける
+18. ページのダウンロードに時間制限を設ける
+19. crawlerテーブルはurl indexedのものとlast_date indexedのものの2つを作り検索の高速化をする
 
 ## Done
 1. readbilityを使った本文取得の高速化

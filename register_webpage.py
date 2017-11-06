@@ -16,38 +16,41 @@ import sys
 
 sys.setrecursionlimit(1000000)
 
-def url_to_title(w):
-    try:
-        soup = BeautifulSoup(w.content,"lxml")
-        if soup == None:
+def webpage_to_info(w):
+    soup = BeautifulSoup(w.content,"lxml")
+
+    def title():
+        try:
+            if soup == None:
+                return w.url
+            return soup.title.string
+        except:
+            print("get exception in url_to_title")
             return w.url
-        return soup.title.string
-    except:
-        print("get exception in url_to_title")
-        return w.url
+    
+    def summary():
+        try:
+            text = soup.body.text
+            text = ' '.join(filter(lambda x:not x=='',re.split('\s', text)))
+            return text[:500]
+        except:
+            print("Cannot summarize the url = ",w.url)
+            return ""
+    
+    def main_text():
+        try:
+            text = soup.body.text
+            text = ' '.join(filter(lambda x:not x=='',re.split('\s', text)))
+        except:
+            print('Cannot extract main text')
+            text = ''
+    
+        text = remove_non_ascii_character(text)
+        return text
 
-def url_to_summary(w):
-    try:
-        soup = BeautifulSoup(w.content,"lxml")
-        text = soup.body.text
-        text = ' '.join(filter(lambda x:not x=='',re.split('\s', text)))
-        return text[:500]
-    except:
-        print("Cannot summarize the url = ",w.url)
-        return ""
+    return (title(),summary(),main_text())
 
-def url_to_main_text(w):
-    try:
-        soup = BeautifulSoup(w.content,"lxml")
-        text = soup.body.text
-        text = ' '.join(filter(lambda x:not x=='',re.split('\s', text)))
-    except:
-        print('Cannot extract main text')
-        text = ''
-
-    text = remove_non_ascii_character(text)
-    return text
-
+    
 def text_to_words(text):
     words = nltk.word_tokenize(text)
     stop_words = set(stopwords.words('english'))
@@ -66,7 +69,11 @@ def remove_non_ascii_character(text):
     return ret
 
 def register(webpage):
-    text = url_to_main_text(webpage)
+    (title,summary,text) = webpage_to_info(webpage)
+    # text = url_to_main_text(webpage)
+    # title = url_to_title(webpage)
+    # summary = url_to_summary(webpage)
+
     words = text_to_words(text)
     counter = list(Counter(words).most_common())
     sum_count = 0
@@ -109,10 +116,8 @@ def register(webpage):
     delete = """DELETE FROM summary WHERE link = ? """
     # cur.execute(delete,(webpage.url,))
     sqls.append((delete,(webpage.url,)))
-    summary = url_to_summary(webpage)
     # print("url=",webpage.url)
     # print("summary=",summary)
-    title = url_to_title(webpage)
     insert = """INSERT INTO summary VALUES (?,?,?)"""
     # cur.execute(insert,(webpage.url,title,summary))
     sqls.append((insert,(webpage.url,title,summary)))
