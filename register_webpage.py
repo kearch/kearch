@@ -71,9 +71,6 @@ def remove_non_ascii_character(text):
 
 def register(webpage):
     (title,summary,text) = webpage_to_info(webpage)
-    # text = url_to_main_text(webpage)
-    # title = url_to_title(webpage)
-    # summary = url_to_summary(webpage)
 
     words = text_to_words(text)
     counter = list(Counter(words).most_common())
@@ -106,23 +103,16 @@ def register(webpage):
     sqls = list()
     delete = """DELETE FROM tfidf WHERE link = ? """
     sqls.append((delete,(webpage.url,)))
-    # cur.execute(delete,(webpage.url,))
 
     tfidf = sorted(tfidf,key=lambda x:x[1])
     for w,r in tfidf[0:100]:
         insert = """INSERT INTO tfidf VALUES (?,?,?)"""
-        # cur.execute(insert,(w,webpage.url,r))
         sqls.append((insert,(w,webpage.url,r)))
 
     delete = """DELETE FROM summary WHERE link = ? """
-    # cur.execute(delete,(webpage.url,))
     sqls.append((delete,(webpage.url,)))
-    # print("url=",webpage.url)
-    # print("summary=",summary)
     insert = """INSERT INTO summary VALUES (?,?,?)"""
-    # cur.execute(insert,(webpage.url,title,summary))
     sqls.append((insert,(webpage.url,title,summary)))
-    # conn.commit()
     return sqls
 
 # if __name__ == '__main__':

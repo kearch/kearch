@@ -13,6 +13,8 @@ import multiprocessing as mult
 import datetime
 from bs4 import BeautifulSoup
 import random
+from timeout_decorator import timeout, TimeoutError
+import database
 
 class Webpage(object):
     def __init__(self, url, content):
@@ -48,8 +50,8 @@ def crawl(initial_url_list):
     conn = sqlite3.connect(dbname)
     cur = conn.cursor()
     search_link_to_date = """SELECT * FROM link_to_date WHERE link = ?"""
-    insert_link_to_date = """INSERT INTO link_to_date VALUES (?,?)"""
-    insert_date_to_link = """INSERT INTO date_to_link VALUES (?,?)"""
+    insert_link_to_date = """insert into link_to_date values (?,?)"""
+    insert_date_to_link = """insert into date_to_link values (?,?)"""
 
     for url in initial_url_list:
         cur.execute(search_link_to_date,(url,))
@@ -119,17 +121,22 @@ def crawl(initial_url_list):
 
         sql_start = datetime.datetime.today()
         print("Sql proccess  start",datetime.datetime.today())
-        sqls = list()
+        insert_data = list()
         for u in derives:
-            cur.execute(search_link_to_date,(u,))
+            cur.execute(search_link_to_date,[u])
             rows = cur.fetchall()
             if len(rows) == 0:
                 r = random.random()
-                sqls.append((insert_link_to_date,(u,r)))
-                sqls.append((insert_date_to_link,(u,r)))
+                insert_data.append([u,r])
                 # To select domains randomly, set the crawl time random in the range of [0,1)
-        for s in sqls:
-            cur.execute(s[0],s[1])
+        sd = database.insert_multiple_data('link_to_date',insert_data)
+        for s,d in sd:
+            cur.execute(s,d)
+        sd = database.insert_multiple_data('date_to_link',insert_data)
+        for s,d in sd:
+            cur.execute(s,d)
+        # cur.executemany(insert_link_to_date,insert_data)
+        # cur.executemany(insert_date_to_link,insert_data)
         conn.commit()
         # print("Sql proccess  end  ",datetime.datetime.today())
         print("Sql proccess  takes",datetime.datetime.today()-sql_start)
