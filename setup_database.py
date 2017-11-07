@@ -12,9 +12,19 @@ c.execute(create_table)
 create_index = "CREATE INDEX tfidf_word_index on tfidf(word)"
 c.execute(create_index)
 
-create_table = "CREATE TABLE crawler (link text,last_date real)"
+# create_table = "CREATE TABLE crawler (link text,last_date real)"
+# c.execute(create_table)
+# create_index = "CREATE INDEX crawler_date_index on crawler(last_date)"
+# c.execute(create_index)
+
+create_table = "CREATE TABLE link_to_date (link text,last_date real)"
 c.execute(create_table)
-create_index = "CREATE INDEX crawler_date_index on crawler(last_date)"
+create_index = "CREATE INDEX link_date_index on link_to_date(link)"
+c.execute(create_index)
+
+create_table = "CREATE TABLE date_to_link (link text,last_date real)"
+c.execute(create_table)
+create_index = "CREATE INDEX date_index on date_to_link(last_date)"
 c.execute(create_index)
 
 create_table = "CREATE TABLE average_document (word text,number_of_document integer)"

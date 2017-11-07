@@ -16,6 +16,7 @@ import sys
 
 sys.setrecursionlimit(1000000)
 
+# return title,summary,text
 def webpage_to_info(w):
     soup = BeautifulSoup(w.content,"lxml")
 
