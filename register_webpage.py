@@ -19,6 +19,9 @@ sys.setrecursionlimit(1000000)
 # return title,summary,text
 def webpage_to_info(w):
     soup = BeautifulSoup(w.content,"lxml")
+    # kill all script and style elements
+    for script in soup(["script", "style"]):
+        script.extract()    # rip it out
 
     def title():
         try:
@@ -104,7 +107,7 @@ def register(webpage):
     delete = """DELETE FROM tfidf WHERE link = ? """
     sqls.append((delete,(webpage.url,)))
 
-    tfidf = sorted(tfidf,key=lambda x:x[1])
+    tfidf = sorted(tfidf,key=lambda x:x[1],reverse=True)
     for w,r in tfidf[0:100]:
         insert = """INSERT INTO tfidf VALUES (?,?,?)"""
         sqls.append((insert,(w,webpage.url,r)))

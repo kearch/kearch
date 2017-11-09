@@ -21,6 +21,8 @@
 14. JaveScriptをscriptタグを検出して除く
 15. linkをInt型に変換してデータベースに保存する
 20. 複数INSERTをまとめる
+21. insert処理が遅すぎる
+    indexを外してinsertしたうえでindex構築する必要がある
 
 ## Done
 1. readbilityを使った本文取得の高速化

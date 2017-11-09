@@ -29,12 +29,14 @@ def get_derive_link(w):
         return []
 
     res = list()
-    ban_extension = set(["pdf","PDF","jpg","JPG","png","PNG"])
+    ban_extension = set(["pdf","PDF","jpg","JPG","png","PNG","gif","GIF"])
     for link in soup.findAll("a"):
         l = link.get("href")
         if l != None and ":" in l and l[:4]=='http' and l[-3:] not in ban_extension:
             l = urlparse(l)
             res.append(l.scheme + '://' + l.netloc + l.path)
+    random.shuffle(res)
+    res = res[:20]
     return res
 
 def create_webpage(url):
@@ -129,14 +131,10 @@ def crawl(initial_url_list):
                 r = random.random()
                 insert_data.append([u,r])
                 # To select domains randomly, set the crawl time random in the range of [0,1)
-        sd = database.insert_multiple_data('link_to_date',insert_data)
-        for s,d in sd:
-            cur.execute(s,d)
-        sd = database.insert_multiple_data('date_to_link',insert_data)
-        for s,d in sd:
-            cur.execute(s,d)
-        # cur.executemany(insert_link_to_date,insert_data)
-        # cur.executemany(insert_date_to_link,insert_data)
+        # database.insert_multiple_data('link_to_date',insert_data,cur)
+        # database.insert_multiple_data('date_to_link',insert_data,cur)
+        cur.executemany(insert_link_to_date,insert_data)
+        cur.executemany(insert_date_to_link,insert_data)
         conn.commit()
         # print("Sql proccess  end  ",datetime.datetime.today())
         print("Sql proccess  takes",datetime.datetime.today()-sql_start)
