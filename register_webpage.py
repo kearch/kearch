@@ -13,6 +13,8 @@ from readability.readability import Document
 import html2text
 from crawler import Webpage
 import sys
+import time
+import timeout_decorator
 
 sys.setrecursionlimit(1000000)
 
@@ -73,6 +75,15 @@ def remove_non_ascii_character(text):
     return ret
 
 def register(webpage):
+    try:
+        s = register1(webpage)
+        return s
+    except:
+        print('Timeout in register.')
+        return []
+
+@timeout_decorator.timeout(20)
+def register1(webpage):
     (title,summary,text) = webpage_to_info(webpage)
 
     words = text_to_words(text)

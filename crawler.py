@@ -2,7 +2,6 @@
 
 import sqlite3
 import urllib3
-from bs4 import BeautifulSoup
 import time
 import requests
 import register_webpage
@@ -13,8 +12,8 @@ import multiprocessing as mult
 import datetime
 from bs4 import BeautifulSoup
 import random
-from timeout_decorator import timeout, TimeoutError
-import database
+import time
+import timeout_decorator
 
 class Webpage(object):
     def __init__(self, url, content):
@@ -29,10 +28,18 @@ def get_derive_link(w):
         return []
 
     res = list()
-    ban_extension = set(["pdf","PDF","jpg","JPG","png","PNG","gif","GIF"])
+    ban_domain = list(["web.archive.org","twitter.com","2ch.sc"])
+    ban_extension = list(["pdf","PDF","jpg","JPG","png","PNG","gif","GIF"])
+
+    def check_domain(link):
+        for b in ban_domain:
+            if b in link:
+                return False
+        return True
+
     for link in soup.findAll("a"):
         l = link.get("href")
-        if l != None and ":" in l and l[:4]=='http' and l[-3:] not in ban_extension:
+        if l != None and ":" in l and l[:4]=='http' and l[-3:] not in ban_extension and check_domain(l):
             l = urlparse(l)
             res.append(l.scheme + '://' + l.netloc + l.path)
     random.shuffle(res)
@@ -40,6 +47,15 @@ def get_derive_link(w):
     return res
 
 def create_webpage(url):
+    try:
+        w = create_webpage1(url)
+        return w
+    except:
+        print('Timeout in create_webpage.')
+        return None
+
+@timeout_decorator.timeout(10)
+def create_webpage1(url):
     try:
         c = requests.get(url).content
         w = Webpage(url,c)
