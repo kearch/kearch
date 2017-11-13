@@ -1,39 +1,35 @@
 # -*- coding: utf-8 -*-
 
 import sqlite3
-import subprocess
 import nltk
 from nltk.corpus import stopwords
 from collections import Counter
 import math
-import urllib.request
-from bs4 import BeautifulSoup
-import re
-from readability.readability import Document
-import html2text
-from crawler import Webpage
 import sys
-import time
 import timeout_decorator
 
 sys.setrecursionlimit(1000000)
 
+
 def text_to_words(text):
     words = nltk.word_tokenize(text)
     stop_words = set(stopwords.words('english'))
-    stop_words.update(['.', ',', '"', "'", '?', '!', ':', ';', '(', ')', '[', ']', '{', '}'])
-    words = list(map(lambda x:x.lower(),words))
-    words = list(filter(lambda x:x not in stop_words,words))
+    stop_words.update(['.', ',', '"', "'", '?', '!', ':',
+                       ';', '(', ')', '[', ']', '{', '}'])
+    words = list(map(lambda x: x.lower(), words))
+    words = list(filter(lambda x: x not in stop_words, words))
     return words
+
 
 def remove_non_ascii_character(text):
     ret = ""
     for c in list(text):
-        if ord(c)<128:
+        if ord(c) < 128:
             ret += c
         else:
             ret += " "
     return ret
+
 
 def register(webpage):
     try:
@@ -43,12 +39,13 @@ def register(webpage):
         print('Timeout in register.')
         return []
 
+
 @timeout_decorator.timeout(20)
 def register1(webpage):
     words = text_to_words(webpage.text)
     counter = list(Counter(words).most_common())
     sum_count = 0
-    for w,c in counter:
+    for w, c in counter:
         sum_count += c
 
     dbname = 'keach.db'
@@ -62,41 +59,42 @@ def register1(webpage):
     rows = cur.fetchall()
     size_of_average_document = rows[0][0]
 
-    for w,c in counter:
-        tf = float(c)/float(sum_count)
-        cur.execute(search,(w,))
+    for w, c in counter:
+        tf = float(c) / float(sum_count)
+        cur.execute(search, (w,))
         rows = cur.fetchall()
         idf = 0
         if 0 < len(rows):
-            idf = math.log2(float(size_of_average_document)/float(rows[0][1]))
+            idf = math.log2(float(size_of_average_document) /
+                            float(rows[0][1]))
         else:
-            idf = math.log2(float(size_of_average_document)/1.0)
-        tfidf.append((w,tf*idf))
-    
+            idf = math.log2(float(size_of_average_document) / 1.0)
+        tfidf.append((w, tf * idf))
+
     sqls = list()
     delete = """DELETE FROM tfidf WHERE link = ? """
-    sqls.append((delete,(webpage.url,)))
+    sqls.append((delete, (webpage.url,)))
 
-    tfidf = sorted(tfidf,key=lambda x:x[1],reverse=True)
-    for w,r in tfidf[0:100]:
+    tfidf = sorted(tfidf, key=lambda x: x[1], reverse=True)
+    for w, r in tfidf[0:100]:
         insert = """INSERT INTO tfidf VALUES (?,?,?)"""
-        sqls.append((insert,(w,webpage.url,r)))
+        sqls.append((insert, (w, webpage.url, r)))
 
     delete = """DELETE FROM summary WHERE link = ? """
-    sqls.append((delete,(webpage.url,)))
+    sqls.append((delete, (webpage.url,)))
     insert = """INSERT INTO summary VALUES (?,?,?)"""
-    sqls.append((insert,(webpage.url,webpage.title,webpage.summary)))
+    sqls.append((insert, (webpage.url, webpage.title, webpage.summary)))
     return sqls
 
 # if __name__ == '__main__':
-     # text = url_to_main_text('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
-     # words = text_to_words(text)
-     # counter = Counter(words)
-     # for w,c in counter.most_common():
-         # print(w,c)
-     # print(words)
-     # main_text = url_to_main_text('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
-     # url_to_title('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
-     # print(url_to_summary('https://en.wikipedia.org/wiki/2005_Azores_subtropical_storm'))
-     # print(url_to_main_text('https://en.wikipedia.org/wiki/2005_Azores_subtropical_storm'))
-     # print(main_text)
+    # text = url_to_main_text('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
+    # words = text_to_words(text)
+    # counter = Counter(words)
+    # for w,c in counter.most_common():
+    # print(w,c)
+    # print(words)
+    # main_text = url_to_main_text('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
+    # url_to_title('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
+    # print(url_to_summary('https://en.wikipedia.org/wiki/2005_Azores_subtropical_storm'))
+    # print(url_to_main_text('https://en.wikipedia.org/wiki/2005_Azores_subtropical_storm'))
+    # print(main_text)

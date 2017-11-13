@@ -7,9 +7,6 @@
 4. python3 flask_main.py で http://localhost:5000/ にアプリケーションが開く
 
 ## Todo
-1. 言語判定を行う
-    http://lab.astamuse.co.jp/entry/try-polyglot
-21. 外部サイトへのリンクを重要視する
 3. Mecab?を使った日本語対応
 4. tfidf以外の優先度の導入。単語の共起確率を用いてまともだと考えられる文書と比べる。
 5. Pagerankの導入
@@ -18,7 +15,6 @@
 10. クローラの優先度をアクセスログにしたがって変える
 11. pdfファイルに対応する
 13. クローラの高速化。不要なファイルをダウンロードしないとか。
-14. JaveScriptをscriptタグを検出して除く
 15. linkをInt型に変換してデータベースに保存する
 21. insert処理が遅すぎる
     indexを外してinsertしたうえでindex構築する必要がある
@@ -39,6 +35,10 @@
 20. 複数INSERTをまとめる
     やったけどあんまり効果なし
 8. 結果からJaveScriptの部分を除く
+1. 言語判定を行う
+    http://lab.astamuse.co.jp/entry/try-polyglot
+14. JaveScriptをscriptタグを検出して除く
+21. 外部サイトへのリンクを重要視する
 
 ## クローラの速度
 今のところ1second/1pageぐらい
