@@ -18,45 +18,6 @@ import timeout_decorator
 
 sys.setrecursionlimit(1000000)
 
-# return title,summary,text
-def webpage_to_info(w):
-    soup = BeautifulSoup(w.content,"lxml")
-    # kill all script and style elements
-    for script in soup(["script", "style"]):
-        script.extract()    # rip it out
-
-    def title():
-        try:
-            if soup == None:
-                return w.url
-            return soup.title.string
-        except:
-            print("get exception in url_to_title")
-            return w.url
-    
-    def summary():
-        try:
-            text = soup.body.text
-            text = ' '.join(filter(lambda x:not x=='',re.split('\s', text)))
-            return text[:500]
-        except:
-            print("Cannot summarize the url = ",w.url)
-            return ""
-    
-    def main_text():
-        try:
-            text = soup.body.text
-            text = ' '.join(filter(lambda x:not x=='',re.split('\s', text)))
-        except:
-            print('Cannot extract main text')
-            text = ''
-    
-        text = remove_non_ascii_character(text)
-        return text
-
-    return (title(),summary(),main_text())
-
-    
 def text_to_words(text):
     words = nltk.word_tokenize(text)
     stop_words = set(stopwords.words('english'))
@@ -84,9 +45,7 @@ def register(webpage):
 
 @timeout_decorator.timeout(20)
 def register1(webpage):
-    (title,summary,text) = webpage_to_info(webpage)
-
-    words = text_to_words(text)
+    words = text_to_words(webpage.text)
     counter = list(Counter(words).most_common())
     sum_count = 0
     for w,c in counter:
@@ -126,7 +85,7 @@ def register1(webpage):
     delete = """DELETE FROM summary WHERE link = ? """
     sqls.append((delete,(webpage.url,)))
     insert = """INSERT INTO summary VALUES (?,?,?)"""
-    sqls.append((insert,(webpage.url,title,summary)))
+    sqls.append((insert,(webpage.url,webpage.title,webpage.summary)))
     return sqls
 
 # if __name__ == '__main__':

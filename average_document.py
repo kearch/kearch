@@ -16,8 +16,7 @@ def make_average_document(links):
 
     for l in links:
         webpage = create_webpage(l)
-        title,summary,t = register_webpage.webpage_to_info(webpage)
-        ws = list(set(register_webpage.text_to_words(t)))
+        ws = list(set(register_webpage.text_to_words(webpage.text)))
         for w in ws:
             if w not in word_count:
                 word_count[w]=1

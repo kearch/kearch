@@ -6,7 +6,6 @@ import time
 import requests
 import register_webpage
 import argparse
-import traceback
 from urllib.parse import urlparse
 import multiprocessing as mult
 import datetime
@@ -14,37 +13,82 @@ from bs4 import BeautifulSoup
 import random
 import time
 import timeout_decorator
+import re
+import traceback
+import types
+
 
 class Webpage(object):
-    def __init__(self, url, content):
+    def remove_non_ascii_character(self,text):
+        ret = ""
+        for c in list(text):
+            if ord(c)<128:
+                ret += c
+            else:
+                ret += " "
+        return ret
+    
+    def filter_links(self,links):
+        res = list()
+        ban_domain = list(["web.archive.org","twitter.com","2ch.sc"])
+        ban_extension = list(["pdf","PDF","jpg","JPG","png","PNG","gif","GIF"])
+    
+        def check_domain(link):
+            for b in ban_domain:
+                if b in link:
+                    return False
+            return True
+    
+        for link in links:
+            l = link.get("href")
+            if l != None and ":" in l and l[:4]=='http' and l[-3:] not in ban_extension and check_domain(l):
+                l = urlparse(l)
+                res.append(l.scheme + '://' + l.netloc + l.path)
+        random.shuffle(res)
+        res = res[:20]
+        return res
+
+    def __init__(self, url):
         self.url = url
-        self.content = content
+        try:
+            content = requests.get(self.url).content
+        except:
+            print('Cannot get content.')
 
-def get_derive_link(w):
-    try:
-        soup = BeautifulSoup(w.content,"lxml")
-    except:
-        traceback.print_exc()
-        return []
+        try:
+            soup = BeautifulSoup(content,"lxml")
+            for script in soup(["script", "style"]):
+                script.extract()    # rip it out
+        except:
+            print('Cannot make soup for ',url)
 
-    res = list()
-    ban_domain = list(["web.archive.org","twitter.com","2ch.sc"])
-    ban_extension = list(["pdf","PDF","jpg","JPG","png","PNG","gif","GIF"])
+        try:
+            self.links = self.filter_links(list(soup.findAll("a")))
+        except:
+            self.links = []
+            print('Cannot get links of ',url)
 
-    def check_domain(link):
-        for b in ban_domain:
-            if b in link:
-                return False
-        return True
+        try:
+            if(soup.title.string is None):
+                self.title = url
+            else:
+                self.title = str(soup.title.string)
+        except:
+            self.title = url
+            print('Cannot get title of ',url)
 
-    for link in soup.findAll("a"):
-        l = link.get("href")
-        if l != None and ":" in l and l[:4]=='http' and l[-3:] not in ban_extension and check_domain(l):
-            l = urlparse(l)
-            res.append(l.scheme + '://' + l.netloc + l.path)
-    random.shuffle(res)
-    res = res[:20]
-    return res
+        try:
+            if(soup.body.text is None):
+                self.text = ''
+            else:
+                self.text = str(soup.body.text)
+        except:
+            self.text = ''
+            print('Cannot get text of ',url)
+
+        self.text = ' '.join(filter(lambda x:not x=='',re.split('\s', self.text)))
+        self.summary = self.text[:500]
+        self.text = self.remove_non_ascii_character(self.text)
 
 def create_webpage(url):
     try:
@@ -57,10 +101,11 @@ def create_webpage(url):
 @timeout_decorator.timeout(10)
 def create_webpage1(url):
     try:
-        c = requests.get(url).content
-        w = Webpage(url,c)
+        w = Webpage(url)
         return w
     except:
+        print('Cannot make webpage of ',url)
+        traceback.print_exc()
         return None
 
 def crawl(initial_url_list):
@@ -104,15 +149,14 @@ def crawl(initial_url_list):
         p = mult.Pool(mult.cpu_count())
         print("Page download start",datetime.datetime.today())
         ws = p.map(create_webpage,us)
-        # print("Page download end  ",datetime.datetime.today())
         print("Page download takes",datetime.datetime.today()-download_start)
         ws = list(filter(lambda x:x!=None,ws))
 
         register_start = datetime.datetime.today()
         print("Page register start",datetime.datetime.today())
         sqlss = p.map(register_webpage.register,ws)
-        # print("Page register end  ",datetime.datetime.today())
         print("Page register takes",datetime.datetime.today()-register_start)
+        p.close()
 
         sql_start = datetime.datetime.today()
         print("Sql proccess  start",datetime.datetime.today())
@@ -121,24 +165,12 @@ def crawl(initial_url_list):
                 # print(s)
                 cur.execute(s[0],s[1])
         conn.commit()
-        # print("Sql proccess  end  ",datetime.datetime.today())
-        print("Sql proccess  takes",datetime.datetime.today()-sql_start)
-       
-        derive_start = datetime.datetime.today()
-        print("Derive link   start",datetime.datetime.today())
-        derivess = p.map(get_derive_link,ws)
-        # print("Derive link   end  ",datetime.datetime.today())
-        print("Derive link   takes",datetime.datetime.today()-sql_start)
-
-        p.close()
         
         derives = list()
-        for s in derivess:
-            derives.extend(s)
+        for w in ws:
+            derives.extend(w.links)
         derives = list(set(derives))
 
-        sql_start = datetime.datetime.today()
-        print("Sql proccess  start",datetime.datetime.today())
         insert_data = list()
         for u in derives:
             cur.execute(search_link_to_date,[u])
@@ -147,12 +179,9 @@ def crawl(initial_url_list):
                 r = random.random()
                 insert_data.append([u,r])
                 # To select domains randomly, set the crawl time random in the range of [0,1)
-        # database.insert_multiple_data('link_to_date',insert_data,cur)
-        # database.insert_multiple_data('date_to_link',insert_data,cur)
         cur.executemany(insert_link_to_date,insert_data)
         cur.executemany(insert_date_to_link,insert_data)
         conn.commit()
-        # print("Sql proccess  end  ",datetime.datetime.today())
         print("Sql proccess  takes",datetime.datetime.today()-sql_start)
 
         crawl_end = datetime.datetime.today()
