@@ -28,6 +28,7 @@
 - linkをInt型に変換してデータベースに保存する
 - insert処理が遅すぎる
   indexを外してinsertしたうえでindex構築する必要がある
+- Computer Science に関する記事を100本、それ以外の記事を100本記録する
 
 ## Done
 - readbilityを使った本文取得の高速化

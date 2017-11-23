@@ -3,7 +3,9 @@ import requests
 import re
 import random
 from urllib.parse import urlparse
-from polyglot.detect import Detector
+from langdetect import detect
+import nltk
+from nltk.corpus import stopwords
 
 
 class Webpage(object):
@@ -42,7 +44,19 @@ class Webpage(object):
         random.shuffle(innner_link)
         random.shuffle(outer_link)
         ninner = min(len(innner_link), 10)
-        return (innner_link[:ninner] + outer_link[:20-ninner])
+        return (innner_link[:ninner] + outer_link[:20 - ninner])
+
+    def text_to_words(self, text):
+        words = nltk.word_tokenize(text)
+        stop_words = set(stopwords.words('english'))
+        stop_words.update(['.', ',', '"', "'", '?', '!', ':',
+                           ';', '(', ')', '[', ']', '{', '}'])
+        words = list(map(lambda x: x.lower(), words))
+        words = list(filter(lambda x: x not in stop_words, words))
+        pat = r"[a-z]+"
+        repat = re.compile(pat)
+        words = list(filter(lambda x: re.match(repat, x), words))
+        return words
 
     def __init__(self, url):
         self.url = url
@@ -86,10 +100,10 @@ class Webpage(object):
             filter(lambda x: not x == '', re.split('\s', self.text)))
         self.summary = self.text[:500]
         self.text = self.remove_non_ascii_character(self.text)
-        detector = Detector(self.text)
-        self.language = detector.language.code
+        self.language = detect(self.text)
+        self.words = self.text_to_words(self.text)
 
 if __name__ == '__main__':
     t = "Hé ! bonjour, Monsieur du Corbeau.Que vous êtes joli ! Que vous me semblez beau !"
-    detector = Detector(t)
+    detector = detect(t)
     print(detector)

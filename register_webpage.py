@@ -1,34 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import sqlite3
-import nltk
-from nltk.corpus import stopwords
 from collections import Counter
 import math
 import sys
 import timeout_decorator
 
 sys.setrecursionlimit(1000000)
-
-
-def text_to_words(text):
-    words = nltk.word_tokenize(text)
-    stop_words = set(stopwords.words('english'))
-    stop_words.update(['.', ',', '"', "'", '?', '!', ':',
-                       ';', '(', ')', '[', ']', '{', '}'])
-    words = list(map(lambda x: x.lower(), words))
-    words = list(filter(lambda x: x not in stop_words, words))
-    return words
-
-
-def remove_non_ascii_character(text):
-    ret = ""
-    for c in list(text):
-        if ord(c) < 128:
-            ret += c
-        else:
-            ret += " "
-    return ret
 
 
 def register(webpage):
@@ -42,8 +20,7 @@ def register(webpage):
 
 @timeout_decorator.timeout(20)
 def register1(webpage):
-    words = text_to_words(webpage.text)
-    counter = list(Counter(words).most_common())
+    counter = list(Counter(webpage.words).most_common())
     sum_count = 0
     for w, c in counter:
         sum_count += c
