@@ -2,14 +2,34 @@ import gensim
 from gensim import corpora
 import webpage
 import argparse
+import multiprocessing as mult
+import pickle
+from sklearn.linear_model import SGDClassifier
+
+n_topic = 100
 
 
-def urls_to_words(urls):
-    words = list()
-    for u in urls:
-        w = webpage.Webpage(u)
-        words.append(w.words)
-    return words
+def sum_vector(vs):
+    a = [0 for i in range(0, 10)]
+    for v in vs:
+        for (i, j) in v:
+            a[i] += j / len(vs)
+    return a
+
+
+def trans_vector(v):
+    a = [0 for i in range(0, 10)]
+    for (i, j) in v:
+        a[i] += j
+    return a
+
+
+def url_to_words(url):
+    try:
+        w = webpage.Webpage(url)
+        return w.words
+    except:
+        return []
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -17,7 +37,9 @@ if __name__ == '__main__':
         "topic_url_list", help="sample webpages about topic")
     parser.add_argument(
         "random_url_list", help="random webpages")
+    parser.add_argument('--cache', help='use cache', action='store_true')
     args = parser.parse_args()
+
     with open(args.topic_url_list, 'r') as f:
         topic_urls = f.readlines()
         topic_urls = list(map(lambda x: x.replace('\n', ''), topic_urls))
@@ -27,39 +49,66 @@ if __name__ == '__main__':
         random_urls = list(map(lambda x: x.replace('\n', ''), random_urls))
     f.close()
 
-    # urls = ['https://en.wikipedia.org/wiki/1966_New_York_City_smog',
-    #         'https://en.wikipedia.org/wiki/Smog',
-    #         'https://en.wikipedia.org/wiki/Portmanteau',
-    #         'https://en.wikipedia.org/wiki/Compound_(linguistics)']
-    # texts = list(map(lambda u: webpage.Webpage(u).words, urls))
-    texts = urls_to_words(topic_urls) + urls_to_words(random_urls)
-    # print(texts)
-    dictionary = corpora.Dictionary(texts)
-    corpus = [dictionary.doc2bow(text) for text in texts]
-    # print(corpus)
-    lda = gensim.models.ldamodel.LdaModel(
-        corpus=corpus, num_topics=10, id2word=dictionary)
+    n_gensim_urls = int(min(len(topic_urls), len(random_urls)) / 2)
+
+    if not args.cache:
+        p = mult.Pool(mult.cpu_count())
+        texts = p.map(url_to_words, topic_urls[
+                      :n_gensim_urls] + random_urls[:n_gensim_urls])
+        texts = list(filter(lambda x: not x == [], texts))
+        p.close()
+        dictionary = corpora.Dictionary(texts)
+        dictionary.save_as_text('gensim.dict')
+        corpus = [dictionary.doc2bow(text) for text in texts]
+        lda = gensim.models.ldamodel.LdaModel(
+            corpus=corpus, num_topics=n_topic, id2word=dictionary)
+        with open('lda.pickle', 'wb') as f:
+            pickle.dump(lda, f)
+    else:
+        dictionary = corpora.Dictionary.load_from_text('gensim.dict')
+        with open('lda.pickle', 'rb') as f:
+            lda = pickle.load(f)
+
     print(lda.show_topics())
 
+    sc_samples = list()
+    sc_labels = list()
+
+    p = mult.Pool(mult.cpu_count())
+    texts = p.map(url_to_words, topic_urls[n_gensim_urls:])
+    p.close()
+    texts = list(filter(lambda x: not x == [], texts))
+    corpus = [dictionary.doc2bow(text) for text in texts]
+    for topics_per_document in lda[corpus]:
+        sc_samples.append(trans_vector(topics_per_document))
+        sc_labels.append(0)
+
+    p = mult.Pool(mult.cpu_count())
+    texts = p.map(url_to_words, random_urls[n_gensim_urls:])
+    p.close()
+    texts = list(filter(lambda x: not x == [], texts))
+    corpus = [dictionary.doc2bow(text) for text in texts]
+    for topics_per_document in lda[corpus]:
+        sc_samples.append(trans_vector(topics_per_document))
+        sc_labels.append(1)
+
+    clf = SGDClassifier(loss="hinge", penalty="l2")
+    print(sc_samples)
+    print(sc_labels)
+    clf.fit(sc_samples, sc_labels)
+
     print("topic_urls")
-    for u in topic_urls:
+    for u in topic_urls[:10]:
         test_text = [webpage.Webpage(u).words]
         test_corpus = [dictionary.doc2bow(text) for text in test_text]
         for topics_per_document in lda[test_corpus]:
-            print(topics_per_document)
+            r = clf.predict([trans_vector(topics_per_document)])
+            print(r, u)
 
     print("random_urls")
-    for u in random_urls:
+    for u in random_urls[:10]:
         test_text = [webpage.Webpage(u).words]
         test_corpus = [dictionary.doc2bow(text) for text in test_text]
         for topics_per_document in lda[test_corpus]:
-            print(topics_per_document)
-
-
-
-    # test_text = [webpage.Webpage(
-    #     'https://en.wikipedia.org/wiki/Salvator_Mundi_(Leonardo').words]
-    # test_corpus = [dictionary.doc2bow(text) for text in test_text]
-    # # print(test_corpus)
-    # for topics_per_document in lda[test_corpus]:
-    #     print(topics_per_document)
+            r = clf.predict([trans_vector(topics_per_document)])
+            print(r, u)
