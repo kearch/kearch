@@ -15,7 +15,7 @@
 - pagerankでページに順位をつける
 
 ## Todo
-- LDA topic modelを用いたクラスタ分類
+- LDA topic model + SGD classifier を用いたクラスタ分類
   https://www.slideshare.net/tsubosaka/tokyotextmining
 - Mecab?を使った日本語対応
 - tfidf以外の優先度の導入。単語の共起確率を用いてまともだと考えられる文書と比べる。
@@ -28,9 +28,9 @@
 - linkをInt型に変換してデータベースに保存する
 - insert処理が遅すぎる
   indexを外してinsertしたうえでindex構築する必要がある
-- Computer Science に関する記事を100本、それ以外の記事を100本記録する
 
 ## Done
+- Computer Science に関する記事を100本、それ以外の記事を100本記録する
 - readbilityを使った本文取得の高速化
 - とりあえずpdfは弾いた
 - プロセス並列化によるクローラの高速化
