@@ -6,6 +6,7 @@
 3. python3 lda_topic_detect.py computer_science_url_list random_url_list で分類器を作成する
 4. python3 crawler.py seed_url_list でクローラを走らせる
 5. python3 flask_main.py で http://localhost:5000/ にアプリケーションが開く
+6. ssh -f -N itokawa -L 5000:itokawa:5000 で外部からアプリケーションをlocalhost:5000で見れるようになる
 
 ## 目標
 - クローリング速度0.1second/page
@@ -15,9 +16,14 @@
 - pagerankでページに順位をつける
 
 ## Todo
+- Pagerankの導入
+    - まずすべてのページのスコアを1にする。このテーブルをpagerank_now とする
+    - 新しくページをクロールするときにその派生リンクについて、リンクにpagerank_now のスコアを加える  
+      ただし実際にupdate すると遅いのでinsert にしておく
+      これをpagerank_next とする
+    - クロールが終わったらpagerank_next を集計してpagerank_now と入れ替える
 - Mecab?を使った日本語対応
 - tfidf以外の優先度の導入。単語の共起確率を用いてまともだと考えられる文書と比べる。
-- Pagerankの導入
 - html以外のコンテンツを弾く
 - アクセスログを取る
 - クローラの優先度をアクセスログにしたがって変える
