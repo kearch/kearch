@@ -3,20 +3,18 @@
 ## 初期化
 1. python3 setup_database.py でデータベースを作成する
 2. python3 average_document.py seed_url_list で平均文書を作成する
-3. python3 crawler.py seed_url_list でクローラを走らせる
-4. python3 flask_main.py で http://localhost:5000/ にアプリケーションが開く
+3. python3 lda_topic_detect.py computer_science_url_list random_url_list で分類器を作成する
+4. python3 crawler.py seed_url_list でクローラを走らせる
+5. python3 flask_main.py で http://localhost:5000/ にアプリケーションが開く
 
 ## 目標
 - クローリング速度0.1second/page
 - 保存ページ数1000万ページ
 - 10日ぐらいでindexの中のすべてのページを更新
 - twitterや2chなどの価値の少ない情報、時代によって価値の変わりやすい情報を保持しない
-- LDA topicモデルでページをフィルタリングする
 - pagerankでページに順位をつける
 
 ## Todo
-- LDA topic model + SGD classifier を用いたクラスタ分類
-  https://www.slideshare.net/tsubosaka/tokyotextmining
 - Mecab?を使った日本語対応
 - tfidf以外の優先度の導入。単語の共起確率を用いてまともだと考えられる文書と比べる。
 - Pagerankの導入
@@ -30,6 +28,8 @@
   indexを外してinsertしたうえでindex構築する必要がある
 
 ## Done
+- LDA topic model + SGD classifier を用いたクラスタ分類
+  https://www.slideshare.net/tsubosaka/tokyotextmining
 - Computer Science に関する記事を100本、それ以外の記事を100本記録する
 - readbilityを使った本文取得の高速化
 - とりあえずpdfは弾いた

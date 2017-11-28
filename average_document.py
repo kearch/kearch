@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import register_webpage
 import argparse
 import sqlite3
-from crawler import create_webpage
+import webpage
 
 
 def make_average_document(links):
@@ -16,8 +15,8 @@ def make_average_document(links):
     word_count = dict()
 
     for l in links:
-        webpage = create_webpage(l)
-        ws = list(set(register_webpage.text_to_words(webpage.text)))
+        web = webpage.Webpage(l)
+        ws = list(set(web.words))
         for w in ws:
             if w not in word_count:
                 word_count[w] = 1

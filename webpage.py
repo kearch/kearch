@@ -5,6 +5,7 @@ import random
 from urllib.parse import urlparse
 from langdetect import detect
 import nltk
+import traceback
 from nltk.corpus import stopwords
 
 
@@ -64,6 +65,7 @@ class Webpage(object):
             content = requests.get(self.url).content
         except:
             print('Cannot get content.')
+            print(traceback.format_exc())
 
         try:
             soup = BeautifulSoup(content, "lxml")
@@ -71,12 +73,14 @@ class Webpage(object):
                 script.extract()    # rip it out
         except:
             print('Cannot make soup for ', url)
+            print(traceback.format_exc())
 
         try:
             self.links = self.filter_links(list(soup.findAll("a")))
         except:
             self.links = []
             print('Cannot get links of ', url)
+            print(traceback.format_exc())
 
         try:
             if(soup.title.string is None):
@@ -86,6 +90,7 @@ class Webpage(object):
         except:
             self.title = url
             print('Cannot get title of ', url)
+            print(traceback.format_exc())
 
         try:
             if(soup.body.text is None):
@@ -95,6 +100,7 @@ class Webpage(object):
         except:
             self.text = ''
             print('Cannot get text of ', url)
+            print(traceback.format_exc())
 
         self.text = ' '.join(
             filter(lambda x: not x == '', re.split('\s', self.text)))
@@ -107,3 +113,6 @@ if __name__ == '__main__':
     t = "Hé ! bonjour, Monsieur du Corbeau.Que vous êtes joli ! Que vous me semblez beau !"
     detector = detect(t)
     print(detector)
+
+    w = Webpage('https://en.wikipedia.org/wiki/X-Cops_(The_X-Files)')
+    print(w.words)

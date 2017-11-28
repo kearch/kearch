@@ -9,6 +9,7 @@ import random
 import timeout_decorator
 import traceback
 import webpage
+import topic_detect
 
 
 def create_webpage(url):
@@ -24,7 +25,11 @@ def create_webpage(url):
 def create_webpage1(url):
     try:
         w = webpage.Webpage(url)
-        return w
+        c = topic_detect.TopicClassifier()
+        if c.classfy(w.words) == topic_detect.IN_TOPIC:
+            return w
+        else:
+            print('Made webpage of ', url, ', but it is not in topic.')
     except:
         print('Cannot make webpage of ', url)
         traceback.print_exc()
