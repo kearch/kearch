@@ -2,6 +2,7 @@
 import argparse
 import sqlite3
 import webpage
+import traceback
 
 
 def make_average_document(links):
@@ -15,7 +16,11 @@ def make_average_document(links):
     word_count = dict()
 
     for l in links:
-        web = webpage.Webpage(l)
+        try:
+            web = webpage.Webpage(l)
+        except:
+            traceback.print_exc()
+            continue
         ws = list(set(web.words))
         for w in ws:
             if w not in word_count:

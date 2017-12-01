@@ -21,7 +21,8 @@ class Webpage(object):
                 ret += " "
         return ret
 
-    def row_links_to_links(self, row_links):
+    def set_links(self, soup):
+        row_links = list(soup.findAll("a"))
         ban_domain = list(["web.archive.org", "twitter.com", "2ch.sc"])
         ban_extension = list(
             ["pdf", "PDF", "jpg", "JPG", "png", "PNG", "gif", "GIF"])
@@ -38,22 +39,23 @@ class Webpage(object):
             if link is not None and ":" in link and link[:4] == 'http' and \
                     link[-3:] not in ban_extension and check_domain(link):
                 res.append(link)
-        return res
+        self.links = res
 
-    def select_random_links(self, links):
         innner_link = list()
         outer_link = list()
         self_loc = urlparse(self.url).netloc
-        for link in links:
+        for link in self.links:
             link = urlparse(link)
             if link.netloc == self_loc:
                 innner_link.append(link.scheme + '://' + link.netloc + link.path)
             else:
                 outer_link.append(link.scheme + '://' + link.netloc + link.path)
+        self.innner_links = innner_link
+        self.outer_links = outer_link
         random.shuffle(innner_link)
         random.shuffle(outer_link)
         ninner = min(len(innner_link), 10)
-        return (innner_link[:ninner] + outer_link[:20 - ninner])
+        self.random_links = innner_link[:ninner] + outer_link[:20 - ninner]
 
     def text_to_words(self, text):
         words = nltk.word_tokenize(text)
@@ -83,11 +85,11 @@ class Webpage(object):
             print(traceback.format_exc())
 
         try:
-            row_links = list(soup.findAll("a"))
-            self.links = self.row_links_to_links(row_links)
-            self.random_links = self.select_random_links(self.links)
+            self.set_links(soup)
         except:
             self.links = []
+            self.outer_link = []
+            self.innner_link = []
             self.random_links = []
             print('Cannot get links of ', url)
             print(traceback.format_exc())

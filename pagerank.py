@@ -19,7 +19,7 @@ class Pagerank(object):
         rank = 1.0
         if 0 < len(rows):
             rank = rows[0][1]
-        for l in web.links:
+        for l in web.outer_links:
             self.cur.execute(insert_pagerank_next, (l, rank))
         self.conn.commit()
 
