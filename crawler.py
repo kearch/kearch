@@ -56,6 +56,7 @@ def crawl(initial_url_list):
             # set the crawl time random in the range of [0,1)
     conn.commit()
 
+    ranker = pagerank.Pagerank()
     select_top_20 = """SELECT * FROM date_to_link WHERE last_date < ? \
             ORDER BY last_date LIMIT 20"""
     update_link_to_date = """UPDATE link_to_date SET last_date = ? \
@@ -120,9 +121,9 @@ def crawl(initial_url_list):
 
         pagerank_start = datetime.datetime.today()
         print("Pagerank proccess start", datetime.datetime.today())
-        p = pagerank.Pagerank()
         for w in ws:
-            p.add(w)
+            ranker.add(w)
+        ranker.check_renew()
         print("Pagerank process takes", datetime.datetime.today() - pagerank_start)
 
         print("It takes ", datetime.datetime.today() - crawl_start,
