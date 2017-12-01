@@ -16,12 +16,6 @@
 - pagerankでページに順位をつける
 
 ## Todo
-- Pagerankの導入
-    - まずすべてのページのスコアを1にする。このテーブルをpagerank_now とする
-    - 新しくページをクロールするときにその派生リンクについて、リンクにpagerank_now のスコアを加える  
-      ただし実際にupdate すると遅いのでinsert にしておく
-      これをpagerank_next とする
-    - クロールが終わったらpagerank_next を集計してpagerank_now と入れ替える
 - 英語以外の文字にもちゃんと対応する
 - Mecab?を使った日本語対応
 - tfidf以外の優先度の導入。単語の共起確率を用いてまともだと考えられる文書と比べる。
@@ -35,6 +29,14 @@
   indexを外してinsertしたうえでindex構築する必要がある
 
 ## Done
+- Pagerankを表示に反映する
+    - ウェブページの評価関数はページランクとtfidfの積になりました
+- Pagerankの導入
+    - まずすべてのページのスコアを1にする。このテーブルをpagerank_now とする
+    - 新しくページをクロールするときにその派生リンクについて、リンクにpagerank_now のスコアを加える  
+      ただし実際にupdate すると遅いのでinsert にしておく
+      これをpagerank_next とする
+    - クロールが終わったらpagerank_next を集計してpagerank_now と入れ替える
 - LDA topic model + SGD classifier を用いたクラスタ分類
   https://www.slideshare.net/tsubosaka/tokyotextmining
 - Computer Science に関する記事を100本、それ以外の記事を100本記録する
