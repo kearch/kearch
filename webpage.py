@@ -23,7 +23,7 @@ class Webpage(object):
 
     def set_links(self, soup):
         row_links = list(soup.findAll("a"))
-        ban_domain = list(["web.archive.org", "twitter.com", "2ch.sc"])
+        ban_domain = list(["twitter.com", "2ch.sc"])
         ban_extension = list(
             ["pdf", "PDF", "jpg", "JPG", "png", "PNG", "gif", "GIF"])
 
@@ -36,8 +36,10 @@ class Webpage(object):
         res = list()
         for rl in row_links:
             link = rl.get("href")
-            if link is not None and ":" in link and link[:4] == 'http' and \
-                    link[-3:] not in ban_extension and check_domain(link):
+            # last condition is excluding web archives
+            if link is not None and link[:4] == 'http' and ":" in link and \
+                    check_domain(link) and link[-3:] not in ban_extension and \
+                    '://' not in link[7:]:
                 res.append(link)
         self.links = res
 
@@ -47,9 +49,11 @@ class Webpage(object):
         for link in self.links:
             link = urlparse(link)
             if link.netloc == self_loc:
-                innner_link.append(link.scheme + '://' + link.netloc + link.path)
+                innner_link.append(link.scheme + '://' +
+                                   link.netloc + link.path)
             else:
-                outer_link.append(link.scheme + '://' + link.netloc + link.path)
+                outer_link.append(link.scheme + '://' +
+                                  link.netloc + link.path)
         self.innner_links = innner_link
         self.outer_links = outer_link
         random.shuffle(innner_link)
@@ -80,7 +84,7 @@ class Webpage(object):
         try:
             soup = BeautifulSoup(content, "lxml")
             for script in soup(["script", "style"]):
-                script.extract()    # rip it out
+                script.extract()    # rip javascript out
         except:
             print(traceback.format_exc())
 
@@ -114,12 +118,17 @@ class Webpage(object):
             print('Cannot get text of ', url)
             print(traceback.format_exc())
 
+        # convert all white space to sigle space
         self.text = ' '.join(
             filter(lambda x: not x == '', re.split('\s', self.text)))
-        self.summary = self.text[:500]
-        self.text = self.remove_non_ascii_character(self.text)
+
         self.language = detect(self.text)
+
+        # This version do not respond to mutibyte characters
+        self.text = self.remove_non_ascii_character(self.text)
+        self.summary = self.text[:500]
         self.words = self.text_to_words(self.text)
+
 
 if __name__ == '__main__':
     t = "Hé ! bonjour, Monsieur du Corbeau.Que vous êtes joli ! Que vous me semblez beau !"

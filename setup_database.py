@@ -7,40 +7,25 @@ dbname = 'keach.db'
 conn = sqlite3.connect(dbname)
 c = conn.cursor()
 
-create_table = "CREATE TABLE tfidf (word text,link text,tfidf real)"
-c.execute(create_table)
-create_index = "CREATE INDEX tfidf_word_index on tfidf(word)"
-c.execute(create_index)
+c.execute("CREATE TABLE tfidf (word text,link text,tfidf real)")
+c.execute("CREATE INDEX tfidf_word_index on tfidf(word)")
 
-create_table = "CREATE TABLE pagerank_now (link word, pagerank real)"
-c.execute(create_table)
-create_table = "CREATE TABLE pagerank_next (link word, pagerank real)"
-c.execute(create_table)
+c.execute("CREATE TABLE pagerank_now (link word, pagerank real)")
+# c.execute("CREATE INDEX pagerank_index on pagerank_now(link)")
+c.execute("CREATE TABLE pagerank_next (link word, pagerank real)")
 
-# create_table = "CREATE TABLE crawler (link text,last_date real)"
-# c.execute(create_table)
-# create_index = "CREATE INDEX crawler_date_index on crawler(last_date)"
-# c.execute(create_index)
+# c.execute("CREATE TABLE crawler (link text,last_date real)")
+# c.execute("CREATE INDEX crawler_date_index on crawler(last_date)")
 
-create_table = "CREATE TABLE link_to_date (link text,last_date real)"
-c.execute(create_table)
-create_index = "CREATE INDEX link_date_index on link_to_date(link)"
-c.execute(create_index)
+c.execute("CREATE TABLE link_to_date (link text,last_date real)")
+c.execute("CREATE INDEX link_date_index on link_to_date(link)")
 
-create_table = "CREATE TABLE date_to_link (link text,last_date real)"
-c.execute(create_table)
-create_index = "CREATE INDEX date_index on date_to_link(last_date)"
-c.execute(create_index)
+c.execute("CREATE TABLE date_to_link (link text,last_date real)")
+c.execute("CREATE INDEX date_index on date_to_link(last_date)")
 
-create_table = "CREATE TABLE average_document (word text,number_of_document integer)"
-c.execute(create_table)
-create_index = "CREATE INDEX average_document_word_index on average_document(word)"
-c.execute(create_index)
+c.execute("CREATE TABLE average_document (word text,number_of_document integer)")
+c.execute("CREATE INDEX average_document_word_index on average_document(word)")
 
-create_table = "CREATE TABLE size_of_average_document (size integer)"
-c.execute(create_table)
-
-create_table = "CREATE TABLE summary (link text,title text,summary text)"
-c.execute(create_table)
-create_index = "CREATE INDEX summary_link_index on summary(link)"
-c.execute(create_index)
+c.execute("CREATE TABLE size_of_average_document (size integer)")
+c.execute("CREATE TABLE summary (link text,title text,summary text)")
+c.execute("CREATE INDEX summary_link_index on summary(link)")
