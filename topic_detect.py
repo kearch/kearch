@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import gensim
 from gensim import corpora
 import webpage
@@ -53,6 +55,7 @@ def url_to_words(url):
         return w.words
     except:
         return []
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -122,22 +125,6 @@ if __name__ == '__main__':
             lda = pickle.load(f)
         with open('clf.pickle', 'rb') as f:
             clf = pickle.load(f)
-
-    # print("topic_urls")
-    # for u in topic_urls[:10]:
-    #     test_text = [webpage.Webpage(u).words]
-    #     test_corpus = [dictionary.doc2bow(text) for text in test_text]
-    #     for topics_per_document in lda[test_corpus]:
-    #         r = clf.predict([trans_vector(topics_per_document)])
-    #         print(r, u)
-    #
-    # print("random_urls")
-    # for u in random_urls[:10]:
-    #     test_text = [webpage.Webpage(u).words]
-    #     test_corpus = [dictionary.doc2bow(text) for text in test_text]
-    #     for topics_per_document in lda[test_corpus]:
-    #         r = clf.predict([trans_vector(topics_per_document)])
-    #         print(r, u)
 
     print("some_urls")
     for u in ['https://www.haskell.org/', 'https://en.wikipedia.org/wiki/Napoleon', 'https://en.wikipedia.org/wiki/French_Revolutionary_Wars', 'https://ocaml.org/']:

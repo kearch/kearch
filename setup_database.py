@@ -12,6 +12,11 @@ c.execute(create_table)
 create_index = "CREATE INDEX tfidf_word_index on tfidf(word)"
 c.execute(create_index)
 
+create_table = "CREATE TABLE pagerank_now (link word, pagerank real)"
+c.execute(create_table)
+create_table = "CREATE TABLE pagerank_next (link word, pagerank real)"
+c.execute(create_table)
+
 # create_table = "CREATE TABLE crawler (link text,last_date real)"
 # c.execute(create_table)
 # create_index = "CREATE INDEX crawler_date_index on crawler(last_date)"

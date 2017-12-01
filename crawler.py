@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import sqlite3
 import time
 import register_webpage
@@ -10,6 +11,7 @@ import timeout_decorator
 import traceback
 import webpage
 import topic_detect
+import pagerank
 
 
 def create_webpage(url):
@@ -78,20 +80,19 @@ def crawl(initial_url_list):
             us.append(u)
 
         download_start = datetime.datetime.today()
+        print("Page download and webpage initialization start", datetime.datetime.today())
         p = mult.Pool(mult.cpu_count())
-        print("Page download start", datetime.datetime.today())
         ws = p.map(create_webpage, us)
-        print("Page download takes", datetime.datetime.today() - download_start)
+        print("Page download and webpage initialization takes", datetime.datetime.today() - download_start)
         ws = list(filter(lambda x: x is not None and x.language == 'en', ws))
-
         register_start = datetime.datetime.today()
         print("Page register start", datetime.datetime.today())
         sqlss = p.map(register_webpage.register, ws)
-        print("Page register takes", datetime.datetime.today() - register_start)
         p.close()
+        print("Page register takes", datetime.datetime.today() - register_start)
 
         sql_start = datetime.datetime.today()
-        print("Sql proccess  start", datetime.datetime.today())
+        print("Sql proccess to register start", datetime.datetime.today())
         for ss in sqlss:
             for s in ss:
                 # print(s)
@@ -100,7 +101,7 @@ def crawl(initial_url_list):
 
         derives = list()
         for w in ws:
-            derives.extend(w.links)
+            derives.extend(w.random_links)
         derives = list(set(derives))
 
         insert_data = list()
@@ -115,10 +116,16 @@ def crawl(initial_url_list):
         cur.executemany(insert_link_to_date, insert_data)
         cur.executemany(insert_date_to_link, insert_data)
         conn.commit()
-        print("Sql proccess  takes", datetime.datetime.today() - sql_start)
+        print("Sql proccess to register takes", datetime.datetime.today() - sql_start)
 
-        crawl_end = datetime.datetime.today()
-        print("It takes ", crawl_end - crawl_start,
+        pagerank_start = datetime.datetime.today()
+        print("Pagerank proccess start", datetime.datetime.today())
+        p = pagerank.Pagerank()
+        for w in ws:
+            p.add(w)
+        print("Pagerank process takes", datetime.datetime.today() - pagerank_start)
+
+        print("It takes ", datetime.datetime.today() - crawl_start,
               " to process ", len(list(ws)), " pages.\n")
 
 
