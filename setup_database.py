@@ -11,7 +11,7 @@ c.execute("CREATE TABLE tfidf (word text,link text,tfidf real)")
 c.execute("CREATE INDEX tfidf_word_index on tfidf(word)")
 
 c.execute("CREATE TABLE title (word text,link text)")
-c.execute("CREATE INDEX title_word_index on title(word)")
+c.execute("CREATE INDEX title_word_index on title(link)")
 
 c.execute("CREATE TABLE pagerank_now (link word, pagerank real)")
 c.execute("CREATE TABLE pagerank_next (link word, pagerank real)")
