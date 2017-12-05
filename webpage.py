@@ -101,8 +101,10 @@ class Webpage(object):
         try:
             if(soup.title.string is None):
                 self.title = url
+                self.title_words = []
             else:
                 self.title = str(soup.title.string)
+                self.title_words = self.text_to_words(self.title)
         except:
             self.title = url
             print('Cannot get title of ', url)

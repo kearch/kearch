@@ -32,12 +32,14 @@ class Pagerank(object):
         self.cur.execute(select_pagerank_next)
         rows = self.cur.fetchall()
         rank = dict()
+        sum_rank = 0
         for l, v in rows:
+            sum_rank += v
             if l in rank:
                 rank[l] += v
             else:
                 rank[l] = v
-        ratio = float(len(rank)) / float(len(rows))
+        ratio = float(len(rank)) / float(sum_rank)
         self.cur.execute(create_pagerank_tmp)
         for l, v in rank.items():
             self.cur.execute(insert_pagerank_tmp, (l, v * ratio))
