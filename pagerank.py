@@ -8,7 +8,7 @@ class Pagerank(object):
         self.dbname = 'keach.db'
         self.conn = sqlite3.connect(self.dbname)
         self.cur = self.conn.cursor()
-        self.pagerank_next_size = 1000000
+        self.pagerank_next_size = 100000000
 
     # web のリンク先をpagerank_next に追加する
     def add(self, web):

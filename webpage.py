@@ -43,23 +43,22 @@ class Webpage(object):
                 res.append(link)
         self.links = res
 
-        innner_link = list()
-        outer_link = list()
+        inner_links = list()
+        outer_links = list()
         self_loc = urlparse(self.url).netloc
         for link in self.links:
             link = urlparse(link)
             if link.netloc == self_loc:
-                innner_link.append(link.scheme + '://' +
+                inner_links.append(link.scheme + '://' +
                                    link.netloc + link.path)
             else:
-                outer_link.append(link.scheme + '://' +
-                                  link.netloc + link.path)
-        self.innner_links = innner_link
-        self.outer_links = outer_link
-        random.shuffle(innner_link)
-        random.shuffle(outer_link)
-        ninner = min(len(innner_link), 10)
-        self.random_links = innner_link[:ninner] + outer_link[:20 - ninner]
+                outer_links.append(link.scheme + '://' + link.netloc + link.path)
+        self.inner_linkss = inner_links
+        self.outer_links = outer_links
+        random.shuffle(inner_links)
+        random.shuffle(outer_links)
+        ninner = min(len(inner_links), 10)
+        self.random_links = inner_links[:ninner] + outer_links[:20 - ninner]
 
     def text_to_words(self, text):
         words = nltk.word_tokenize(text)
@@ -92,8 +91,8 @@ class Webpage(object):
             self.set_links(soup)
         except:
             self.links = []
-            self.outer_link = []
-            self.innner_link = []
+            self.outer_links = []
+            self.inner_links = []
             self.random_links = []
             print('Cannot get links of ', url)
             print(traceback.format_exc())

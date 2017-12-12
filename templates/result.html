@@ -57,23 +57,49 @@ p { margin: 0; }
     width: 100px;
     height: 30px;
     position: relative;
-        top: 10px;
+    top: 10px;
 }
+
+.nomark{
+    list-style:none;
+}
+
+.more{
+    font-size: large;
+    margin-left: 170px;
+}
+
         </style>
-    </head>
+
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/start/jquery-ui.css" type="text/css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
+        <script>$(function(){$("#source-viewer").text($("#source").html());});</script>
+   </head>
     <body>
         <form action="/search" method="get">
             <img src="{{url_for('static', filename='logo.png')}}" alt="logo" title="keach logo" class="logo">
             <input class="input" name="query" value="{{ query }}">
             <button class="button">retrieve</button>
         </form>
-        {% for r in results %}
-        <div class="entry">
-            <div class="title"><a href="{{ r[0] }}">{{ r[1] }}</a></div>
-            <div class="url"><p>{{ r[0] }}</p></div>
-            <div class="summary"><p>{{ r[2] }}</p></div>
-            <p>{{ r[3] }}</p>
-        </div>
-        {% endfor %}
+        <ul id="list" class="nomark">
+            {% for r in results %}
+            <li>
+                <div class="entry">
+                    <div class="title"><a href="{{ r[0] }}">{{ r[1] }}</a></div>
+                    <div class="url"><p>{{ r[0] }}</p></div>
+                    <div class="summary"><p>{{ r[2] }}</p></div>
+                    <p>{{ r[3] }}</p>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        <script> 
+            $("#list").each(function(){
+                $(this).find("li:gt(10)").each(function(){$(this).hide();});
+                $(this).append('<p class="more">&raquo; More</p>');
+                $(this).find("p:last").click(function(){$(this).parent().find("li").show(400); $(this).remove();});
+            });
+        </script>
     </body>
 </html>
