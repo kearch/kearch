@@ -18,4 +18,4 @@ def hello():
 
 if __name__ == '__main__':
     app.debug = True # デバッグモード有効化
-    app.run(host='0.0.0.0') # どこからでもアクセス可能に
+    app.run(host='0.0.0.0',port=2222) # どこからでもアクセス可能に
