@@ -57,8 +57,7 @@ class Webpage(object):
         self.outer_links = outer_links
         random.shuffle(inner_links)
         random.shuffle(outer_links)
-        ninner = min(len(inner_links), 10)
-        self.random_links = inner_links[:ninner] + outer_links[:20 - ninner]
+        self.random_links = outer_links[:20]
 
     def text_to_words(self, text):
         words = nltk.word_tokenize(text)

@@ -20,7 +20,7 @@ c.execute("CREATE TABLE link_to_date (link text,last_date real)")
 c.execute("CREATE INDEX link_date_index on link_to_date(link)")
 
 c.execute("CREATE TABLE date_to_link (link text,last_date real)")
-c.execute("CREATE INDEX date_index on date_to_link(last_date)")
+c.execute("CREATE INDEX date_link_index on date_to_link(last_date)")
 
 c.execute("CREATE TABLE average_document (word text,number_of_document integer)")
 c.execute("CREATE INDEX average_document_word_index on average_document(word)")
