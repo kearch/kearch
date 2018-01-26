@@ -23,7 +23,7 @@ class Webpage(object):
 
     def set_links(self, soup):
         row_links = list(soup.findAll("a"))
-        ban_domain = list(["twitter.com", "2ch.sc"])
+        ban_domain = list(["twitter.com", "2ch.sc", "tumblr.com"])
         ban_extension = list(
             ["pdf", "PDF", "jpg", "JPG", "png", "PNG", "gif", "GIF"])
 
@@ -97,7 +97,8 @@ class Webpage(object):
             print(traceback.format_exc())
 
         try:
-            if(soup.title.string is None):
+            if(soup is None or soup.title.string is None):
+                print('Cannot get title of ', url)
                 self.title = url
                 self.title_words = []
             else:
