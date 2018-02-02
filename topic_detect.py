@@ -8,7 +8,7 @@ import multiprocessing as mult
 import pickle
 from sklearn.linear_model import SGDClassifier
 
-n_topic = 100
+n_topic = 2000
 IN_TOPIC = 0
 OUT_OF_TOPIC = 1
 
