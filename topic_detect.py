@@ -6,6 +6,7 @@ import webpage
 import argparse
 import multiprocessing as mult
 import pickle
+import random
 from sklearn.linear_model import SGDClassifier
 
 n_topic = 2000
@@ -75,6 +76,9 @@ if __name__ == '__main__':
         random_urls = list(map(lambda x: x.replace('\n', ''), random_urls))
     f.close()
 
+    random.shuffle(topic_urls)
+    random.shuffle(random_urls)
+
     n_gensim_urls = int(min(len(topic_urls), len(random_urls)) / 2)
 
     if not args.cache:
@@ -95,7 +99,8 @@ if __name__ == '__main__':
         sc_labels = list()
 
         p = mult.Pool(mult.cpu_count())
-        texts = p.map(url_to_words, topic_urls[n_gensim_urls:])
+        texts = p.map(
+            url_to_words, topic_urls[n_gensim_urls:2 * n_gensim_urls])
         p.close()
         texts = list(filter(lambda x: not x == [], texts))
         corpus = [dictionary.doc2bow(text) for text in texts]
@@ -104,7 +109,8 @@ if __name__ == '__main__':
             sc_labels.append(0)
 
         p = mult.Pool(mult.cpu_count())
-        texts = p.map(url_to_words, random_urls[n_gensim_urls:])
+        texts = p.map(
+            url_to_words, random_urls[n_gensim_urls:2 * n_gensim_urls])
         p.close()
         texts = list(filter(lambda x: not x == [], texts))
         corpus = [dictionary.doc2bow(text) for text in texts]
@@ -127,7 +133,10 @@ if __name__ == '__main__':
             clf = pickle.load(f)
 
     print("some_urls")
-    for u in ['https://www.haskell.org/', 'https://en.wikipedia.org/wiki/Napoleon', 'https://en.wikipedia.org/wiki/French_Revolutionary_Wars', 'https://ocaml.org/']:
+    for u in ['https://www.haskell.org/',
+              'https://en.wikipedia.org/wiki/Napoleon',
+              'https://en.wikipedia.org/wiki/French_Revolutionary_Wars',
+              'https://ocaml.org/']:
         c = TopicClassifier()
         w = webpage.Webpage(u)
         print(c.classfy(w.words), u)

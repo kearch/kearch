@@ -66,6 +66,8 @@
 - SPARQL
 - maribel acosta dblp
 ## Todo
+- https://qiita.com/SE96UoC5AfUt7uY/items/e9521e8b87be45318a04
+  カーネル近似の使用を検討する
 - "なにか.tumbler.com"から出てこれないので何とかする
   subdomainを判定し、なんとかする
 - ブルームフィルタを用いてすでにクロールしたページを判定する
