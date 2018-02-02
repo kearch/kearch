@@ -3,7 +3,17 @@ import argparse
 import sqlite3
 import webpage
 import traceback
+import multiprocessing as mult
 
+def get_words(link):
+    print(link)
+    ws = list()
+    try:
+        web = webpage.Webpage(link)
+        ws = list(set(web.words))
+    except:
+        traceback.print_exc()
+    return ws
 
 def make_average_document(links):
     dbname = 'keach.db'
@@ -15,13 +25,10 @@ def make_average_document(links):
 
     word_count = dict()
 
-    for l in links:
-        try:
-            web = webpage.Webpage(l)
-        except:
-            traceback.print_exc()
-            continue
-        ws = list(set(web.words))
+    p = mult.Pool(mult.cpu_count())
+    wss = p.map(get_words, links)
+
+    for ws in wss:
         for w in ws:
             if w not in word_count:
                 word_count[w] = 1
