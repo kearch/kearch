@@ -1,0 +1,38 @@
+ntopic = 50
+TP= 81 TN= 19 FP= 36 FN= 64
+ntopic = 75
+TP= 86 TN= 14 FP= 43 FN= 57
+ntopic = 100
+TP= 69 TN= 31 FP= 30 FN= 70
+ntopic = 125
+TP= 48 TN= 52 FP= 9 FN= 91
+ntopic = 150
+TP= 79 TN= 21 FP= 23 FN= 77
+ntopic = 175
+TP= 44 TN= 56 FP= 6 FN= 94
+ntopic = 200
+TP= 84 TN= 16 FP= 20 FN= 80
+ntopic = 225
+TP= 81 TN= 19 FP= 21 FN= 79
+ntopic = 250
+TP= 92 TN= 8 FP= 49 FN= 51
+ntopic = 275
+TP= 40 TN= 60 FP= 3 FN= 97
+ntopic = 300
+TP= 79 TN= 21 FP= 23 FN= 77
+ntopic = 325
+TP= 71 TN= 29 FP= 19 FN= 81
+ntopic = 350
+TP= 94 TN= 6 FP= 51 FN= 49 precision= 0.6482758620689655 recall= 0.6573426573426573 fmeasure= 0.6527777777777778
+ntopic = 375
+TP= 78 TN= 22 FP= 13 FN= 87 precision= 0.8571428571428571 recall= 0.4727272727272727 fmeasure= 0.609375
+ntopic = 400
+TP= 39 TN= 61 FP= 1 FN= 99 precision= 0.975 recall= 0.2826086956521739 fmeasure= 0.4382022471910112
+ntopic = 425
+TP= 98 TN= 2 FP= 58 FN= 42 precision= 0.6282051282051282 recall= 0.7 fmeasure= 0.6621621621621621
+ntopic = 450
+TP= 83 TN= 17 FP= 19 FN= 81 precision= 0.8137254901960784 recall= 0.5060975609756098 fmeasure= 0.6240601503759399
+ntopic = 475
+TP= 78 TN= 22 FP= 19 FN= 81 precision= 0.8041237113402062 recall= 0.49056603773584906 fmeasure= 0.609375
+ntopic = 500
+TP= 40 TN= 60 FP= 3 FN= 97 precision= 0.9302325581395349 recall= 0.291970802919708 fmeasure= 0.44444444444444436
