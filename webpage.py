@@ -23,6 +23,8 @@ def create_web_with_cache(url):
             return w
     else:
         w = Webpage(url)
+        with open(cachefile, 'wb') as f:
+            pickle.dump(w, f)
         return w
 
 
