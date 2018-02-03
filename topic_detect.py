@@ -163,5 +163,9 @@ if __name__ == '__main__':
             false_negative += 1
         else:
             false_positive += 1
+    precision = true_positive / (true_positive + false_positive)
+    recall = true_positive / (true_positive + false_negative)
+    fmeasure = 2 * precision * recall / (precision + recall)
     print('TP=', true_positive, 'TN=', true_negative,
-          'FP=', false_positive, 'FN=', false_negative)
+          'FP=', false_positive, 'FN=', false_negative,
+          'precision=', precision, 'recall=', recall, 'fmeasure=', fmeasure)
