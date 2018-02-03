@@ -9,7 +9,8 @@ import pickle
 import random
 from sklearn.linear_model import SGDClassifier
 
-n_topic = 2000
+n_topic = 100
+n_urls = 300
 IN_TOPIC = 0
 OUT_OF_TOPIC = 1
 
@@ -77,7 +78,9 @@ if __name__ == '__main__':
     f.close()
 
     random.shuffle(topic_urls)
+    topic_urls = topic_urls[:300]
     random.shuffle(random_urls)
+    random_urls = random_urls[:300]
 
     n_gensim_urls = int(min(len(topic_urls), len(random_urls)) / 2)
 
@@ -106,7 +109,7 @@ if __name__ == '__main__':
         corpus = [dictionary.doc2bow(text) for text in texts]
         for topics_per_document in lda[corpus]:
             sc_samples.append(trans_vector(topics_per_document))
-            sc_labels.append(0)
+            sc_labels.append(IN_TOPIC)
 
         p = mult.Pool(mult.cpu_count())
         texts = p.map(
@@ -116,7 +119,7 @@ if __name__ == '__main__':
         corpus = [dictionary.doc2bow(text) for text in texts]
         for topics_per_document in lda[corpus]:
             sc_samples.append(trans_vector(topics_per_document))
-            sc_labels.append(1)
+            sc_labels.append(OUT_OF_TOPIC)
 
         clf = SGDClassifier(loss="hinge", penalty="l2")
         print(sc_samples)
