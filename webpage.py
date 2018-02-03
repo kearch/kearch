@@ -12,6 +12,7 @@ from nltk.corpus import stopwords
 import hashlib
 import os
 import pickle
+import sys
 
 
 def create_webpage_with_cache(url):
@@ -23,8 +24,10 @@ def create_webpage_with_cache(url):
             return w
     else:
         w = Webpage(url)
-        with open(cachefile, 'wb') as f:
-            pickle.dump(w, f)
+        # if webpage parsing was failed w.tiel == url
+        if w.title != url:
+            with open(cachefile, 'wb') as f:
+                pickle.dump(w, f)
         return w
 
 
@@ -94,15 +97,15 @@ class Webpage(object):
         try:
             content = requests.get(self.url).content
         except:
-            print('Cannot get content.')
-            print(traceback.format_exc())
+            print('Cannot get content.', file=sys.stderr)
+            print(traceback.format_exc(), file=sys.stderr)
 
         try:
             soup = BeautifulSoup(content, "lxml")
             for script in soup(["script", "style"]):
                 script.extract()    # rip javascript out
         except:
-            print(traceback.format_exc())
+            print(traceback.format_exc(), file=sys.stderr)
 
         try:
             self.set_links(soup)
@@ -111,12 +114,12 @@ class Webpage(object):
             self.outer_links = []
             self.inner_links = []
             self.random_links = []
-            print('Cannot get links of ', url)
-            print(traceback.format_exc())
+            print('Cannot get links of ', url, file=sys.stderr)
+            print(traceback.format_exc(), file=sys.stderr)
 
         try:
             if(soup is None or soup.title.string is None):
-                print('Cannot get title of ', url)
+                print('Cannot get title of ', url, file=sys.stderr)
                 self.title = url
                 self.title_words = []
             else:
@@ -124,8 +127,8 @@ class Webpage(object):
                 self.title_words = self.text_to_words(self.title)
         except:
             self.title = url
-            print('Cannot get title of ', url)
-            print(traceback.format_exc())
+            print('Cannot get title of ', url, file=sys.stderr)
+            print(traceback.format_exc(), file=sys.stderr)
 
         try:
             if(soup.body.text is None):
@@ -134,8 +137,8 @@ class Webpage(object):
                 self.text = str(soup.body.text)
         except:
             self.text = ''
-            print('Cannot get text of ', url)
-            print(traceback.format_exc())
+            print('Cannot get text of ', url, file=sys.stderr)
+            print(traceback.format_exc(), file=sys.stderr)
 
         # convert all white space to sigle space
         self.text = ' '.join(

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import gensim
 from gensim import corpora
 import webpage
@@ -10,7 +11,7 @@ import random
 from sklearn.linear_model import SGDClassifier
 
 n_topic = 200
-n_urls = 2000
+n_urls = 1000
 n_tests = 100
 IN_TOPIC = 0
 OUT_OF_TOPIC = 1
@@ -74,18 +75,18 @@ if __name__ == '__main__':
         n_topic = int(args.ntopic[0])
 
     with open(args.topic_url_list, 'r') as f:
-        topic_urls = f.readlines()
-        topic_urls = list(map(lambda x: x.replace('\n', ''), topic_urls))
+        topic_urls1 = f.readlines()
+        topic_urls1 = list(map(lambda x: x.replace('\n', ''), topic_urls1))
     f.close()
     with open(args.random_url_list, 'r') as f:
-        random_urls = f.readlines()
-        random_urls = list(map(lambda x: x.replace('\n', ''), random_urls))
+        random_urls1 = f.readlines()
+        random_urls1 = list(map(lambda x: x.replace('\n', ''), random_urls1))
     f.close()
 
-    random.shuffle(topic_urls)
-    topic_urls = topic_urls[:300]
-    random.shuffle(random_urls)
-    random_urls = random_urls[:300]
+    random.shuffle(topic_urls1)
+    topic_urls = topic_urls1[:n_urls]
+    random.shuffle(random_urls1)
+    random_urls = random_urls1[:n_urls]
 
     n_gensim_urls = int(min(len(topic_urls), len(random_urls)) / 2)
 
@@ -93,15 +94,20 @@ if __name__ == '__main__':
         p = mult.Pool(mult.cpu_count())
         texts = p.map(url_to_words, topic_urls[
                       :n_gensim_urls] + random_urls[:n_gensim_urls])
+        print("Downloading finish", file=sys.stderr)
+
         texts = list(filter(lambda x: not x == [], texts))
         p.close()
         dictionary = corpora.Dictionary(texts)
         dictionary.save_as_text('gensim.dict')
         corpus = [dictionary.doc2bow(text) for text in texts]
+        print("Curpus making finish", file=sys.stderr)
+
         lda = gensim.models.ldamodel.LdaModel(
             corpus=corpus, num_topics=n_topic, id2word=dictionary)
         with open('lda.pickle', 'wb') as f:
             pickle.dump(lda, f)
+        print("LDA making finish", file=sys.stderr)
 
         sc_samples = list()
         sc_labels = list()
@@ -130,6 +136,7 @@ if __name__ == '__main__':
         clf.fit(sc_samples, sc_labels)
         with open('clf.pickle', 'wb') as f:
             pickle.dump(clf, f)
+        print("Classifier making finish", file=sys.stderr)
 
     else:
         dictionary = corpora.Dictionary.load_from_text('gensim.dict')
@@ -138,40 +145,20 @@ if __name__ == '__main__':
         with open('clf.pickle', 'rb') as f:
             clf = pickle.load(f)
 
-    print("some_urls")
-    for u in ['https://www.haskell.org/',
-              'https://en.wikipedia.org/wiki/Napoleon',
-              'https://en.wikipedia.org/wiki/French_Revolutionary_Wars',
-              'https://ocaml.org/']:
-        c = TopicClassifier()
-        w = webpage.create_web_with_cache(u)
-        print(c.classfy(w.words), u)
-
-    with open(args.topic_url_list, 'r') as f:
-        topic_urls = f.readlines()
-        topic_urls = list(map(lambda x: x.replace('\n', ''), topic_urls))
-    f.close()
-    with open(args.random_url_list, 'r') as f:
-        random_urls = f.readlines()
-        random_urls = list(map(lambda x: x.replace('\n', ''), random_urls))
-    f.close()
-
     true_positive = 0
     true_negative = 0
     false_positive = 0
     false_negative = 0
-    for u in topic_urls[n_urls:n_urls + n_tests]:
+    for u in topic_urls1[n_urls:n_urls + n_tests]:
         c = TopicClassifier()
-        w = webpage.create_web_with_cache(u)
-        # print(c.classfy(w.words), u)
+        w = webpage.create_webpage_with_cache(u)
         if c.classfy(w.words) == IN_TOPIC:
             true_positive += 1
         else:
             true_negative += 1
-    for u in random_urls[n_urls:n_urls + n_tests]:
+    for u in random_urls1[n_urls:n_urls + n_tests]:
         c = TopicClassifier()
-        w = webpage.create_web_with_cache(u)
-        # print(c.classfy(w.words), u)
+        w = webpage.create_webpage_with_cache(u)
         if c.classfy(w.words) == OUT_OF_TOPIC:
             false_negative += 1
         else:
