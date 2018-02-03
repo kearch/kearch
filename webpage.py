@@ -14,7 +14,7 @@ import os
 import pickle
 
 
-def create_web_with_cache(url):
+def create_webpage_with_cache(url):
     cachefile = './webcache/' + \
         hashlib.sha256(url.encode('utf-8')).hexdigest() + '.pickle'
     if os.path.exists(cachefile):
@@ -155,6 +155,6 @@ if __name__ == '__main__':
     print(detector)
 
     # w = Webpage('https://en.wikipedia.org/wiki/X-Cops_(The_X-Files)')
-    w = create_web_with_cache(
+    w = create_webpage_with_cache(
         'https://en.wikipedia.org/wiki/X-Cops_(The_X-Files)')
     print(w.words)

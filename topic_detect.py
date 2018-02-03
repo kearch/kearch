@@ -54,7 +54,7 @@ def trans_vector(v):
 
 def url_to_words(url):
     try:
-        w = webpage.Webpage(url)
+        w = webpage.create_webpage_with_cache(url)
         return w.words
     except:
         return []
@@ -70,8 +70,8 @@ if __name__ == '__main__':
     parser.add_argument('--ntopic', help='number of topics', nargs=1)
     args = parser.parse_args()
 
-    if args.ntopic is None:
-        n_topic = int(args.ntopic)
+    if args.ntopic is not None:
+        n_topic = int(args.ntopic[0])
 
     with open(args.topic_url_list, 'r') as f:
         topic_urls = f.readlines()
@@ -127,8 +127,6 @@ if __name__ == '__main__':
             sc_labels.append(OUT_OF_TOPIC)
 
         clf = SGDClassifier(loss="hinge", penalty="l2")
-        print(sc_samples)
-        print(sc_labels)
         clf.fit(sc_samples, sc_labels)
         with open('clf.pickle', 'wb') as f:
             pickle.dump(clf, f)
@@ -146,7 +144,7 @@ if __name__ == '__main__':
               'https://en.wikipedia.org/wiki/French_Revolutionary_Wars',
               'https://ocaml.org/']:
         c = TopicClassifier()
-        w = webpage.Webpage(u)
+        w = webpage.create_web_with_cache(u)
         print(c.classfy(w.words), u)
 
     with open(args.topic_url_list, 'r') as f:
@@ -164,7 +162,7 @@ if __name__ == '__main__':
     false_negative = 0
     for u in topic_urls[n_urls:n_urls + n_tests]:
         c = TopicClassifier()
-        w = webpage.Webpage(u)
+        w = webpage.create_web_with_cache(u)
         # print(c.classfy(w.words), u)
         if c.classfy(w.words) == IN_TOPIC:
             true_positive += 1
@@ -172,7 +170,7 @@ if __name__ == '__main__':
             true_negative += 1
     for u in random_urls[n_urls:n_urls + n_tests]:
         c = TopicClassifier()
-        w = webpage.Webpage(u)
+        w = webpage.create_web_with_cache(u)
         # print(c.classfy(w.words), u)
         if c.classfy(w.words) == OUT_OF_TOPIC:
             false_negative += 1
