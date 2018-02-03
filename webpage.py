@@ -9,6 +9,20 @@ from langdetect import detect
 import nltk
 import traceback
 from nltk.corpus import stopwords
+import base64
+import os
+import pickle
+
+
+def create_web_with_cache(url):
+    cachefile = './webcache/' + base64.urlsafe.b64encode(url) + '.pickle'
+    if os.path.exists(cachefile):
+        with open(cachefile, 'rb') as f:
+            w = pickle.load(f)
+            return w
+    else:
+        w = Webpage(url)
+        return w
 
 
 class Webpage(object):
@@ -52,7 +66,8 @@ class Webpage(object):
                 inner_links.append(link.scheme + '://' +
                                    link.netloc + link.path)
             else:
-                outer_links.append(link.scheme + '://' + link.netloc + link.path)
+                outer_links.append(link.scheme + '://' +
+                                   link.netloc + link.path)
         self.inner_linkss = inner_links
         self.outer_links = outer_links
         random.shuffle(inner_links)
