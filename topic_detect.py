@@ -9,8 +9,9 @@ import pickle
 import random
 from sklearn.linear_model import SGDClassifier
 
-n_topic = 100
-n_urls = 300
+n_topic = 200
+n_urls = 2000
+n_tests = 100
 IN_TOPIC = 0
 OUT_OF_TOPIC = 1
 
@@ -66,7 +67,11 @@ if __name__ == '__main__':
     parser.add_argument(
         "random_url_list", help="random webpages")
     parser.add_argument('--cache', help='use cache', action='store_true')
+    parser.add_argument('--ntopic', help='number of topics', nargs=1)
     args = parser.parse_args()
+
+    if args.ntopic is None:
+        n_topic = int(args.ntopic)
 
     with open(args.topic_url_list, 'r') as f:
         topic_urls = f.readlines()
@@ -143,3 +148,35 @@ if __name__ == '__main__':
         c = TopicClassifier()
         w = webpage.Webpage(u)
         print(c.classfy(w.words), u)
+
+    with open(args.topic_url_list, 'r') as f:
+        topic_urls = f.readlines()
+        topic_urls = list(map(lambda x: x.replace('\n', ''), topic_urls))
+    f.close()
+    with open(args.random_url_list, 'r') as f:
+        random_urls = f.readlines()
+        random_urls = list(map(lambda x: x.replace('\n', ''), random_urls))
+    f.close()
+
+    true_positive = 0
+    true_negative = 0
+    false_positive = 0
+    false_negative = 0
+    for u in topic_urls[n_urls:n_urls + n_tests]:
+        c = TopicClassifier()
+        w = webpage.Webpage(u)
+        # print(c.classfy(w.words), u)
+        if c.classfy(w.words) == IN_TOPIC:
+            true_positive += 1
+        else:
+            true_negative += 1
+    for u in random_urls[n_urls:n_urls + n_tests]:
+        c = TopicClassifier()
+        w = webpage.Webpage(u)
+        # print(c.classfy(w.words), u)
+        if c.classfy(w.words) == OUT_OF_TOPIC:
+            false_negative += 1
+        else:
+            false_positive += 1
+    print('TP=', true_positive, 'TN=', true_negative,
+          'FP=', false_positive, 'FN=', false_negative)
