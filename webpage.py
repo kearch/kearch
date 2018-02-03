@@ -9,13 +9,14 @@ from langdetect import detect
 import nltk
 import traceback
 from nltk.corpus import stopwords
-import base64
+import hashlib
 import os
 import pickle
 
 
 def create_web_with_cache(url):
-    cachefile = './webcache/' + base64.urlsafe.b64encode(url) + '.pickle'
+    cachefile = './webcache/' + \
+        hashlib.sha256(url.encode('utf-8')).hexdigest() + '.pickle'
     if os.path.exists(cachefile):
         with open(cachefile, 'rb') as f:
             w = pickle.load(f)
@@ -151,5 +152,7 @@ if __name__ == '__main__':
     detector = detect(t)
     print(detector)
 
-    w = Webpage('https://en.wikipedia.org/wiki/X-Cops_(The_X-Files)')
+    # w = Webpage('https://en.wikipedia.org/wiki/X-Cops_(The_X-Files)')
+    w = create_web_with_cache(
+        'https://en.wikipedia.org/wiki/X-Cops_(The_X-Files)')
     print(w.words)
