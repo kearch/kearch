@@ -11,7 +11,7 @@ import random
 from sklearn.linear_model import SGDClassifier
 
 n_topic = 200
-n_urls = 1000
+n_urls = 2000
 n_tests = 100
 IN_TOPIC = 0
 OUT_OF_TOPIC = 1
