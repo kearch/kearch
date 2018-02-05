@@ -77,7 +77,7 @@ def register(web):
     try:
         s = register1(web)
         return s
-    except:
+    except timeout_decorator.TimeoutError:
         print('Timeout in register.')
         return []
 
@@ -88,13 +88,15 @@ def register1(web):
     return r.sqls()
 
 # if __name__ == '__main__':
-    # text = url_to_main_text('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
+    # text = url_to_main_text(
+    # 'https://en.wikipedia.org/wiki/Spotted_green_pigeon')
     # words = text_to_words(text)
     # counter = Counter(words)
     # for w,c in counter.most_common():
     # print(w,c)
     # print(words)
-    # main_text = url_to_main_text('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
+    # main_text = url_to_main_text(
+    # 'https://en.wikipedia.org/wiki/Spotted_green_pigeon')
     # url_to_title('https://en.wikipedia.org/wiki/Spotted_green_pigeon')
     # print(url_to_summary('https://en.wikipedia.org/wiki/2005_Azores_subtropical_storm'))
     # print(url_to_main_text('https://en.wikipedia.org/wiki/2005_Azores_subtropical_storm'))
