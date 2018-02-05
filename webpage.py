@@ -4,15 +4,18 @@ from bs4 import BeautifulSoup
 import requests
 import re
 from urllib.parse import urlparse
-from langdetect import detect
+import langdetect
 import nltk
-import traceback
 from nltk.corpus import stopwords
 import hashlib
 import os
 import pickle
-import sys
 import nb_topic_detect
+
+
+class WebpageError(Exception):
+    def __init__(self, message='This is default messege'):
+        self.message = message
 
 
 def create_webpage_with_cache(url):
@@ -94,53 +97,29 @@ class Webpage(object):
         try:
             content = requests.get(self.url).content
         except requests.exceptions.RequestException:
-            print('Cannot get content.', file=sys.stderr)
-            print(traceback.format_exc(), file=sys.stderr)
+            raise WebpageError('Cannot get content.')
+
+        soup = BeautifulSoup(content, "lxml")
+        for script in soup(["script", "style"]):
+            script.extract()    # rip javascript out
+
+        self.set_links(soup)
 
         try:
-            soup = BeautifulSoup(content, "lxml")
-            for script in soup(["script", "style"]):
-                script.extract()    # rip javascript out
-        except:
-            print(traceback.format_exc(), file=sys.stderr)
+            self.title = str(soup.title.string)
+            self.text = str(soup.body.text)
+        except AttributeError:
+            raise WebpageError('Cannot get title or text')
 
         try:
-            self.set_links(soup)
-        except:
-            self.links = []
-            self.outer_links = []
-            self.inner_links = []
-            print('Cannot get links of ', url, file=sys.stderr)
-            print(traceback.format_exc(), file=sys.stderr)
+            self.language = langdetect.detect(self.text)
+        except langdetect.LangDetectException:
+            raise WebpageError('Cannot detect language.')
 
-        try:
-            if(soup is None or soup.title is None or soup.title.string is None):
-                print('Cannot get title of ', url, file=sys.stderr)
-                self.title = url
-                self.title_words = []
-            else:
-                self.title = str(soup.title.string)
-                self.title_words = self.text_to_words(self.title)
-        except:
-            self.title = url
-            print('Cannot get title of ', url, file=sys.stderr)
-            print(traceback.format_exc(), file=sys.stderr)
-
-        try:
-            if(soup.body.text is None):
-                self.text = ''
-            else:
-                self.text = str(soup.body.text)
-        except:
-            self.text = ''
-            print('Cannot get text of ', url, file=sys.stderr)
-            print(traceback.format_exc(), file=sys.stderr)
-
+        self.title_words = self.text_to_words(self.title)
         # convert all white space to sigle space
         self.text = ' '.join(
             filter(lambda x: not x == '', re.split('\s', self.text)))
-
-        self.language = detect(self.text)
 
         # This version do not respond to mutibyte characters
         self.text = self.remove_non_ascii_character(self.text)
@@ -149,13 +128,14 @@ class Webpage(object):
 
 
 if __name__ == '__main__':
-    t = "Hé ! bonjour, Monsieur du Corbeau.Que vous êtes joli ! Que vous me semblez beau !"
-    detector = detect(t)
+    t = "Hé ! bonjour, Monsieur du Corbeau.Que vous êtes joli ! \
+        Que vous me semblez beau !"
+    detector = langdetect.detect(t)
     print(detector)
 
     # w = Webpage('https://en.wikipedia.org/wiki/X-Cops_(The_X-Files)')
     # w = create_webpage_with_cache(
-        # 'https://en.wikipedia.org/wiki/X-Cops_(The_X-Files)')
+    # 'https://en.wikipedia.org/wiki/X-Cops_(The_X-Files)')
     # print(w.words)
     url = 'https://shedopen.deviantart.com/'
     w = create_webpage_with_cache(url)
