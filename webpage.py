@@ -77,7 +77,7 @@ class Webpage(object):
             else:
                 outer_links.append(link.scheme + '://' +
                                    link.netloc + link.path)
-        self.inner_linkss = inner_links
+        self.inner_links = inner_links
         self.outer_links = outer_links
 
     def text_to_words(self, text):

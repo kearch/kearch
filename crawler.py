@@ -16,6 +16,8 @@ import random
 import sys
 
 confidence_threshold = -1.0e-10
+n_outer_derives = 100
+n_inner_derives = 20
 
 
 def create_webpage(url):
@@ -102,11 +104,17 @@ def crawl(initial_url_list):
         derives_start = datetime.datetime.today()
         print("Derive link proccess to register start",
               datetime.datetime.today())
-        derives = list()
+        outer_derives = list()
+        inner_derives = list()
         for w in ws:
-            derives.extend(w.outer_links)
-        derives = list(set(derives))
-        random.shuffle(derives)
+            outer_derives.extend(w.outer_links)
+            inner_derives.extend(w.inner_links)
+        outer_derives = list(set(outer_derives))[:n_outer_derives]
+        inner_derives = list(set(inner_derives))[:n_inner_derives]
+        random.shuffle(outer_derives)
+        random.shuffle(inner_derives)
+        outer_derives = outer_derives[:n_outer_derives]
+        inner_derives = inner_derives[:n_inner_derives]
         print("Derive link proccess to register takes",
               datetime.datetime.today() - derives_start)
 
@@ -118,7 +126,7 @@ def crawl(initial_url_list):
         conn.commit()
 
         insert_data = list()
-        for u in derives:
+        for u in outer_derives + inner_derives:
             cur.execute(search_link_to_date, [u])
             rows = cur.fetchall()
             if len(rows) == 0:
