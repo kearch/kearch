@@ -93,7 +93,7 @@ class Webpage(object):
         self.url = url
         try:
             content = requests.get(self.url).content
-        except:
+        except requests.exceptions.RequestException:
             print('Cannot get content.', file=sys.stderr)
             print(traceback.format_exc(), file=sys.stderr)
 
@@ -114,7 +114,7 @@ class Webpage(object):
             print(traceback.format_exc(), file=sys.stderr)
 
         try:
-            if(soup is None or soup.title.string is None):
+            if(soup is None or soup.title is None or soup.title.string is None):
                 print('Cannot get title of ', url, file=sys.stderr)
                 self.title = url
                 self.title_words = []
