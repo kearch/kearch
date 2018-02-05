@@ -6,7 +6,6 @@ import register_webpage
 import argparse
 import multiprocessing as mult
 import datetime
-import random
 import timeout_decorator
 import traceback
 import webpage
@@ -50,8 +49,8 @@ def crawl(initial_url_list):
         cur.execute(search_link_to_date, (url,))
         rows = cur.fetchall()
         if len(rows) == 0:
-            cur.execute(insert_date_to_link, (url, random.random()))
-            cur.execute(insert_link_to_date, (url, random.random()))
+            cur.execute(insert_date_to_link, (url, 0))
+            cur.execute(insert_link_to_date, (url, 0))
             # To select domains randomly
             # set the crawl time random in the range of [0,1)
     conn.commit()
@@ -74,9 +73,8 @@ def crawl(initial_url_list):
 
         us = list()
         for u, d in rows:
-            r = random.random()
-            cur.execute(update_link_to_date, (time.time() + r, u, d))
-            cur.execute(update_date_to_link, (time.time() + r, d, u))
+            cur.execute(update_link_to_date, (time.time(), u, d))
+            cur.execute(update_date_to_link, (time.time(), d, u))
             conn.commit()
             us.append(u)
 
@@ -112,10 +110,7 @@ def crawl(initial_url_list):
             cur.execute(search_link_to_date, [u])
             rows = cur.fetchall()
             if len(rows) == 0:
-                r = random.random()
-                insert_data.append([u, r])
-                # To select domains randomly
-                # set the crawl time random in the range of [0,1)
+                insert_data.append([u, 0])
         cur.executemany(insert_link_to_date, insert_data)
         cur.executemany(insert_date_to_link, insert_data)
         conn.commit()
