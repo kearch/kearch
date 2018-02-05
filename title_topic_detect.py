@@ -9,7 +9,7 @@ import pickle
 import random
 from sklearn.naive_bayes import BernoulliNB
 
-n_urls = 1000
+n_urls = 2000
 n_tests = 100
 IN_TOPIC = 0
 OUT_OF_TOPIC = 1
@@ -70,12 +70,10 @@ if __name__ == '__main__':
     random.shuffle(random_urls1)
     random_urls = random_urls1[:n_urls]
 
-    n_gensim_urls = int(min(len(topic_urls), len(random_urls)) / 2)
-
     if not args.cache:
         p = mult.Pool(mult.cpu_count())
-        texts = p.map(url_to_title_words, topic_urls[
-                      :n_gensim_urls] + random_urls[:n_gensim_urls])
+        texts = p.map(url_to_title_words,
+                      topic_urls[:n_urls] + random_urls[:n_urls])
         print("Downloading finish", file=sys.stderr)
 
         texts = list(filter(lambda x: not x == [], texts))
@@ -89,7 +87,7 @@ if __name__ == '__main__':
 
         p = mult.Pool(mult.cpu_count())
         texts = p.map(
-            url_to_title_words, topic_urls[n_gensim_urls:2 * n_gensim_urls])
+            url_to_title_words, topic_urls[:n_urls])
         p.close()
         texts = list(filter(lambda x: not x == [], texts))
         bows = [dictionary.doc2bow(text) for text in texts]
@@ -98,7 +96,7 @@ if __name__ == '__main__':
             sc_labels.append(IN_TOPIC)
         p = mult.Pool(mult.cpu_count())
         texts = p.map(
-            url_to_title_words, random_urls[n_gensim_urls:2 * n_gensim_urls])
+                url_to_title_words, random_urls[:n_urls])
         p.close()
         texts = list(filter(lambda x: not x == [], texts))
         bows = [dictionary.doc2bow(text) for text in texts]
