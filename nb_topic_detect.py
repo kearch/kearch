@@ -28,7 +28,8 @@ class TopicClassifier(object):
 
     def classfy_log_probability(self, text):
         bow = self.dictionary.doc2bow(text)
-        res = self.clf.predict_log_proba([alist_to_vector(bow, self.dictionary)])
+        res = self.clf.predict_log_proba(
+            [alist_to_vector(bow, self.dictionary)])
         return res[0]
 
 
@@ -40,11 +41,8 @@ def alist_to_vector(al, dictionary):
 
 
 def url_to_words(url):
-    try:
-        w = webpage.create_webpage_with_cache(url)
-        return w.words
-    except:
-        return []
+    w = webpage.create_webpage_with_cache(url)
+    return w.words
 
 
 if __name__ == '__main__':
