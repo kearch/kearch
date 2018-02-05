@@ -3,7 +3,6 @@
 from bs4 import BeautifulSoup
 import requests
 import re
-import random
 from urllib.parse import urlparse
 from langdetect import detect
 import nltk
@@ -13,6 +12,7 @@ import hashlib
 import os
 import pickle
 import sys
+import nb_topic_detect
 
 
 def create_webpage_with_cache(url):
@@ -76,9 +76,6 @@ class Webpage(object):
                                    link.netloc + link.path)
         self.inner_linkss = inner_links
         self.outer_links = outer_links
-        random.shuffle(inner_links)
-        random.shuffle(outer_links)
-        self.random_links = outer_links[:20]
 
     def text_to_words(self, text):
         words = nltk.word_tokenize(text)
@@ -113,7 +110,6 @@ class Webpage(object):
             self.links = []
             self.outer_links = []
             self.inner_links = []
-            self.random_links = []
             print('Cannot get links of ', url, file=sys.stderr)
             print(traceback.format_exc(), file=sys.stderr)
 
@@ -158,6 +154,12 @@ if __name__ == '__main__':
     print(detector)
 
     # w = Webpage('https://en.wikipedia.org/wiki/X-Cops_(The_X-Files)')
-    w = create_webpage_with_cache(
-        'https://en.wikipedia.org/wiki/X-Cops_(The_X-Files)')
-    print(w.words)
+    # w = create_webpage_with_cache(
+        # 'https://en.wikipedia.org/wiki/X-Cops_(The_X-Files)')
+    # print(w.words)
+    url = 'https://shedopen.deviantart.com/'
+    w = create_webpage_with_cache(url)
+    print(w.title)
+    c = nb_topic_detect.TopicClassifier()
+    print(w.title_words)
+    print(c.classfy(w.title_words))

@@ -13,6 +13,9 @@ import nb_topic_detect
 import pagerank
 
 
+number_of_new_derive_links = 400
+
+
 def create_webpage(url):
     try:
         w = create_webpage1(url)
@@ -26,15 +29,28 @@ def create_webpage(url):
 def create_webpage1(url):
     try:
         w = webpage.Webpage(url)
-        c = nb_topic_detect.TopicClassifier()
-        if c.classfy(w.words) == nb_topic_detect.IN_TOPIC:
-            return w
-        else:
-            print('Made webpage of ', url, ', but it is not in topic.')
+        return w
     except:
         print('Cannot make webpage of ', url)
         traceback.print_exc()
         return None
+
+
+def url_to_label(url):
+    c = nb_topic_detect.TopicClassifier()
+    w = webpage.Webpage(url)
+    return c.classfy_log_probability(w.words)
+
+
+def filter_delive_links(urls):
+    p = mult.Pool(mult.cpu_count())
+    labels = p.map(url_to_label, urls)
+    us_ls = list(zip(urls, labels))
+    us_ls.sort(key=lambda x: (x[1][0], -x[1][1]))
+    res = list()
+    for i in range(0, number_of_new_derive_links):
+        res.append(us_ls[i][0])
+    return res
 
 
 def crawl(initial_url_list):
@@ -96,14 +112,14 @@ def crawl(initial_url_list):
         print("Sql proccess to register start", datetime.datetime.today())
         for ss in sqlss:
             for s in ss:
-                # print(s)
                 cur.execute(s[0], s[1])
         conn.commit()
 
         derives = list()
         for w in ws:
-            derives.extend(w.random_links)
+            derives.extend(w.outer_links)
         derives = list(set(derives))
+        derives = filter_delive_links(derives)
 
         insert_data = list()
         for u in derives:
