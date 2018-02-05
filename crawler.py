@@ -10,9 +10,12 @@ import timeout_decorator
 import webpage
 import nb_topic_detect
 import title_topic_detect
+from title_topic_detect import IN_TOPIC
 import pagerank
 import random
 import sys
+
+confidence_threshold = -1.0e-10
 
 
 def create_webpage(url):
@@ -21,24 +24,25 @@ def create_webpage(url):
     except timeout_decorator.TimeoutError:
         print('Timeout in create_webpage.', file=sys.stderr)
         return None
-    c = nb_topic_detect.TopicClassifier()
+    except webpage.WebpageError:
+        print('Cannot make webpage of ', url, file=sys.stderr)
+        return None
+
     tc = title_topic_detect.TitleTopicClassifier()
-    if w is not None and \
-            (tc.classfy(w.title_words) == title_topic_detect.IN_TOPIC or
-             c.classfy(w.words) == nb_topic_detect.IN_TOPIC):
+    if tc.classfy(w.title_words) == title_topic_detect.IN_TOPIC:
         return w
-    else:
+    elif tc.classfy_log_probability(w.title_words)[IN_TOPIC] < \
+            confidence_threshold:
+        c = nb_topic_detect.TopicClassifier()
+        if c.classfy(w.words) == nb_topic_detect.IN_TOPIC:
+            return w
         return None
 
 
 @timeout_decorator.timeout(10)
 def create_webpage1(url):
-    try:
-        w = webpage.Webpage(url)
-        return w
-    except webpage.WebpageError:
-        print('Cannot make webpage of ', url)
-        return None
+    w = webpage.Webpage(url)
+    return w
 
 
 def crawl(initial_url_list):
