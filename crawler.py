@@ -11,15 +11,20 @@ import traceback
 import webpage
 import nb_topic_detect
 import pagerank
+import random
 
 
-number_of_new_derive_links = 400
+number_of_new_derive_links = 40
 
 
 def create_webpage(url):
     try:
         w = create_webpage1(url)
-        return w
+        c = nb_topic_detect.TopicClassifier()
+        if c.classfy(w.words) == nb_topic_detect.IN_TOPIC:
+            return w
+        else:
+            return None
     except:
         print('Timeout in create_webpage.')
         return None
@@ -36,23 +41,6 @@ def create_webpage1(url):
         return None
 
 
-def url_to_label(url):
-    c = nb_topic_detect.TopicClassifier()
-    w = webpage.Webpage(url)
-    return c.classfy_log_probability(w.words)
-
-
-def filter_delive_links(urls):
-    p = mult.Pool(mult.cpu_count())
-    labels = p.map(url_to_label, urls)
-    us_ls = list(zip(urls, labels))
-    us_ls.sort(key=lambda x: (x[1][0], -x[1][1]))
-    res = list()
-    for i in range(0, number_of_new_derive_links):
-        res.append(us_ls[i][0])
-    return res
-
-
 def crawl(initial_url_list):
     dbname = 'keach.db'
     conn = sqlite3.connect(dbname)
@@ -67,8 +55,6 @@ def crawl(initial_url_list):
         if len(rows) == 0:
             cur.execute(insert_date_to_link, (url, 0))
             cur.execute(insert_link_to_date, (url, 0))
-            # To select domains randomly
-            # set the crawl time random in the range of [0,1)
     conn.commit()
 
     ranker = pagerank.Pagerank()
@@ -106,7 +92,19 @@ def crawl(initial_url_list):
         print("Page register start", datetime.datetime.today())
         sqlss = p.map(register_webpage.register, ws)
         p.close()
-        print("Page register takes", datetime.datetime.today() - register_start)
+        print("Page register takes",
+              datetime.datetime.today() - register_start)
+
+        derives_start = datetime.datetime.today()
+        print("Derive link proccess to register start",
+              datetime.datetime.today())
+        derives = list()
+        for w in ws:
+            derives.extend(w.outer_links)
+        derives = list(set(derives))
+        random.shuffle(derives)
+        print("Derive link proccess to register takes",
+              datetime.datetime.today() - derives_start)
 
         sql_start = datetime.datetime.today()
         print("Sql proccess to register start", datetime.datetime.today())
@@ -114,12 +112,6 @@ def crawl(initial_url_list):
             for s in ss:
                 cur.execute(s[0], s[1])
         conn.commit()
-
-        derives = list()
-        for w in ws:
-            derives.extend(w.outer_links)
-        derives = list(set(derives))
-        derives = filter_delive_links(derives)
 
         insert_data = list()
         for u in derives:
