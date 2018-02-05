@@ -14,9 +14,6 @@ import pagerank
 import random
 
 
-number_of_new_derive_links = 40
-
-
 def create_webpage(url):
     try:
         w = create_webpage1(url)
@@ -25,7 +22,7 @@ def create_webpage(url):
             return w
         else:
             return None
-    except:
+    except timeout_decorator.TimeoutError:
         print('Timeout in create_webpage.')
         return None
 
@@ -35,7 +32,7 @@ def create_webpage1(url):
     try:
         w = webpage.Webpage(url)
         return w
-    except:
+    except webpage.WebpageError:
         print('Cannot make webpage of ', url)
         traceback.print_exc()
         return None
