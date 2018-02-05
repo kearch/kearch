@@ -9,6 +9,7 @@ import datetime
 import timeout_decorator
 import webpage
 import nb_topic_detect
+import title_topic_detect
 import pagerank
 import random
 import sys
@@ -21,7 +22,10 @@ def create_webpage(url):
         print('Timeout in create_webpage.', file=sys.stderr)
         return None
     c = nb_topic_detect.TopicClassifier()
-    if w is not None and c.classfy(w.words) == nb_topic_detect.IN_TOPIC:
+    tc = title_topic_detect.TitleTopicClassifier()
+    if w is not None and \
+            (tc.classfy(w.title_topic_detect) == title_topic_detect.IN_TOPIC or
+             c.classfy(w.words) == nb_topic_detect.IN_TOPIC):
         return w
     else:
         return None
