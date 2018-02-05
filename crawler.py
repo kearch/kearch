@@ -7,23 +7,23 @@ import argparse
 import multiprocessing as mult
 import datetime
 import timeout_decorator
-import traceback
 import webpage
 import nb_topic_detect
 import pagerank
 import random
+import sys
 
 
 def create_webpage(url):
     try:
         w = create_webpage1(url)
-        c = nb_topic_detect.TopicClassifier()
-        if c.classfy(w.words) == nb_topic_detect.IN_TOPIC:
-            return w
-        else:
-            return None
     except timeout_decorator.TimeoutError:
-        print('Timeout in create_webpage.')
+        print('Timeout in create_webpage.', file=sys.stderr)
+        return None
+    c = nb_topic_detect.TopicClassifier()
+    if w is not None and c.classfy(w.words) == nb_topic_detect.IN_TOPIC:
+        return w
+    else:
         return None
 
 
@@ -34,7 +34,6 @@ def create_webpage1(url):
         return w
     except webpage.WebpageError:
         print('Cannot make webpage of ', url)
-        traceback.print_exc()
         return None
 
 
