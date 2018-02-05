@@ -10,7 +10,7 @@ import random
 import timeout_decorator
 import traceback
 import webpage
-import lda_topic_detect
+import nb_topic_detect
 import pagerank
 
 
@@ -27,8 +27,8 @@ def create_webpage(url):
 def create_webpage1(url):
     try:
         w = webpage.Webpage(url)
-        c = topic_detect.TopicClassifier()
-        if c.classfy(w.words) == topic_detect.IN_TOPIC:
+        c = nb_topic_detect.TopicClassifier()
+        if c.classfy(w.words) == nb_topic_detect.IN_TOPIC:
             return w
         else:
             print('Made webpage of ', url, ', but it is not in topic.')
@@ -81,10 +81,12 @@ def crawl(initial_url_list):
             us.append(u)
 
         download_start = datetime.datetime.today()
-        print("Page download and webpage initialization start", datetime.datetime.today())
+        print("Page download and webpage initialization start",
+              datetime.datetime.today())
         p = mult.Pool(mult.cpu_count())
         ws = p.map(create_webpage, us)
-        print("Page download and webpage initialization takes", datetime.datetime.today() - download_start)
+        print("Page download and webpage initialization takes",
+              datetime.datetime.today() - download_start)
         ws = list(filter(lambda x: x is not None and x.language == 'en', ws))
         register_start = datetime.datetime.today()
         print("Page register start", datetime.datetime.today())
@@ -117,14 +119,16 @@ def crawl(initial_url_list):
         cur.executemany(insert_link_to_date, insert_data)
         cur.executemany(insert_date_to_link, insert_data)
         conn.commit()
-        print("Sql proccess to register takes", datetime.datetime.today() - sql_start)
+        print("Sql proccess to register takes",
+              datetime.datetime.today() - sql_start)
 
         pagerank_start = datetime.datetime.today()
         print("Pagerank proccess start", datetime.datetime.today())
         for w in ws:
             ranker.add(w)
         ranker.check_renew()
-        print("Pagerank process takes", datetime.datetime.today() - pagerank_start)
+        print("Pagerank process takes",
+              datetime.datetime.today() - pagerank_start)
 
         print("It takes ", datetime.datetime.today() - crawl_start,
               " to process ", len(list(ws)), " pages.\n")
