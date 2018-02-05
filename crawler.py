@@ -24,7 +24,7 @@ def create_webpage(url):
     c = nb_topic_detect.TopicClassifier()
     tc = title_topic_detect.TitleTopicClassifier()
     if w is not None and \
-            (tc.classfy(w.title_topic_detect) == title_topic_detect.IN_TOPIC or
+            (tc.classfy(w.title_words) == title_topic_detect.IN_TOPIC or
              c.classfy(w.words) == nb_topic_detect.IN_TOPIC):
         return w
     else:
