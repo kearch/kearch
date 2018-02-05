@@ -103,7 +103,10 @@ class Webpage(object):
         for script in soup(["script", "style"]):
             script.extract()    # rip javascript out
 
-        self.set_links(soup)
+        try:
+            self.set_links(soup)
+        except ValueError:
+            raise WebpageError('Cannot set links')
 
         try:
             self.title = str(soup.title.string)
