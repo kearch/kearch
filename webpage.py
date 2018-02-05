@@ -113,7 +113,7 @@ class Webpage(object):
 
         try:
             self.language = langdetect.detect(self.text)
-        except langdetect.LangDetectException:
+        except langdetect.lang_detect_exception.LangDetectException:
             raise WebpageError('Cannot detect language.')
 
         self.title_words = self.text_to_words(self.title)
