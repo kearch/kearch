@@ -130,6 +130,7 @@ if __name__ == '__main__':
     for u in random_urls1[n_urls:n_urls + n_tests]:
         c = TitleTopicClassifier()
         w = webpage.create_webpage_with_cache(u)
+        print(u, c.classfy_log_probability(w.words))
         if c.classfy(w.words) == OUT_OF_TOPIC:
             false_negative += 1
         else:
