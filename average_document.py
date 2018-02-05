@@ -5,15 +5,16 @@ import webpage
 import traceback
 import multiprocessing as mult
 
+
 def get_words(link):
-    print(link)
     ws = list()
     try:
-        web = webpage.Webpage(link)
+        web = webpage.create_webpage_with_cache(link)
         ws = list(set(web.words))
     except:
         traceback.print_exc()
     return ws
+
 
 def make_average_document(links):
     dbname = 'keach.db'

@@ -22,8 +22,13 @@ class TopicClassifier(object):
             self.clf = pickle.load(f)
 
     def classfy(self, text):
-        bow = dictionary.doc2bow(text)
-        res = self.clf.predict([alist_to_vector(bow, dictionary)])
+        bow = self.dictionary.doc2bow(text)
+        res = self.clf.predict([alist_to_vector(bow, self.dictionary)])
+        return res[0]
+
+    def classfy_log_probability(self, text):
+        bow = self.dictionary.doc2bow(text)
+        res = self.clf.predict_log_proba([alist_to_vector(bow, self.dictionary)])
         return res[0]
 
 
@@ -122,6 +127,7 @@ if __name__ == '__main__':
     for u in topic_urls1[n_urls:n_urls + n_tests]:
         c = TopicClassifier()
         w = webpage.create_webpage_with_cache(u)
+        print(u, c.classfy_log_probability(w.words))
         if c.classfy(w.words) == IN_TOPIC:
             true_positive += 1
         else:
