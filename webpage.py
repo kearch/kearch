@@ -98,6 +98,8 @@ class Webpage(object):
             content = requests.get(self.url).content
         except requests.exceptions.RequestException:
             raise WebpageError('Cannot get content.')
+        except UnicodeError:
+            raise WebpageError('UnicodeError')
 
         soup = BeautifulSoup(content, "lxml")
         for script in soup(["script", "style"]):
