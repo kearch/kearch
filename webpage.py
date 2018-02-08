@@ -11,6 +11,7 @@ import hashlib
 import os
 import pickle
 import nb_topic_detect
+import urllib3
 
 
 class WebpageError(Exception):
@@ -98,7 +99,7 @@ class Webpage(object):
             content = requests.get(self.url).content
         except requests.exceptions.RequestException:
             raise WebpageError('Cannot get content.')
-        except UnicodeError:
+        except (UnicodeError, urllib3.exceptions.LocationValueError):
             raise WebpageError('UnicodeError')
 
         soup = BeautifulSoup(content, "lxml")
