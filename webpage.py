@@ -101,6 +101,8 @@ class Webpage(object):
             raise WebpageError('Cannot get content.')
         except (UnicodeError, urllib3.exceptions.LocationValueError):
             raise WebpageError('UnicodeError')
+        except AttributeError:
+            raise WebpageError('AttributeError in download.')
 
         soup = BeautifulSoup(content, "lxml")
         for script in soup(["script", "style"]):
