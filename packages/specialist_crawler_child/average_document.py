@@ -8,7 +8,7 @@ import traceback
 import multiprocessing as mult
 
 
-cache_file = 'average_document_cache/average_document'
+cachefile = 'average_document_cache/average_document.pickle'
 
 
 class AverageDocumentError(Exception):
@@ -26,7 +26,7 @@ def get_words(link):
     return ws
 
 
-def make_average_document(links):
+def make_average_document_cache(links):
     size = len(links)
     word_count = dict()
 
@@ -41,12 +41,13 @@ def make_average_document(links):
                 word_count[w] = 1
             else:
                 word_count[w] += 1
-    return (size, word_count)
+    with open(cachefile, 'wb') as f:
+        pickle.dump((size, word_count), f)
 
 
 def size_of_average_document():
-    if os.path.exists(cache_file):
-        with open(cache_file, 'rb') as f:
+    if os.path.exists(cachefile):
+        with open(cachefile, 'rb') as f:
             (s, _) = pickle.load(f)
             return s
     else:
@@ -54,8 +55,8 @@ def size_of_average_document():
 
 
 def count_word_average_document(word):
-    if os.path.exists(cache_file):
-        with open(cache_file, 'rb') as f:
+    if os.path.exists(cachefile):
+        with open(cachefile, 'rb') as f:
             (_, d) = pickle.load(f)
             if word in d:
                 return d[word]
@@ -72,5 +73,4 @@ if __name__ == '__main__':
 
     with open(args.document_list_file, 'r') as f:
         link = list(map(lambda x: x.replace('\n', ''), f.readlines()))
-        (s, wc) = make_average_document(link)
-        print(wc)
+        make_average_document_cache(link)
