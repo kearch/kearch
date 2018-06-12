@@ -22,11 +22,14 @@ def web_to_tfidf(web):
         sum_count += c
 
     tfidf = dict()
-    size_of_average_document = average_document.size_of_average_document()
+    average_document_dict = average_document.average_document_dict()
+    size_of_average_document = len(average_document_dict)
 
     for w, c in counter:
         tf = float(c) / float(sum_count)
-        word_count_in_average = average_document.count_word_average_document(w)
+        word_count_in_average = 0
+        if w in average_document_dict:
+            word_count_in_average = average_document_dict[w]
         idf = 0
         if 0 < word_count_in_average:
             idf = math.log2(float(size_of_average_document) /
@@ -59,8 +62,11 @@ def url_to_webpage(url):
 
 
 def url_to_json_string(url):
+    print('Start download ', url)
     web = url_to_webpage(url)
+    print('End download ', url)
     ret = dict()
+    ret['url'] = url
     ret['title_words'] = web.title_words
     ret['summary'] = web.summary
     ret['tfidf'] = web_to_tfidf(web)
@@ -76,9 +82,9 @@ def create_webpage1(url):
 if __name__ == '__main__':
     # Test codes
 
-    # w = url_to_webpage('https://shedopen.deviantart.com/')
-    # print(w.title_words)
-    # tfidf = web_to_tfidf(w)
-    # print(tfidf)
+    w = url_to_webpage('https://shedopen.deviantart.com/')
+    print(w.title_words)
+    tfidf = web_to_tfidf(w)
+    print(tfidf)
     json_string = url_to_json_string('https://shedopen.deviantart.com/')
     print(json_string)
