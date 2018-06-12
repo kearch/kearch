@@ -17,8 +17,8 @@ OUT_OF_TOPIC = 1
 
 class TopicClassifier(object):
     def __init__(self):
-        self.dictionary = corpora.Dictionary.load_from_text('gensim.dict')
-        with open('clf.pickle', 'rb') as f:
+        self.dictionary = corpora.Dictionary.load_from_text('nb_topic_detect_cache/gensim.dict')
+        with open('nb_topic_detect_cache/clf.pickle', 'rb') as f:
             self.clf = pickle.load(f)
 
     def classfy(self, text):
@@ -80,7 +80,7 @@ if __name__ == '__main__':
         texts = list(filter(lambda x: not x == [], texts))
         p.close()
         dictionary = corpora.Dictionary(texts)
-        dictionary.save_as_text('gensim.dict')
+        dictionary.save_as_text('nb_topic_detect_cache/gensim.dict')
         print('dictionary size = ', len(dictionary))
 
         sc_samples = list()
@@ -107,16 +107,9 @@ if __name__ == '__main__':
 
         clf = BernoulliNB()
         clf.fit(sc_samples, sc_labels)
-        with open('clf.pickle', 'wb') as f:
+        with open('nb_topic_detect_cache/clf.pickle', 'wb') as f:
             pickle.dump(clf, f)
         print("Classifier making finish", file=sys.stderr)
-
-    else:
-        dictionary = corpora.Dictionary.load_from_text('gensim.dict')
-        with open('lda.pickle', 'rb') as f:
-            lda = pickle.load(f)
-        with open('clf.pickle', 'rb') as f:
-            clf = pickle.load(f)
 
     true_positive = 0
     true_negative = 0
