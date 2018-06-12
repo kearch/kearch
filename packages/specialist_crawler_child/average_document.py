@@ -27,7 +27,6 @@ def get_words(link):
 
 
 def make_average_document_cache(links):
-    size = len(links)
     word_count = dict()
 
     sys.stderr.write('Start download\n')
@@ -42,28 +41,17 @@ def make_average_document_cache(links):
             else:
                 word_count[w] += 1
     with open(cachefile, 'wb') as f:
-        pickle.dump((size, word_count), f)
+        pickle.dump(word_count, f)
+    return word_count
 
 
-def size_of_average_document():
+def average_document_dict():
     if os.path.exists(cachefile):
         with open(cachefile, 'rb') as f:
-            (s, _) = pickle.load(f)
-            return s
+            d = pickle.load(f)
+            return d
     else:
-        raise AverageDocumentError('The result is not cached.')
-
-
-def count_word_average_document(word):
-    if os.path.exists(cachefile):
-        with open(cachefile, 'rb') as f:
-            (_, d) = pickle.load(f)
-            if word in d:
-                return d[word]
-            else:
-                return 0
-    else:
-        raise AverageDocumentError('The result is not cached.')
+        raise AverageDocumentError('There is no cachefile.')
 
 
 if __name__ == '__main__':
