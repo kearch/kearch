@@ -1,6 +1,7 @@
 # specialist crawler child
 ## Setup
 ```
+pip install -r requirements.txt
 mkdir webpage_cache
 mkdir average_document_cache
 mkdir nb_topic_detect_cache
