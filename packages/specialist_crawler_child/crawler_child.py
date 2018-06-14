@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import math
-import timeout_decorator
 import webpage
 import nb_topic_detect
 import title_topic_detect
@@ -42,10 +41,7 @@ def web_to_tfidf(web):
 
 def url_to_webpage(url):
     try:
-        w = create_webpage1(url)
-    except timeout_decorator.TimeoutError:
-        print('Timeout in create_webpage.', file=sys.stderr)
-        return None
+        w = webpage.Webpage(url)
     except webpage.WebpageError:
         print('Cannot make webpage of ', url, file=sys.stderr)
         return None
@@ -71,12 +67,6 @@ def url_to_json_string(url):
     ret['summary'] = web.summary
     ret['tfidf'] = web_to_tfidf(web)
     return json.dumps(ret)
-
-
-@timeout_decorator.timeout(10)
-def create_webpage1(url):
-    w = webpage.Webpage(url)
-    return w
 
 
 if __name__ == '__main__':

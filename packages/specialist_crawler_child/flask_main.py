@@ -13,12 +13,10 @@ app = flask.Flask(__name__)
 def post():
     url_q = flask.request.args['url']
     url = urllib.parse.unquote(url_q)
-    print(url, 'was given.')
     result = crawler_child.url_to_json_string(url)
-    print('Got result.')
     return flask.render_template('result.html', result=result)
 
 
 if __name__ == '__main__':
-    app.debug = False
+    app.debug = True
     app.run(host='0.0.0.0', port=10080)  # どこからでもアクセス可能に
