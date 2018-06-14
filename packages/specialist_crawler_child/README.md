@@ -28,3 +28,5 @@ This json contains
 - summary of a given url
 - title words (as a list)
 - tfidf values for each word in a given url (as a dictionary)
+- links bound to the same website
+- links bound to another website

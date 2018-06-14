@@ -66,6 +66,8 @@ def url_to_json_string(url):
     ret['title_words'] = web.title_words
     ret['summary'] = web.summary
     ret['tfidf'] = web_to_tfidf(web)
+    ret['inner_links'] = web.inner_links
+    ret['outer_links'] = web.outer_links
     return json.dumps(ret)
 
 
