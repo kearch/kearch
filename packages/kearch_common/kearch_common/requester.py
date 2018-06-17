@@ -1,4 +1,4 @@
-from kearch_common.data_format import wrap_json
+from kearch_common.json_format import wrap_json
 
 
 class KearchRequester(object):

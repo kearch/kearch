@@ -1,4 +1,4 @@
-from kearch_common.version import __version__
+from kearch_common._version import __version__
 
 
 def wrap_json(payload, meta={}):
