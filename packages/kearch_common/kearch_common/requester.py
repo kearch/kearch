@@ -16,7 +16,9 @@ class KearchRequester(object):
         self.conn_type = conn_type
         self.requester_name = requester_name
 
-    def request(self, path='', method='GET', params=None, payload=None, headers=None):
+    def request(self, path='', method='GET',
+                params=None, payload=None,
+                headers=None, timeout=None):
         if self.port is None:
             url = urllib.parse.urljoin(self.host, path)
         else:
@@ -25,13 +27,14 @@ class KearchRequester(object):
 
         if method == 'GET':
             # GET の場合は payload を url param にする
-            resp = requests.get(url, params=params)
+            resp = requests.get(url, params=params, timeout=timeout)
         else:
             # GET 以外は json に payload を含めて送る
             meta = {
                 'requester': self.requester_name,
             }
             data = wrap_json(payload, meta)
-            resp = requests.request(method, url, params=params, json=data)
+            resp = requests.request(
+                method, url, params=params, json=data, timeout=timeout)
 
         return resp
