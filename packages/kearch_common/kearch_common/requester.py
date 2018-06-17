@@ -1,6 +1,8 @@
 import json
 import urllib
 
+import requests
+
 from kearch_common.data_format import wrap_json
 
 
@@ -14,7 +16,7 @@ class KearchRequester(object):
         self.conn_type = conn_type
         self.requester_name = requester_name
 
-    def request(self, path='', method='GET', payload={}, headers={}):
+    def request(self, path='', method='GET', params=None, payload=None, headers=None):
         if self.port is None:
             url = urllib.parse.urljoin(self.host, path)
         else:
@@ -23,18 +25,13 @@ class KearchRequester(object):
 
         if method == 'GET':
             # GET の場合は payload を url param にする
-            req = urllib.request.Request(
-                '{}?{}'.format(url, urllib.parse.urlencode(payload)))
+            resp = requests.get(url, params=params)
         else:
             # GET 以外は json に payload を含めて送る
             meta = {
                 'requester': self.requester_name,
             }
             data = wrap_json(payload, meta)
-            req = urllib.request.Request(
-                url, json.dumps(data).encode(), headers)
+            resp = requests.request(method, url, params=params, json=data)
 
-        with urllib.request.urlopen(req) as res:
-            response = json.load(res)
-
-        return response
+        return resp
