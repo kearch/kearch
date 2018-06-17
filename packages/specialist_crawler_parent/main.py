@@ -16,21 +16,37 @@ REQUESTER_NAME = 'specialist_crawler_parent'
 
 def crawl_a_page(url):
     crawler_requester = KearchRequester(CRAWLER_CHILD_IP, CRAWLER_CHILD_PORT, REQUESTER_NAME)
-    ret = crawler_requester.request({'url': quote(url)}, '/crawl_a_page')
+    ret = crawler_requester.request(path='/crawl_a_page', param={'url': quote(url)})
     return ret
 
 
 if __name__ == '__main__':
     database_requester = KearchRequester(DATABASE_IP, DATABASE_PORT, REQUESTER_NAME)
 
-    next_urls = database_requester.request({'max_urls': 100}, 'api/get_next_urls')
-    # TODO (kawata) some process to extract url list from next_urls variable.
+    urls_in_queue = database_requester.request(path='api/get_next_urls', param={'max_urls': 100})
+    # TODO (kawata) some process to extract url list from urls_in_queue variable.
+    links_to_push = list()
+    datum_to_push = list()
 
     while True:
-        if len(next_urls) == 0:
-            next_urls = database_requester.request({'max_urls': 100}, 'api/get_next_urls')
+        if len(urls_in_queue) == 0:
+            # push datum to database
+            database_requester.request(path='api/push_links_to_queue', method='POST', payload={'links': links_to_push})
+            database_requester.request(path='api/push_webpage_to_database', method='POST', payload={'datum': datum_to_push})
 
-            with ThreadPoolExecutor(max_workers=NUM_THREAD, thread_name_prefix="thread") as executor:
-                results = executor.map(crawl_a_page, next_urls[:10])
+            # fetch urls from database
+            urls_in_queue = database_requester.request(path='api/get_next_urls', param={'max_urls': 100})
 
-            next_urls = next_urls[10:]
+        with ThreadPoolExecutor(max_workers=NUM_THREAD, thread_name_prefix="thread") as executor:
+            results = executor.map(crawl_a_page, urls_in_queue[:10])
+
+        for r in results:
+            links_to_push.extend(r.inner_links)
+            links_to_push.extend(r.outer_links)
+        for r in results:
+            d = r
+            del d['inner_links']
+            del d['outer_links']
+            datum_to_push.append(d)
+
+        urls_in_queue = urls_in_queue[10:]
