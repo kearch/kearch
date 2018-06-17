@@ -15,7 +15,12 @@ class KearchRequester(object):
         self.requester_name = requester_name
 
     def request(self, path='', method='GET', payload={}, headers={}):
-        url = urllib.parse.urljoin('{}:{}'.format(self.host, self.port), path)
+        if self.port is None:
+            url = urllib.parse.urljoin(self.host, path)
+        else:
+            url = urllib.parse.urljoin(
+                '{}:{}'.format(self.host, self.port), path)
+
         if method == 'GET':
             # GET の場合は payload を url param にする
             req = urllib.request.Request(

@@ -17,4 +17,5 @@ setup(
     description='kearch_common',
     packages=find_packages(exclude=['test', 'test.*']),
     install_requires=required,
+    tests_require=['pytest'],
 )
