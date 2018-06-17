@@ -1,5 +1,3 @@
-import urllib
-
 from kearch_common._version import __version__
 
 
@@ -11,11 +9,9 @@ def wrap_json(payload, meta={}):
     }
 
 
-def wrap_get_param_str(payload):
-    return
-
-
-def get_payload(json):
-    if (json is None) or ('payload' not in json):
+def get_payload(response):
+    """Get `payload` as json object from `requests.Response` object."""
+    j = response.json()
+    if (j is None) or ('payload' not in j):
         return None
-    return json['payload']
+    return j['payload']
