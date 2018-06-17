@@ -16,14 +16,14 @@ REQUESTER_NAME = 'specialist_crawler_parent'
 
 def crawl_a_page(url):
     crawler_requester = KearchRequester(CRAWLER_CHILD_IP, CRAWLER_CHILD_PORT, REQUESTER_NAME)
-    ret = crawler_requester.request(path='/crawl_a_page', param={'url': quote(url)})
+    ret = crawler_requester.request(path='/crawl_a_page', params={'url': quote(url)})
     return ret
 
 
 if __name__ == '__main__':
     database_requester = KearchRequester(DATABASE_IP, DATABASE_PORT, REQUESTER_NAME)
 
-    urls_in_queue = database_requester.request(path='/get_next_urls', param={'max_urls': 100})
+    urls_in_queue = database_requester.request(path='/get_next_urls', params={'max_urls': 100})
     # TODO (kawata) some process to extract url list from urls_in_queue variable.
     urls_to_push = list()
     datum_to_push = list()
@@ -35,7 +35,7 @@ if __name__ == '__main__':
             database_requester.request(path='/push_webpage_to_database', method='POST', payload={'datum': datum_to_push})
 
             # fetch urls from database
-            urls_in_queue = database_requester.request(path='/get_next_urls', param={'max_urls': 100})
+            urls_in_queue = database_requester.request(path='/get_next_urls', params={'max_urls': 100})
 
         with ThreadPoolExecutor(max_workers=NUM_THREAD, thread_name_prefix="thread") as executor:
             results = executor.map(crawl_a_page, urls_in_queue[:10])
