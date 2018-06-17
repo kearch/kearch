@@ -2,20 +2,43 @@
 This is a controller of crawler children.
 ## APIs used in this package
 ### Database
-- Push urls to FIFO queue in database
-Example
+#### Push urls to FIFO queue in database
+Access URL
 ```
-$(ip adress of the database server)/api/push_links_to_queue
+$(ip adress of the database server)/push_links_to_queue
 ```
-- Fetch urls from FIFO queue in database
-Example
+JSON for POST method
 ```
-$(ip adress of the database server)/api/get_next_urls?max_urls=100
+{'datum':[
+    {
+        'url':'www.google.com',
+        'title_words':['google','usa'],
+        'summary':'google is strong',
+        'tfidf':{
+            'google':1.0,
+            'facebook':2.0
+        }
+    },...
+]}
+
 ```
-- Push datum of webpage to database
-Example
+
+#### Fetch urls from FIFO queue in database
+Access URL
 ```
-$(ip adress of the database server)/api/push_webpage_to_database
+$(ip adress of the database server)/get_next_urls?max_urls=100
+```
+#### Push datum of webpage to database
+Access URL
+```
+$(ip adress of the database server)/push_webpage_to_database
+```
+JSON for POST method
+```
+{'urls':[
+    'http://www.google.com',
+    'http://www.facebook.com']
+}
 ```
 ### Crawler Children
 - Get infomation of a given url
