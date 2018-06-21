@@ -1,0 +1,14 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: sp-db-pv
+  labels:
+    volume: sp-db-pv
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 30Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: /data/sp-db-pv/

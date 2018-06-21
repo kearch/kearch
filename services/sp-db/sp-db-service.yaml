@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sp-db
+spec:
+  ports:
+  - port: 3306
+  selector:
+    engine: sp
+    app: mysql
+  clusterIP: None
