@@ -1,20 +1,13 @@
 # sp-db service
 
-## Requirements
-
-Before deploying this service, you need to mount an NFS volume to minikube.
+## Usage
 
 ```sh
-# confifure exports on mac
-sudo mkdir -p /kearchvol/sp-db-nfs
-sudo chmod 777 /kearchvol
-echo '/kearchvol -network 192.168.99.0 -mask 255.255.255.0 -alldirs -maproot=root:wheel' | sudo tee -a /etc/exports
+cd path/to/kearch
+cd services/sp-db
 
-# start NFS server on mac
-sudo nfsd restart
-sudo showmount -e # => /kearchvol 192.168.99.0
-
-# mount NFS volume to minikube
-# minikube ssh -- sudo mkdir /kearchvol
-# minikube ssh -- sudo mount -t nfs 192.168.99.1:/kearchvol /kearchvol
+kubectl apply -f sp-db-pv.yaml
+kubectl apply -f mysql-pvc.yaml
+kubectl apply -f sp-db-deployment.yaml
+kubectl apply -f/sp-db-service.yaml
 ```
