@@ -1,5 +1,5 @@
 # Example for api is
-# $(ip adress of specialist_query_processor/retrieve?queries=google+facebook&max_urls=100
+# $(ip adress of specialist_query_processor)/retrieve?queries=google+facebook&max_urls=100
 
 import flask
 import specialist_query_processor
@@ -11,7 +11,7 @@ app = flask.Flask(__name__)
 def post():
     queries = flask.request.args.get('queries')
     queries = queries.split(' ')
-    max_urls = flask.redirect.args.get('max_urls', int)
+    max_urls = flask.request.args.get('max_urls', int)
     result = specialist_query_processor.retrieve(queries, max_urls)
     return flask.render_template('result.html', result=result)
 
