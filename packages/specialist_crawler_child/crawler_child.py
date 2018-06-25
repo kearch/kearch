@@ -58,17 +58,23 @@ def url_to_webpage(url):
 
 
 def url_to_json_string(url):
-    print('Start download ', url)
+    print('Start download ', url, file=sys.stderr)
     web = url_to_webpage(url)
-    print('End download ', url)
-    ret = dict()
-    ret['url'] = url
-    ret['title_words'] = web.title_words
-    ret['summary'] = web.summary
-    ret['tfidf'] = web_to_tfidf(web)
-    ret['inner_links'] = web.inner_links
-    ret['outer_links'] = web.outer_links
-    return json.dumps(ret)
+    print('End download ', url, file=sys.stderr)
+    print('web = ', web, file=sys.stderr)
+
+    if web is not None:
+        ret = dict()
+        ret['url'] = url
+        ret['title_words'] = web.title_words
+        ret['summary'] = web.summary
+        ret['tfidf'] = web_to_tfidf(web)
+        ret['inner_links'] = web.inner_links
+        ret['outer_links'] = web.outer_links
+        print('ret =', ret, file=sys.stderr)
+        return json.dumps(ret)
+    else:
+        return "{}"
 
 
 if __name__ == '__main__':
