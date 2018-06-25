@@ -14,15 +14,15 @@ WORKDIR kearch/packages/specialist_crawler_child
 # COPY ./webpage.py ./webpage.py
 # COPY ./crawler_child.py ./crawler_child.py
 # COPY ./templates ./templates
+# RUN mkdir webpage_cache
+# RUN mkdir average_document_cache
+# RUN mkdir nb_topic_detect_cache
+# RUN mkdir title_topic_detect_cache
 
 
 RUN pip install -r requirements.txt
 RUN python -c "import nltk; nltk.download('punkt')"
 RUN python -c "import nltk; nltk.download('stopwords')"
-RUN mkdir webpage_cache
-RUN mkdir average_document_cache
-RUN mkdir nb_topic_detect_cache
-RUN mkdir title_topic_detect_cache
 
 # This process take a few minutes because it downloads many webpages
 RUN python average_document.py random_url_list
