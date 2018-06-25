@@ -14,7 +14,7 @@ python3 flask_main.py
 ## API
 ### How to crawl a page
 ```
-http://${ip adress of this container}:10080/crawl_a_page?url=${quoted url by urllib.parse.qupte}
+http://${ip adress of this container}:10080/crawl_a_page?url=${quoted url by requester}
 ```
 Examples
 ```
