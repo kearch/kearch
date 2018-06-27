@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-git clone https://github.com/akawashiro/kearch
+git clone https://github.com/kearch/kearch
 cd kearch/packages/kearch_common
 pip install -e .
 ```
