@@ -8,4 +8,3 @@ spec:
   selector:
     engine: sp
     app: mysql
-  clusterIP: None
