@@ -25,7 +25,7 @@ cd services/sp-db
 kubectl apply -f sp-db-pv.yaml
 kubectl apply -f mysql-pvc.yaml
 kubectl apply -f sp-db-deployment.yaml
-kubectl apply -f/sp-db-service.yaml
+kubectl apply -f sp-db-service.yaml
 ```
 
 `sp-dv` service can be resolved as `sp-db.kearch.svc.cluster.local` .
