@@ -1,6 +1,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
+  namespace: kearch
   name: mysql-pvc
 spec:
   storageClassName: manual

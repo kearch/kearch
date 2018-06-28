@@ -1,6 +1,7 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
+  namespace: kearch
   name: sp-db-pv
   labels:
     volume: sp-db-pv
