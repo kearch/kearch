@@ -28,4 +28,4 @@ kubectl apply -f sp-db-deployment.yaml
 kubectl apply -f sp-db-service.yaml
 ```
 
-`sp-dv` service can be resolved as `sp-db.kearch.svc.cluster.local` .
+`sp-db` service can be resolved as `sp-db.kearch.svc.cluster.local` .
