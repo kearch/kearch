@@ -1,0 +1,13 @@
+FROM python:3.6
+
+# Install kearch_common
+RUN git clone https://github.com/kearch/kearch
+RUN cd kearch/packages/kearch_common && pip install -e .
+
+RUN git clone https://github.com/kearch/kearch.git
+WORKDIR kearch/packages/specialist_crawler_parent
+
+# These lines are for debug. Use when you want local files.
+# COPY ./main.py ./main.py
+
+CMD python "main.py"
