@@ -12,6 +12,11 @@ COMMUNICATOR_PORT = '10080'
 DEBUG_UNIT_TEST = True
 
 
+class MeQueryProcessorException(Exception):
+    def __init__(self, e):
+        Exception.__init__(self, e)
+
+
 def get_sp_ip_from_database(queries, max_urls):
     if DEBUG_UNIT_TEST:
         ret = dict()
@@ -34,9 +39,22 @@ def get_result_from_sp(sp_ip, queries, max_urls):
         return ret
     else:
         sp_requester = KearchRequester(COMMUNICATOR_IP, COMMUNICATOR_PORT, REQUESTER_NAME)
-        ret = sp_requester.request(path='/retrieve', params={'sp_ip':sp_ip, 'queries': queries, max_urls: max_urls})
+        ret = sp_requester.request(path='/retrieve', params={'sp_ip': sp_ip, 'queries': queries, max_urls: max_urls})
         return ret
 
 
 def retrieve(queries, max_urls):
     sp_data = get_sp_ip_from_database(queries, max_urls)
+    ip_to_score = dict()
+    for d in sp_data.values():
+        for ip, freq in d.items():
+            if ip in ip_to_score:
+                ip_to_score[ip] += freq
+            else:
+                ip_to_score[ip] = freq
+    if len(ip_to_score) == 0:
+        raise MeQueryProcessorException('No specialist server in this meta database.')
+
+    best_ip = list(ip_to_score.items()).sorted(key=lambda x: x[1], reversed=True)[0][0]
+    res = get_result_from_sp(best_ip, queries, max_urls)
+    return res
