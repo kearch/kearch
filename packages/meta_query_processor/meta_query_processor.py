@@ -58,6 +58,5 @@ def retrieve(queries, max_urls):
     ip_to_score_list = list(ip_to_score.items())
     ip_to_score_list.sort(key=lambda x: x[1], reverse=True)
     best_ip = ip_to_score_list[0][0]
-    res = dict()
-    res['data'] = get_result_from_sp(best_ip, queries, max_urls)
+    res = get_result_from_sp(best_ip, queries, max_urls)
     return res
