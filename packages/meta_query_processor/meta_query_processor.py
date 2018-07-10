@@ -9,7 +9,7 @@ COMMUNICATOR_PORT = '10080'
 
 
 # When you change DEBUG_UNIT_TEST true, this program run unit test.
-DEBUG_UNIT_TEST = True
+DEBUG_UNIT_TEST = False
 
 
 class MeQueryProcessorException(Exception):
@@ -55,6 +55,8 @@ def retrieve(queries, max_urls):
     if len(ip_to_score) == 0:
         raise MeQueryProcessorException('No specialist server in this meta database.')
 
-    best_ip = list(ip_to_score.items()).sorted(key=lambda x: x[1], reversed=True)[0][0]
+    ip_to_score_list = list(ip_to_score.items())
+    ip_to_score_list.sort(key=lambda x: x[1], reverse=True)
+    best_ip = ip_to_score_list[0][0]
     res = get_result_from_sp(best_ip, queries, max_urls)
     return res
