@@ -9,9 +9,10 @@ $(ip adress of the database server)/push_webpage_to_database
 ```
 JSON for POST method
 ```
-{'datum':[
+{'data':[
     {
         'url':'www.google.com',
+        'title': 'Google'
         'title_words':['google','usa'],
         'summary':'google is strong',
         'tfidf':{
@@ -50,7 +51,7 @@ JSON for POST method
 ### Crawler Children
 - Get infomation of a given url
 ```
-$(ip adress of the load blancer of crawler children)/crawl_a__page
+$(ip adress of the load blancer of crawler children)/crawl_a_page
 ```
 Expected return page  
 abbreviated
