@@ -19,6 +19,18 @@ class KearchRequester(object):
     def request(self, path='', method='GET',
                 params=None, payload=None,
                 headers=None, timeout=None):
+        if self.conn_type == 'json':
+            return self.request_json(path, method, params, payload,
+                                     headers, timeout)
+        elif self.conn_type == 'sql':
+            return self.request_sql(path, method, params, payload,
+                                    headers, timeout)
+        else:
+            raise ValueError('conn_type should be "json" or "sql".')
+
+    def request_json(self, path='', method='GET',
+                     params=None, payload=None,
+                     headers=None, timeout=None):
         if self.port is None:
             url = urllib.parse.urljoin(self.host, path)
         else:
@@ -38,3 +50,21 @@ class KearchRequester(object):
                 method, url, params=params, json=data, timeout=timeout)
 
         return resp
+
+    def request_sql(self, path='', method='GET',
+                    params=None, payload=None,
+                    headers=None, timeout=None):
+        parsed = urllib.parse.urlparse(path)
+        parsed_path = parsed.path
+        query = urllib.parse.parse_qs(parsed.query)
+
+        if parsed_path == '/push_webpage_to_database':
+            pass
+        elif parsed_path == '/get_next_urls':
+            pass
+        elif parsed_path == '/push_links_to_queue':
+            pass
+        elif parsed_path == '/crawl_a_page':
+            pass
+        else:
+            raise ValueError('Invalid path: {}'.format(path))
