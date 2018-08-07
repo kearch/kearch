@@ -1,6 +1,7 @@
 import json
 import urllib
 
+import mysql.connector
 import requests
 
 from kearch_common.data_format import wrap_json
@@ -54,17 +55,47 @@ class KearchRequester(object):
     def request_sql(self, path='', method='GET',
                     params=None, payload=None,
                     headers=None, timeout=None):
+
         parsed = urllib.parse.urlparse(path)
         parsed_path = parsed.path
-        query = urllib.parse.parse_qs(parsed.query)
+        url_query = urllib.parse.parse_qs(parsed.query)
+        config = {
+            'host': self.host,
+            'database': 'kearch_sp_dev',
+            'user': 'root',
+            'password': 'password',
+            'charset': 'utf8',
+            'use_unicode': True,
+            'get_warnings': True,
+        }
+
+        db = mysql.connector.Connect(**config)
+        cur = db.cursor()
 
         if parsed_path == '/push_webpage_to_database':
-            pass
+            # get webpage records from payload
+            webpage_records = ((w['url'],
+                                json.dumps(w['title_words']),
+                                w['summary'],
+                                json.dumps(w['tfidf']))
+                               for w in payload['data'])
+            statement = """
+            REPLACE INTO `webpages` (`url`, `title_words`, `summary`, `tfidf`)
+            VALUES (%s)
+            """
+            cur.executemany(statement, webpage_records)
         elif parsed_path == '/get_next_urls':
-            pass
+            statement = """
+            """
+            # TODO(gky360): updated_at カラムを追加
         elif parsed_path == '/push_links_to_queue':
             pass
         elif parsed_path == '/crawl_a_page':
             pass
         else:
+            cur.close()
+            db.close()
             raise ValueError('Invalid path: {}'.format(path))
+
+        cur.close()
+        db.close()
