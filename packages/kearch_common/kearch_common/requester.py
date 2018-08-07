@@ -71,31 +71,71 @@ class KearchRequester(object):
 
         db = mysql.connector.Connect(**config)
         cur = db.cursor()
+        ret = None
 
-        if parsed_path == '/push_webpage_to_database':
-            # get webpage records from payload
-            webpage_records = ((w['url'],
-                                json.dumps(w['title_words']),
-                                w['summary'],
-                                json.dumps(w['tfidf']))
-                               for w in payload['data'])
-            statement = """
-            REPLACE INTO `webpages` (`url`, `title_words`, `summary`, `tfidf`)
-            VALUES (%s)
-            """
-            cur.executemany(statement, webpage_records)
-        elif parsed_path == '/get_next_urls':
-            statement = """
-            """
-            # TODO(gky360): updated_at カラムを追加
-        elif parsed_path == '/push_links_to_queue':
-            pass
-        elif parsed_path == '/crawl_a_page':
-            pass
-        else:
+        try:
+            if parsed_path == '/push_webpage_to_database':
+                # get webpage records from payload
+                webpage_records = [(w['url'],
+                                    json.dumps(w['title_words']),
+                                    w['summary'],
+                                    json.dumps(w['tfidf']))
+                                   for w in payload['data']]
+                statement = """
+                REPLACE INTO `webpages`
+                (`url`, `title_words`, `summary`, `tfidf`)
+                VALUES (%s)
+                """
+
+                cur.executemany(statement, webpage_records)
+                db.commit()
+                ret = cur.rowcount
+            elif parsed_path == '/get_next_urls':
+                max_urls = int(url_query['max_urls'])
+                select_statement = """
+                SELECT `url` FROM `url_queue` ORDER BY `updated_at` LIMIT %d
+                """
+                delete_statement = """
+                DELETE FROM `url_queue` ORDER BY `updated_at` LIMIT %d
+                """
+
+                cur.execute(select_statement, max_urls)
+                result_urls = [row[0] for row in cur.fetchall()]
+                ret = {
+                    'urls': result_urls
+                }
+                cur.execute(delete_statement, max_urls)
+                db.commit()
+            elif parsed_path == '/push_links_to_queue':
+                url_queue_records = [(url,) for url in payload['urls']]
+                statement = """
+                REPLACE INTO `url_queue` (`url`) VALUES (%s)
+                """
+
+                cur.executemany(statement, url_queue_records)
+                db.commit()
+                ret = cur.rowcount
+            elif parsed_path == '/crawl_a_page':
+                url = url_query['url']
+                statement = """
+                SELECT (`url`, `title_words`, `summary`, `tfidf`)
+                FROM `webpages` WHERE `url` = %s
+                """
+
+                cur.execute(statement, url)
+                row = cur.fetchone()
+                ret = {
+                    'url': row[0],
+                    'title_words': json.loads(row[1]),
+                    'summary': row[2],
+                    'tfidf': json.loads(row[3])
+                }
+            else:
+                raise ValueError('Invalid path: {}'.format(path))
+        except Exception as e:
+            raise
+        finally:
             cur.close()
             db.close()
-            raise ValueError('Invalid path: {}'.format(path))
 
-        cur.close()
-        db.close()
+        return ret
