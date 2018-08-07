@@ -115,21 +115,6 @@ class KearchRequester(object):
                 cur.executemany(statement, url_queue_records)
                 db.commit()
                 ret = cur.rowcount
-            elif parsed_path == '/crawl_a_page':
-                url = url_query['url']
-                statement = """
-                SELECT (`url`, `title_words`, `summary`, `tfidf`)
-                FROM `webpages` WHERE `url` = %s
-                """
-
-                cur.execute(statement, url)
-                row = cur.fetchone()
-                ret = {
-                    'url': row[0],
-                    'title_words': json.loads(row[1]),
-                    'summary': row[2],
-                    'tfidf': json.loads(row[3])
-                }
             else:
                 raise ValueError('Invalid path: {}'.format(path))
         except Exception as e:
