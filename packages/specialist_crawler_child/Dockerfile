@@ -1,7 +1,7 @@
 FROM python:3.6
 
-RUN git clone https://github.com/kearch/kearch.git
-WORKDIR kearch/packages/specialist_crawler_child
+COPY ../../packages/specialist_crawler_child /kearch/packages/specialist_crawler_child
+WORKDIR /kearch/packages/specialist_crawler_child
 
 # These lines are for debug. Use when you want local files.
 # COPY ./requirements.txt ./requirements.txt
