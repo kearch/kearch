@@ -25,8 +25,8 @@ RUN python -c "import nltk; nltk.download('punkt')"
 RUN python -c "import nltk; nltk.download('stopwords')"
 
 # This process take a few minutes because it downloads many webpages
-RUN python average_document.py random_url_list
-RUN python nb_topic_detect.py computer_science_url_list random_url_list
-RUN python title_topic_detect.py computer_science_url_list random_url_list
+RUN python average_document.py random_url_list_short
+RUN python nb_topic_detect.py computer_science_url_list_short random_url_list_short
+RUN python title_topic_detect.py computer_science_url_list_short random_url_list_short
 
 CMD python "flask_main.py"
