@@ -1,6 +1,6 @@
 FROM python:3.6
 
-COPY ../../packages/specialist_crawler_child /kearch/packages/specialist_crawler_child
+COPY . /kearch/packages/specialist_crawler_child
 WORKDIR /kearch/packages/specialist_crawler_child
 
 # These lines are for debug. Use when you want local files.

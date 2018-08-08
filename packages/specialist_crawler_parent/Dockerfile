@@ -2,9 +2,10 @@ FROM python:3.6
 
 # Install kearch_common
 RUN git clone https://github.com/kearch/kearch
-RUN cd kearch/packages/kearch_common && pip install -e .
+RUN cd /kearch/packages/kearch_common && pip install -e .
 
-WORKDIR kearch/packages/specialist_crawler_parent
+COPY . /kearch/packages/specialist_crawler_parent
+WORKDIR /kearch/packages/specialist_crawler_parent
 
 # These lines are for debug. Use when you want local files.
 # COPY ./main.py ./main.py

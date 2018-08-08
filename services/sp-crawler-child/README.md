@@ -6,7 +6,7 @@ Build docker images for kearch on minikube.
 
 ```sh
 cd path/to/kearch
-cd services/sp-crawler-child
+cd packages/specialist_crawler_child
 
 eval $(minikube docker-env)
 docker build -t kearch/sp-crawler-child .
