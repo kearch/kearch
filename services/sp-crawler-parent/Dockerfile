@@ -4,7 +4,6 @@ FROM python:3.6
 RUN git clone https://github.com/kearch/kearch
 RUN cd kearch/packages/kearch_common && pip install -e .
 
-RUN git clone https://github.com/kearch/kearch.git
 WORKDIR kearch/packages/specialist_crawler_parent
 
 # These lines are for debug. Use when you want local files.
