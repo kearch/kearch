@@ -35,7 +35,7 @@ def get_sp_ip_from_database(queries, max_urls):
 def get_result_from_sp(sp_ip, queries, max_urls):
     if DEBUG_UNIT_TEST:
         ret = dict()
-        ret['data'] = [{'url': 'www.google.com', 'title_words': ['google', 'usa'], 'summary':'google is strong', 'score':11.0}]
+        ret['data'] = [{'url': 'www.google.com', 'title_words': ['google', 'usa'], 'title': 'google_in_usa', 'summary':'google is strong', 'score':11.0}]
         return ret
     else:
         sp_requester = KearchRequester(COMMUNICATOR_IP, COMMUNICATOR_PORT, REQUESTER_NAME)
