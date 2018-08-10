@@ -4,11 +4,11 @@ from concurrent.futures import ThreadPoolExecutor
 
 from kearch_common.requester import KearchRequester
 
-CRAWLER_CHILD_IP = '192.168.11.10'
+CRAWLER_CHILD_HOST = 'sp-crawler-child.kearch.svc.cluster.local'
 CRAWLER_CHILD_PORT = 10080
 
-DATABASE_IP = '192.168.11.11'
-DATABASE_PORT = 10080
+DATABASE_HOST = 'sp-db.kearch.svc.cluster.local''
+DATABASE_PORT = 3306
 
 NUM_THREAD = 5
 
@@ -28,7 +28,7 @@ def crawl_a_page(url):
         return ret
     else:
         crawler_requester = KearchRequester(
-            CRAWLER_CHILD_IP, CRAWLER_CHILD_PORT, REQUESTER_NAME)
+            CRAWLER_CHILD_HOST, CRAWLER_CHILD_PORT, REQUESTER_NAME)
         ret = crawler_requester.request(
             path='/crawl_a_page', params={'url': url})
         return ret
@@ -46,7 +46,7 @@ def get_next_urls_dummy(max_urls):
 
 if __name__ == '__main__':
     database_requester = KearchRequester(
-        DATABASE_IP, DATABASE_PORT, REQUESTER_NAME)
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME)
 
     if DEBUG_UNIT_TEST:
         resp = get_next_urls_dummy(MAX_URLS)
