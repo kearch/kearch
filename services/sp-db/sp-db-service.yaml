@@ -8,4 +8,4 @@ spec:
   - port: 3306
   selector:
     engine: sp
-    app: mysql
+    app: db
