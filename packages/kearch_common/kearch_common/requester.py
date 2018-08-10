@@ -10,12 +10,18 @@ from kearch_common.data_format import wrap_json
 class KearchRequester(object):
     """Interface for communicating between containers or servers."""
 
-    def __init__(self, host, port=None, requester_name='', conn_type='json'):
+    def __init__(self,
+                 host='localhost', port=None,
+                 requester_name='', conn_type='json'):
         super(KearchRequester, self).__init__()
         self.host = host
         self.port = port
         self.conn_type = conn_type
         self.requester_name = requester_name
+
+    def __repr__(self):
+        return '<KearchRequester host: %r, port: %r, conn_type: %r>'.\
+            format(self.host, self.port, self.conn_type)
 
     def request(self, path='', method='GET',
                 params=None, payload=None,
@@ -91,20 +97,20 @@ class KearchRequester(object):
                 db.commit()
                 ret = cur.rowcount
             elif parsed_path == '/get_next_urls':
-                max_urls = int(url_query['max_urls'])
+                max_urls = int(url_query['max_urls'][0])
                 select_statement = """
-                SELECT `url` FROM `url_queue` ORDER BY `updated_at` LIMIT %d
+                SELECT `url` FROM `url_queue` ORDER BY `updated_at` LIMIT %s
                 """
                 delete_statement = """
-                DELETE FROM `url_queue` ORDER BY `updated_at` LIMIT %d
+                DELETE FROM `url_queue` ORDER BY `updated_at` LIMIT %s
                 """
 
-                cur.execute(select_statement, max_urls)
+                cur.execute(select_statement, (max_urls,))
                 result_urls = [row[0] for row in cur.fetchall()]
                 ret = {
                     'urls': result_urls
                 }
-                cur.execute(delete_statement, max_urls)
+                cur.execute(delete_statement, (max_urls,))
                 db.commit()
             elif parsed_path == '/push_links_to_queue':
                 url_queue_records = [(url,) for url in payload['urls']]
