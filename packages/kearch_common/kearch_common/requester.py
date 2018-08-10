@@ -64,7 +64,6 @@ class KearchRequester(object):
 
         parsed = urllib.parse.urlparse(path)
         parsed_path = parsed.path
-        url_query = urllib.parse.parse_qs(parsed.query)
         config = {
             'host': self.host,
             'database': 'kearch_sp_dev',
@@ -97,7 +96,7 @@ class KearchRequester(object):
                 db.commit()
                 ret = cur.rowcount
             elif parsed_path == '/get_next_urls':
-                max_urls = int(url_query['max_urls'][0])
+                max_urls = int(params['max_urls'])
                 select_statement = """
                 SELECT `url` FROM `url_queue` ORDER BY `updated_at` LIMIT %s
                 """
@@ -112,7 +111,7 @@ class KearchRequester(object):
                 }
                 cur.execute(delete_statement, (max_urls,))
                 db.commit()
-            elif parsed_path == '/push_links_to_queue':
+            elif parsed_path == '/push_urls_to_queue':
                 url_queue_records = [(url,) for url in payload['urls']]
                 statement = """
                 REPLACE INTO `url_queue` (`url`) VALUES (%s)

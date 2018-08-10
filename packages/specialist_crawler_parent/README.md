@@ -39,7 +39,7 @@ Expected return page
 #### Push urls to FIFO queue in database
 Access URL
 ```
-$(ip adress of the database server)/push_links_to_queue
+$(ip adress of the database server)/push_urls_to_queue
 ```
 JSON for POST method
 ```
