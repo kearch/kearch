@@ -1,8 +1,8 @@
-from kearch_common.requester import KearchRequester
-from concurrent.futures import ThreadPoolExecutor
-import time
 import sys
+import time
+from concurrent.futures import ThreadPoolExecutor
 
+from kearch_common.requester import KearchRequester
 
 CRAWLER_CHILD_IP = '192.168.11.10'
 CRAWLER_CHILD_PORT = 10080
@@ -27,8 +27,10 @@ def crawl_a_page(url):
         time.sleep(2)
         return ret
     else:
-        crawler_requester = KearchRequester(CRAWLER_CHILD_IP, CRAWLER_CHILD_PORT, REQUESTER_NAME)
-        ret = crawler_requester.request(path='/crawl_a_page', params={'url': url})
+        crawler_requester = KearchRequester(
+            CRAWLER_CHILD_IP, CRAWLER_CHILD_PORT, REQUESTER_NAME)
+        ret = crawler_requester.request(
+            path='/crawl_a_page', params={'url': url})
         return ret
 
 
@@ -43,12 +45,14 @@ def get_next_urls_dummy(max_urls):
 
 
 if __name__ == '__main__':
-    database_requester = KearchRequester(DATABASE_IP, DATABASE_PORT, REQUESTER_NAME)
+    database_requester = KearchRequester(
+        DATABASE_IP, DATABASE_PORT, REQUESTER_NAME)
 
     if DEBUG_UNIT_TEST:
         resp = get_next_urls_dummy(MAX_URLS)
     else:
-        resp = database_requester.request(path='/get_next_urls', params={'max_urls': MAX_URLS})
+        resp = database_requester.request(
+            path='/get_next_urls', params={'max_urls': MAX_URLS})
     urls_in_queue = resp['urls']
     urls_to_push = list()
     data_to_push = list()
@@ -64,15 +68,19 @@ if __name__ == '__main__':
                 urls_in_queue = resp['urls']
             else:
                 # push data to database
-                database_requester.request(path='/push_urls_to_queue', method='POST', payload={'urls': urls_to_push})
-                database_requester.request(path='/push_webpage_to_database', method='POST', payload={'data': data_to_push})
+                database_requester.request(
+                    path='/push_urls_to_queue', method='POST', payload={'urls': urls_to_push})
+                database_requester.request(
+                    path='/push_webpage_to_database', method='POST', payload={'data': data_to_push})
 
                 # fetch urls from database
-                resp = database_requester.request(path='/get_next_urls', params={'max_urls': MAX_URLS})
+                resp = database_requester.request(
+                    path='/get_next_urls', params={'max_urls': MAX_URLS})
                 urls_in_queue = resp['urls']
 
         with ThreadPoolExecutor(max_workers=NUM_THREAD) as executor:
-            results = executor.map(crawl_a_page, list(urls_in_queue[:NUM_THREAD]))
+            results = executor.map(
+                crawl_a_page, list(urls_in_queue[:NUM_THREAD]))
         results = filter((lambda x: x == {}), results)
 
         for r in results:
