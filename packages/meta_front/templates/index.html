@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <style type="text/css">
+.padding{
+    padding: 70px 40px;
+}
+
+.center{
+    width: 640px;
+    margin: 140px auto;
+    text-align: center;
+}
+
+input[type=window] {
+    width: 350px;
+    padding: 12px 20px;
+    margin: 8px 20px;
+    box-sizing: border-box;
+    border: 1px solid;
+    border-radius: 4px;
+    font-size: 20px;
+}
+
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+        </style>
+    </head>
+    <div class="center">
+        <body>
+            <div class="padding">
+                <img src="{{url_for('static', filename='logo.png')}}" alt="logo" title="keach logo">
+            </div>
+            <form action="/search" method="get">
+                <input type="window" name="query">
+                <button class="button">retrieve</button>
+            </form>
+        </body>
+    </div>
+</html>
