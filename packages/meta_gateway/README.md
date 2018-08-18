@@ -2,7 +2,7 @@
 This container should export on 10080 port of host.  
 This container have following two APIs.
 ## Register DB Information to Database
-This API takes a summary of specialist DB and register it to meta DB.
+This API takes a summary of specialist DB and register it to meta DB.  
 *CAUTION* Access this URL using KearchRequester.  
 
 URL (POST)
