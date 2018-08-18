@@ -5,16 +5,18 @@ This container have following two APIs.
 The Admin container in specialist search engine register specialist DB to a meta search engine.  
 In registeration, the specialist must send the summary of DB to the meta.  
 This API takes the summary and send it to the meta.  
+*CAUTION* Access this URL using KearchRequester.  
 
 URL (POST)
 ```
-$(ip adress of meta query processor)/send_DB_summary (POST)
+$(ip adress of specialist gateway)/send_DB_summary (POST)
 ```
 Scheme of Posted JSON
 ```
 {
-    'ip':ip address of this specialist server
-    'data':
+    'ip_sp':ip address of this specialist server,
+    'ip_me':ip address of meta server to register,
+    'summary':
     {
         word:the number of documents in the DB which contains the word.
     }
@@ -23,8 +25,9 @@ Scheme of Posted JSON
 Posted JSON example
 ```
 {
-    'ip':'10.229.55.117',
-    'data':
+    'ip_sp':'10.229.55.117',
+    'ip_me':'10.229.55.114',
+    'summary':
     {
         'google':1050,
         'facebook':10022
@@ -37,7 +40,7 @@ This API cathes their queries and returns the result.
 
 URL (GET)
 ```
-$(ip adress of meta query processor)/retrieve_gateway?queries=facebook+yahoo&max_urls=100
+$(ip adress of specialist gateway)/retrieve?queries=facebook+yahoo&max_urls=100
 ```
 Return JSON
 ```
