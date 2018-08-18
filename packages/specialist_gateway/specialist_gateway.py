@@ -19,5 +19,8 @@ def retrieve(queries, max_urls):
 
 def send_DB_summary(ip_sp, ip_me, summary):
     url = urllib.parse.urljoin(
-        '{}:{}'.format(ip_me, META_PORT), 'register_DB_summary')
-    resp = requests.request('POST', url, json=summary)
+        '{}:{}'.format(ip_me, META_PORT), 'add_new_sp_server')
+    d = dict()
+    d['ip'] = ip_sp
+    d['summary'] = summary
+    resp = requests.request('POST', url, json=d)
