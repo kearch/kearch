@@ -42,7 +42,7 @@ class KearchRequester(object):
             url = urllib.parse.urljoin(self.host, path)
         else:
             url = urllib.parse.urljoin(
-                '{}:{}'.format(self.host, self.port), path)
+                'http://{}:{}'.format(self.host, self.port), path)
 
         if method == 'GET':
             # GET の場合は payload を url param にする
@@ -56,7 +56,7 @@ class KearchRequester(object):
             resp = requests.request(
                 method, url, params=params, json=data, timeout=timeout)
 
-        return resp
+        return resp.json()
 
     def request_sql(self, path='', method='GET',
                     params=None, payload=None,
