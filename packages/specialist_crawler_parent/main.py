@@ -97,11 +97,16 @@ if __name__ == '__main__':
         with ThreadPoolExecutor(max_workers=NUM_THREAD) as executor:
             results = executor.map(
                 crawl_a_page, list(urls_in_queue[:NUM_THREAD]))
-        results = filter((lambda x: x != {}), results)
+        results = list(filter(lambda x: x != {}, results))
+        print(results)
 
+        print('hello')
+        print(len(results))
         for r in results:
-            urls_to_push.extend(r.inner_links)
-            urls_to_push.extend(r.outer_links)
+            print('r.inner_links', r['inner_links'])
+            print('r.outer_links', r['outer_links'])
+            urls_to_push.extend(r['inner_links'])
+            urls_to_push.extend(r['outer_links'])
         for r in results:
             d = r
             del d['inner_links']
