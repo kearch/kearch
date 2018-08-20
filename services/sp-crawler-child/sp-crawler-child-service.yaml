@@ -4,6 +4,7 @@ metadata:
   namespace: kearch
   name: sp-crawler-child
 spec:
+  type: NodePort
   ports:
   - port: 10080
   selector:
