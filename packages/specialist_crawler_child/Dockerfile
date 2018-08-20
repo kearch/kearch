@@ -29,4 +29,4 @@ RUN python average_document.py random_url_list_short
 RUN python nb_topic_detect.py computer_science_url_list_short random_url_list_short
 RUN python title_topic_detect.py computer_science_url_list_short random_url_list_short
 
-CMD python "flask_main.py"
+CMD ["python", "-u", "flask_main.py"]
