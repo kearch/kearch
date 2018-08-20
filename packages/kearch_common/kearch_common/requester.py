@@ -89,7 +89,7 @@ class KearchRequester(object):
                 statement = """
                 REPLACE INTO `webpages`
                 (`url`, `title_words`, `summary`, `tfidf`)
-                VALUES (%s)
+                VALUES (%s, %s, %s, %s, %s)
                 """
 
                 cur.executemany(statement, webpage_records)
