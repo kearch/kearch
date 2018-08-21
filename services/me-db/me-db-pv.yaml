@@ -1,0 +1,15 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  namespace: kearch
+  name: me-db-pv
+  labels:
+    volume: me-db-pv
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 30Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: /data/me-db-pv/
