@@ -9,6 +9,13 @@ def wrap_json(payload, meta={}):
     }
 
 
+# Use this function when you process POST query
+# Extract payload from posted json
+def unwrap_json(json):
+    payload = json['payload']
+    return payload
+
+
 def get_payload(response):
     """Get `payload` as json object from `requests.Response` object."""
     j = response.json()
