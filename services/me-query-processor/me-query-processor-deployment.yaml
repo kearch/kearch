@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kearch
+  name: me-query-processor
+  labels:
+    engine: me
+    app: query-processor
+spec:
+  selector:
+    matchLabels:
+      engine: me
+      app: query-processor
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        engine: me
+        app: query-processor
+    spec:
+      containers:
+      - image: kearch/me-query-processor
+        name: me-query-processor
+        ports:
+        - containerPort: 10080
+        imagePullPolicy: Never
