@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-import sys
+import argparse
+import multiprocessing as mult
 import os
 import pickle
-import argparse
-import webpage
+import sys
 import traceback
-import multiprocessing as mult
 
+import webpage
 
 cachefile = 'average_document_cache/average_document.pickle'
 

@@ -10,12 +10,18 @@ from kearch_common.data_format import wrap_json
 class KearchRequester(object):
     """Interface for communicating between containers or servers."""
 
-    def __init__(self, host, port=None, requester_name='', conn_type='json'):
+    def __init__(self,
+                 host='localhost', port=None,
+                 requester_name='', conn_type='json'):
         super(KearchRequester, self).__init__()
         self.host = host
         self.port = port
         self.conn_type = conn_type
         self.requester_name = requester_name
+
+    def __repr__(self):
+        return '<KearchRequester host: %r, port: %r, conn_type: %r>'.\
+            format(self.host, self.port, self.conn_type)
 
     def request(self, path='', method='GET',
                 params=None, payload=None,
@@ -36,7 +42,7 @@ class KearchRequester(object):
             url = urllib.parse.urljoin(self.host, path)
         else:
             url = urllib.parse.urljoin(
-                '{}:{}'.format(self.host, self.port), path)
+                'http://{}:{}'.format(self.host, self.port), path)
 
         if method == 'GET':
             # GET の場合は payload を url param にする
@@ -50,7 +56,7 @@ class KearchRequester(object):
             resp = requests.request(
                 method, url, params=params, json=data, timeout=timeout)
 
-        return resp
+        return resp.json()
 
     def request_sql(self, path='', method='GET',
                     params=None, payload=None,
@@ -58,7 +64,6 @@ class KearchRequester(object):
 
         parsed = urllib.parse.urlparse(path)
         parsed_path = parsed.path
-        url_query = urllib.parse.parse_qs(parsed.query)
         config = {
             'host': self.host,
             'database': 'kearch_sp_dev',
@@ -84,29 +89,29 @@ class KearchRequester(object):
                 statement = """
                 REPLACE INTO `webpages`
                 (`url`, `title_words`, `summary`, `tfidf`)
-                VALUES (%s)
+                VALUES (%s, %s, %s, %s)
                 """
 
                 cur.executemany(statement, webpage_records)
                 db.commit()
                 ret = cur.rowcount
             elif parsed_path == '/get_next_urls':
-                max_urls = int(url_query['max_urls'])
+                max_urls = int(params['max_urls'])
                 select_statement = """
-                SELECT `url` FROM `url_queue` ORDER BY `updated_at` LIMIT %d
+                SELECT `url` FROM `url_queue` ORDER BY `updated_at` LIMIT %s
                 """
                 delete_statement = """
-                DELETE FROM `url_queue` ORDER BY `updated_at` LIMIT %d
+                DELETE FROM `url_queue` ORDER BY `updated_at` LIMIT %s
                 """
 
-                cur.execute(select_statement, max_urls)
+                cur.execute(select_statement, (max_urls,))
                 result_urls = [row[0] for row in cur.fetchall()]
                 ret = {
                     'urls': result_urls
                 }
-                cur.execute(delete_statement, max_urls)
+                cur.execute(delete_statement, (max_urls,))
                 db.commit()
-            elif parsed_path == '/push_links_to_queue':
+            elif parsed_path == '/push_urls_to_queue':
                 url_queue_records = [(url,) for url in payload['urls']]
                 statement = """
                 REPLACE INTO `url_queue` (`url`) VALUES (%s)

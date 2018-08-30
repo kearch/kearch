@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import json
 import math
-import webpage
-import nb_topic_detect
-import title_topic_detect
 import sys
 from collections import Counter
+
 import average_document
-import json
+import nb_topic_detect
+import title_topic_detect
+import webpage
 
 confidence_threshold = -1.0e-10
 n_outer_derives = 100
@@ -57,7 +58,7 @@ def url_to_webpage(url):
         return None
 
 
-def url_to_json_string(url):
+def url_to_json(url):
     print('Start download ', url, file=sys.stderr)
     web = url_to_webpage(url)
     print('End download ', url, file=sys.stderr)
@@ -72,9 +73,9 @@ def url_to_json_string(url):
         ret['inner_links'] = web.inner_links
         ret['outer_links'] = web.outer_links
         print('ret =', ret, file=sys.stderr)
-        return json.dumps(ret)
+        return ret
     else:
-        return "{}"
+        return {}
 
 
 if __name__ == '__main__':
@@ -84,5 +85,5 @@ if __name__ == '__main__':
     print(w.title_words)
     tfidf = web_to_tfidf(w)
     print(tfidf)
-    json_string = url_to_json_string('https://shedopen.deviantart.com/')
-    print(json_string)
+    url_json = url_to_json('https://shedopen.deviantart.com/')
+    print(url_json)

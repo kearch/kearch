@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kearch
+  name: sp-crawler-parent
+  labels:
+    engine: sp
+    app: crawler-parent
+spec:
+  selector:
+    matchLabels:
+      engine: sp
+      app: crawler-parent
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        engine: sp
+        app: crawler-parent
+    spec:
+      containers:
+      - image: kearch/sp-crawler-parent
+        name: sp-crawler-parent
+        ports:
+        - containerPort: 10080
+        imagePullPolicy: Never

@@ -1,14 +1,14 @@
-from kearch_common.requester import KearchRequester
-from concurrent.futures import ThreadPoolExecutor
-import time
 import sys
+import time
+from concurrent.futures import ThreadPoolExecutor
 
+from kearch_common.requester import KearchRequester
 
-CRAWLER_CHILD_IP = '192.168.11.10'
+CRAWLER_CHILD_HOST = 'sp-crawler-child.kearch.svc.cluster.local'
 CRAWLER_CHILD_PORT = 10080
 
-DATABASE_IP = '192.168.11.11'
-DATABASE_PORT = 10080
+DATABASE_HOST = 'sp-db.kearch.svc.cluster.local'
+DATABASE_PORT = 3306
 
 NUM_THREAD = 5
 
@@ -21,14 +21,23 @@ DEBUG_UNIT_TEST = False
 
 
 def crawl_a_page(url):
+    print('crawling {} ...'.format(url))
+
     if DEBUG_UNIT_TEST:
-        ret = {'url': 'www.google.com', 'title_words': ['google', 'USA'], 'summary': 'Google is the biggest IT company.',
-               'tfidf': {'google': 1.0}, 'inner_links': ['www.facebook.com'], 'outer_links': []}
+        ret = {
+            'url': 'www.google.com',
+            'title_words': ['google', 'USA'],
+            'summary': 'Google is the biggest IT company.',
+            'tfidf': {'google': 1.0},
+            'inner_links': ['www.facebook.com'],
+            'outer_links': []}
         time.sleep(2)
         return ret
     else:
-        crawler_requester = KearchRequester(CRAWLER_CHILD_IP, CRAWLER_CHILD_PORT, REQUESTER_NAME)
-        ret = crawler_requester.request(path='/crawl_a_page', params={'url': url})
+        crawler_requester = KearchRequester(
+            CRAWLER_CHILD_HOST, CRAWLER_CHILD_PORT, REQUESTER_NAME)
+        ret = crawler_requester.request(
+            path='/crawl_a_page', params={'url': url})
         return ret
 
 
@@ -43,12 +52,14 @@ def get_next_urls_dummy(max_urls):
 
 
 if __name__ == '__main__':
-    database_requester = KearchRequester(DATABASE_IP, DATABASE_PORT, REQUESTER_NAME)
+    database_requester = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
 
     if DEBUG_UNIT_TEST:
         resp = get_next_urls_dummy(MAX_URLS)
     else:
-        resp = database_requester.request(path='/get_next_urls', params={'max_urls': MAX_URLS})
+        resp = database_requester.request(
+            path='/get_next_urls', params={'max_urls': MAX_URLS})
     urls_in_queue = resp['urls']
     urls_to_push = list()
     data_to_push = list()
@@ -59,25 +70,31 @@ if __name__ == '__main__':
 
         if len(urls_in_queue) == 0:
             if DEBUG_UNIT_TEST:
-                # DEBUG CODE: Following lines are for debug. They are codes for unit test.
+                # DEBUG CODE: Following lines are for debug.
+                # They are codes for unit test.
                 resp = get_next_urls_dummy(MAX_URLS)
                 urls_in_queue = resp['urls']
             else:
                 # push data to database
-                database_requester.request(path='/push_urls_to_queue', method='POST', payload={'urls': urls_to_push})
-                database_requester.request(path='/push_webpage_to_database', method='POST', payload={'data': data_to_push})
+                resp = database_requester.request(
+                    path='/push_urls_to_queue', method='POST',
+                    payload={'urls': urls_to_push})
+                resp = database_requester.request(
+                    path='/push_webpage_to_database', method='POST',
+                    payload={'data': data_to_push})
 
                 # fetch urls from database
-                resp = database_requester.request(path='/get_next_urls', params={'max_urls': MAX_URLS})
+                resp = database_requester.request(
+                    path='/get_next_urls', params={'max_urls': MAX_URLS})
                 urls_in_queue = resp['urls']
 
         with ThreadPoolExecutor(max_workers=NUM_THREAD) as executor:
-            results = executor.map(crawl_a_page, list(urls_in_queue[:NUM_THREAD]))
-        results = filter((lambda x: x == {}), results)
-
+            results = executor.map(
+                crawl_a_page, list(urls_in_queue[:NUM_THREAD]))
+        results = list(filter(lambda x: x != {}, results))
         for r in results:
-            urls_to_push.extend(r.inner_links)
-            urls_to_push.extend(r.outer_links)
+            urls_to_push.extend(r['inner_links'])
+            urls_to_push.extend(r['outer_links'])
         for r in results:
             d = r
             del d['inner_links']
@@ -85,3 +102,4 @@ if __name__ == '__main__':
             data_to_push.append(d)
 
         urls_in_queue = urls_in_queue[NUM_THREAD:]
+        time.sleep(2)

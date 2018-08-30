@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from bs4 import BeautifulSoup
-import requests
-import re
-from urllib.parse import urlparse
-import langdetect
-import nltk
-from nltk.corpus import stopwords
 import hashlib
 import os
 import pickle
+import re
+from urllib.parse import urlparse
+
+import langdetect
+import nltk
+import requests
 import urllib3
+from bs4 import BeautifulSoup
+from nltk.corpus import stopwords
 
 
 class WebpageError(Exception):
