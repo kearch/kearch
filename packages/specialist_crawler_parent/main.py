@@ -52,8 +52,6 @@ def get_next_urls_dummy(max_urls):
 
 
 if __name__ == '__main__':
-    print('started specialist_crawler_parent')
-
     database_requester = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
 
@@ -78,16 +76,12 @@ if __name__ == '__main__':
                 urls_in_queue = resp['urls']
             else:
                 # push data to database
-                print('urls_to_push', urls_to_push)
                 resp = database_requester.request(
                     path='/push_urls_to_queue', method='POST',
                     payload={'urls': urls_to_push})
-                print('resp', resp)
-                print('data_to_push', data_to_push)
                 resp = database_requester.request(
                     path='/push_webpage_to_database', method='POST',
                     payload={'data': data_to_push})
-                print('resp', resp)
 
                 # fetch urls from database
                 resp = database_requester.request(
@@ -98,13 +92,7 @@ if __name__ == '__main__':
             results = executor.map(
                 crawl_a_page, list(urls_in_queue[:NUM_THREAD]))
         results = list(filter(lambda x: x != {}, results))
-        print(results)
-
-        print('hello')
-        print(len(results))
         for r in results:
-            print('r.inner_links', r['inner_links'])
-            print('r.outer_links', r['outer_links'])
             urls_to_push.extend(r['inner_links'])
             urls_to_push.extend(r['outer_links'])
         for r in results:
