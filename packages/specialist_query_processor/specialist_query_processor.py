@@ -39,7 +39,10 @@ def retrieve(queries, max_urls):
     ret = {'data': []}
     for r in results['data']:
         # If Flask cannnot convert data to correct format, I must convert them by hand.
-        d = {'url': r['url'], 'title_words': r['title_words'],
-             'summary': r['summary'], 'score': calculate_score(queries, r)}
+        d = {'url': r['url'],
+             'title': r['title'],
+             'title_words': r['title_words'],
+             'summary': r['summary'],
+             'score': calculate_score(queries, r)}
         ret['data'].append(d)
     return ret
