@@ -3,4 +3,4 @@ CREATE TABLE `sp_servers` (
   `ip` varchar(255) NOT NULL,
   `frequency` INTEGER DEFAULT 0,
   PRIMARY KEY(`word`)
-);
+) CHARACTER SET=utf8mb4;
