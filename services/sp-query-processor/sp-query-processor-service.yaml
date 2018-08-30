@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kearch
+  name: sp-query-processor
+spec:
+  type: NodePort
+  ports:
+  - port: 10080
+  selector:
+    engine: sp
+    app: query-processor
