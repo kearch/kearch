@@ -1,7 +1,7 @@
 from kearch_common.requester import KearchRequester
 
-DATABASE_IP = '192.168.11.11'
-DATABASE_PORT = 10080
+DATABASE_HOST = 'sp-db.kearch.svc.cluster.local'
+DATABASE_PORT = 3306
 
 REQUESTER_NAME = 'specialist_query_processor'
 TFIDF_COEFFICIENT = 1.0
@@ -14,7 +14,7 @@ def calculate_score(queries, result):
             overlap_title = True
     sum_tfidf = 0
     for w in queries:
-        sum_tfidf = sum_tfidf + float(result['tfidf'][w])
+        sum_tfidf = sum_tfidf + float(getattr(result['tfidf'], w, 0))
     ret = 0
     if overlap_title:
         ret = 1
@@ -28,11 +28,11 @@ test_results = {'data': [{'url': 'www.google.com', 'title_words': ['facebook', '
 
 def retrieve(queries, max_urls):
     database_requester = KearchRequester(
-        DATABASE_IP, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
 
     results = database_requester.request(
         path='/retrieve_webpages',
-        payload={'queries': queries, 'max_urls': max_urls})
+        params={'queries': queries, 'max_urls': max_urls})
     # Debug Code: Uncomment a following line when you want this module standalone.
     # results = test_results
 
