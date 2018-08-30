@@ -43,3 +43,65 @@ kubectl exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev <
 ```
 
 `me-db` service can be resolved as `me-db.kearch.svc.cluster.local` .
+
+
+
+# Meta DB
+## Add new sp server to meta DB
+This API is accessed using KearchRequester.   
+So the acutual JSON is wrapped by KearchRequester.
+Access URL (POST)
+```
+$(ip address of meta DB)/add_new_sp_server
+```
+Given JSON Example
+```
+{
+    'ip':'10.229.55.110',
+    'summary':{
+        'google':100,
+        'facebook':20,
+        'yahoo':120
+    }
+}
+```
+Structure of JSON
+```
+{
+    'ip':ip adress of the sp server,
+    'database_dump':{
+        word1:the number of documents containing word1,
+        word2:the number of documents containing word2,
+        word3:the number of documents containing word3
+    }
+}
+```
+# Meta Gateway
+## Add Information about Specialist Server to meta database
+Access URL (POST)
+```
+$(ip adress of meta query processor)/add_sp_server
+```
+Posted JSON Example
+```
+{
+    'ip':'10.229.55.110',
+    'port':10022,
+    'database_dump':{
+        'google':100,
+        'facebook':20,
+        'yahoo':120
+    }
+}
+```
+Structure of JSON
+```
+{
+    'ip':ip adress of the sp server,
+    'database_dump':{
+        word1:the number of documents containing word1,
+        word2:the number of documents containing word2,
+        word3:the number of documents containing word3
+    }
+}
+```
