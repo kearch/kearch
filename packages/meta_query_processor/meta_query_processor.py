@@ -35,7 +35,6 @@ def get_sp_host_from_database(queries, max_urls):
         ret = dict()
         for q in queries:
             d = dict()
-            d['192.168.99.100'] = 200
             d['sp-query-processor.kearch.svc.cluster.local'] = 100
             ret[q] = d
         return ret
@@ -53,8 +52,7 @@ def get_result_from_sp(sp_host, queries, max_urls):
         # ret = sp_requester.request(
         #     path='/retrieve', params={'sp_host': sp_host, 'queries': queries,
         #                               max_urls: max_urls})
-        sp_requester = KearchRequester(sp_host, 32549, REQUESTER_NAME)
-        # sp_requester = KearchRequester(sp_host, 10080, REQUESTER_NAME)
+        sp_requester = KearchRequester(sp_host, 10080, REQUESTER_NAME)
         ret = sp_requester.request(
             path='/retrieve',
             params={'queries': ' '.join(queries), 'max_urls': max_urls})
