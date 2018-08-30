@@ -1,5 +1,4 @@
 from kearch_common.requester import KearchRequester
-from kearch_common.data_format import get_payload
 
 DATABASE_IP = '192.168.11.11'
 DATABASE_PORT = 10080
@@ -29,11 +28,11 @@ test_results = {'data': [{'url': 'www.google.com', 'title_words': ['facebook', '
 
 def retrieve(queries, max_urls):
     database_requester = KearchRequester(
-        DATABASE_IP, DATABASE_PORT, REQUESTER_NAME)
+        DATABASE_IP, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
 
-    response = database_requester.request(
-        path='/retrieve', method='GET', payload={'queries': queries, 'max_urls': max_urls})
-    results = get_payload(response)
+    results = database_requester.request(
+        path='/retrieve_webpages',
+        payload={'queries': queries, 'max_urls': max_urls})
     # Debug Code: Uncomment a following line when you want this module standalone.
     # results = test_results
 
