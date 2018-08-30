@@ -27,19 +27,24 @@ def get_sp_ip_from_database(queries, max_urls):
             ret[q] = d
         return ret
     else:
-        database_requester = KearchRequester(DATABASE_IP, DATABASE_PORT, REQUESTER_NAME)
-        ret = database_requester.request(path='/retrieve', params={'queries': queries, max_urls: max_urls})
+        database_requester = KearchRequester(
+            DATABASE_IP, DATABASE_PORT, REQUESTER_NAME)
+        ret = database_requester.request(
+            path='/retrieve', params={'queries': queries, max_urls: max_urls})
         return ret
 
 
 def get_result_from_sp(sp_ip, queries, max_urls):
     if DEBUG_UNIT_TEST:
         ret = dict()
-        ret['data'] = [{'url': 'www.google.com', 'title_words': ['google', 'usa'], 'title': 'google_in_usa', 'summary':'google is strong', 'score':11.0}]
+        ret['data'] = [{'url': 'www.google.com', 'title_words': [
+            'google', 'usa'], 'title': 'google_in_usa', 'summary':'google is strong', 'score':11.0}]
         return ret
     else:
-        sp_requester = KearchRequester(COMMUNICATOR_IP, COMMUNICATOR_PORT, REQUESTER_NAME)
-        ret = sp_requester.request(path='/retrieve', params={'sp_ip': sp_ip, 'queries': queries, max_urls: max_urls})
+        sp_requester = KearchRequester(
+            COMMUNICATOR_IP, COMMUNICATOR_PORT, REQUESTER_NAME)
+        ret = sp_requester.request(
+            path='/retrieve', params={'sp_ip': sp_ip, 'queries': queries, max_urls: max_urls})
         return ret
 
 
@@ -53,7 +58,8 @@ def retrieve(queries, max_urls):
             else:
                 ip_to_score[ip] = freq
     if len(ip_to_score) == 0:
-        raise MeQueryProcessorException('No specialist server in this meta database.')
+        raise MeQueryProcessorException(
+            'No specialist server in this meta database.')
 
     ip_to_score_list = list(ip_to_score.items())
     ip_to_score_list.sort(key=lambda x: x[1], reverse=True)

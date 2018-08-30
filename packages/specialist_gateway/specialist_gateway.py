@@ -10,9 +10,12 @@ QUERY_PROCESSOR_IP = '192.168.11.05'
 QUERY_PROCESSOR_PORT = 10080
 REQUESTER_NAME = 'specialist_gateway'
 
+
 def retrieve(queries, max_urls):
-    kr = KearchRequester(QUERY_PROCESSOR_IP, QUERY_PROCESSOR_PORT, REQUESTER_NAME)
-    response = kr.request(path='/retrieve', method='GET', payload={'queries': queries, 'max_urls': MAX_URLS})
+    kr = KearchRequester(QUERY_PROCESSOR_IP,
+                         QUERY_PROCESSOR_PORT, REQUESTER_NAME)
+    response = kr.request(path='/retrieve', method='GET',
+                          payload={'queries': queries, 'max_urls': MAX_URLS})
     results = get_payload(response)
     return results
 

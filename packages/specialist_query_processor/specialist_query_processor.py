@@ -28,9 +28,11 @@ test_results = {'data': [{'url': 'www.google.com', 'title_words': ['facebook', '
 
 
 def retrieve(queries, max_urls):
-    database_requester = KearchRequester(DATABASE_IP, DATABASE_PORT, REQUESTER_NAME)
+    database_requester = KearchRequester(
+        DATABASE_IP, DATABASE_PORT, REQUESTER_NAME)
 
-    response = database_requester.request(path='/retrieve', method='GET', payload={'queries': queries, 'max_urls': max_urls})
+    response = database_requester.request(
+        path='/retrieve', method='GET', payload={'queries': queries, 'max_urls': max_urls})
     results = get_payload(response)
     # Debug Code: Uncomment a following line when you want this module standalone.
     # results = test_results
@@ -38,6 +40,7 @@ def retrieve(queries, max_urls):
     ret = {'data': []}
     for r in results['data']:
         # If Flask cannnot convert data to correct format, I must convert them by hand.
-        d = {'url': r['url'], 'title_words': r['title_words'], 'summary': r['summary'], 'score': calculate_score(queries, r)}
+        d = {'url': r['url'], 'title_words': r['title_words'],
+             'summary': r['summary'], 'score': calculate_score(queries, r)}
         ret['data'].append(d)
     return ret

@@ -16,8 +16,10 @@ def search():
     if flask.request.method == 'GET':
         query = flask.request.args['query']
         queries = query.split()
-        query_processor_requester = KearchRequester(QUERY_PROCESSOR_IP, QUERY_PROCESSOR_PORT, REQUESTER_NAME)
-        response = query_processor_requester.request(path='/retrieve', method='GET', payload={'queries': queries, 'max_urls': MAX_URLS})
+        query_processor_requester = KearchRequester(
+            QUERY_PROCESSOR_IP, QUERY_PROCESSOR_PORT, REQUESTER_NAME)
+        response = query_processor_requester.request(
+            path='/retrieve', method='GET', payload={'queries': queries, 'max_urls': MAX_URLS})
         results = get_payload(response)
         return flask.render_template('result.html', results=results['data'], query=query)
     else:
