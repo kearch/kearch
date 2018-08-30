@@ -98,14 +98,15 @@ class KearchRequester(object):
             if parsed_path == '/push_webpage_to_database':
                 # get webpage records from payload
                 webpage_records = [(w['url'],
+                                    w['title'],
                                     json.dumps(w['title_words']),
                                     w['summary'],
                                     json.dumps(w['tfidf']))
                                    for w in payload['data']]
                 statement = """
                 REPLACE INTO `webpages`
-                (`url`, `title_words`, `summary`, `tfidf`)
-                VALUES (%s, %s, %s, %s)
+                (`url`, `title`, `title_words`, `summary`, `tfidf`)
+                VALUES (%s, %s, %s, %s, %s)
                 """
 
                 cur.executemany(statement, webpage_records)
@@ -140,8 +141,6 @@ class KearchRequester(object):
                 queries = params['queries']
                 max_urls = int(params['max_urls'])
 
-                print(queries, max_urls)
-
                 select_statement = """
                 SELECT
                     `url`, `title`, `title_words`, `summary`, `tfidf`,
@@ -153,8 +152,6 @@ class KearchRequester(object):
                 """.format(get_has_overlap_statement(queries),
                            get_tfidf_sum_statement(queries))
 
-                print(select_statement)
-
                 cur.execute(select_statement, (max_urls,))
                 result_webpages = [{
                     'url': row[0],
@@ -163,8 +160,6 @@ class KearchRequester(object):
                     'summary': row[3],
                     'tfidf': json.loads(row[4])
                 } for row in cur.fetchall()]
-
-                print(result_webpages)
 
                 ret = {
                     'data': result_webpages

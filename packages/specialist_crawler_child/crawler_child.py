@@ -67,6 +67,7 @@ def url_to_json(url):
     if web is not None:
         ret = dict()
         ret['url'] = url
+        ret['title'] = web.title
         ret['title_words'] = web.title_words
         ret['summary'] = web.summary
         ret['tfidf'] = web_to_tfidf(web)
