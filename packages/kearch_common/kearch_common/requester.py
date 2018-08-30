@@ -137,7 +137,7 @@ class KearchRequester(object):
                 db.commit()
                 ret = cur.rowcount
             elif parsed_path == '/retrieve_webpages':
-                queries = params['queries'].split('+')
+                queries = params['queries']
                 max_urls = int(params['max_urls'])
 
                 print(queries, max_urls)
@@ -150,7 +150,7 @@ class KearchRequester(object):
                 FROM `webpages`
                 ORDER BY has_overwrap DESC, tfidf_sum DESC
                 LIMIT %s;
-                """.fotmat(get_has_overlap_statement(queries),
+                """.format(get_has_overlap_statement(queries),
                            get_tfidf_sum_statement(queries))
 
                 print(select_statement)

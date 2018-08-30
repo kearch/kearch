@@ -2,6 +2,8 @@
 # $(ip adress of specialist_query_processor)/retrieve?queries=google+facebook&max_urls=100
 
 import flask
+from flask import jsonify
+
 import specialist_query_processor
 
 app = flask.Flask(__name__)
@@ -13,7 +15,7 @@ def post():
     queries = queries.split(' ')
     max_urls = flask.request.args.get('max_urls', int)
     result = specialist_query_processor.retrieve(queries, max_urls)
-    return flask.render_template('result.html', result=result)
+    return jsonify(result)
 
 
 if __name__ == '__main__':
