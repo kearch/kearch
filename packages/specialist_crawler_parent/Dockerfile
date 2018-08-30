@@ -2,6 +2,7 @@ FROM python:3.6
 
 # Install kearch_common
 RUN git clone https://github.com/kearch/kearch
+RUN cd /kearch && git checkout feature/connect-proto
 RUN cd /kearch/packages/kearch_common && pip install -e .
 
 COPY . /kearch/packages/specialist_crawler_parent
