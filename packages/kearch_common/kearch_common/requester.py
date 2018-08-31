@@ -7,6 +7,22 @@ import requests
 from kearch_common.data_format import wrap_json
 
 
+def get_has_overlap_statement(queries):
+    # TODO(gky360): escape words
+    json_contains_funcs = map(
+        lambda w: 'JSON_CONTAINS(`title_words`, \'"{}"\')'.format(w),
+        queries)
+    return ' OR '.join(json_contains_funcs)
+
+
+def get_tfidf_sum_statement(queries):
+    # TODO(gky360): escape words
+    tfidfs = map(
+        lambda w: '`tfidf`->>\'$.{}\''.format(w),
+        queries)
+    return ' + '.join(tfidfs)
+
+
 class KearchRequester(object):
     """Interface for communicating between containers or servers."""
 
@@ -82,14 +98,15 @@ class KearchRequester(object):
             if parsed_path == '/push_webpage_to_database':
                 # get webpage records from payload
                 webpage_records = [(w['url'],
+                                    w['title'],
                                     json.dumps(w['title_words']),
                                     w['summary'],
                                     json.dumps(w['tfidf']))
                                    for w in payload['data']]
                 statement = """
                 REPLACE INTO `webpages`
-                (`url`, `title_words`, `summary`, `tfidf`)
-                VALUES (%s, %s, %s, %s)
+                (`url`, `title`, `title_words`, `summary`, `tfidf`)
+                VALUES (%s, %s, %s, %s, %s)
                 """
 
                 cur.executemany(statement, webpage_records)
@@ -120,6 +137,33 @@ class KearchRequester(object):
                 cur.executemany(statement, url_queue_records)
                 db.commit()
                 ret = cur.rowcount
+            elif parsed_path == '/retrieve_webpages':
+                queries = params['queries']
+                max_urls = int(params['max_urls'])
+
+                select_statement = """
+                SELECT
+                    `url`, `title`, `title_words`, `summary`, `tfidf`,
+                    ({}) AS has_overwrap,
+                    ({}) AS tfidf_sum
+                FROM `webpages`
+                ORDER BY has_overwrap DESC, tfidf_sum DESC
+                LIMIT %s;
+                """.format(get_has_overlap_statement(queries),
+                           get_tfidf_sum_statement(queries))
+
+                cur.execute(select_statement, (max_urls,))
+                result_webpages = [{
+                    'url': row[0],
+                    'title': row[1],
+                    'title_words': json.loads(row[2]),
+                    'summary': row[3],
+                    'tfidf': json.loads(row[4])
+                } for row in cur.fetchall()]
+
+                ret = {
+                    'data': result_webpages
+                }
             else:
                 raise ValueError('Invalid path: {}'.format(path))
         except Exception as e:

@@ -1,8 +1,9 @@
 import flask
-from kearch_common.requester import KearchRequester
-from kearch_common.data_format import get_payload
 
-QUERY_PROCESSOR_IP = '192.168.11.05'
+from kearch_common.data_format import get_payload
+from kearch_common.requester import KearchRequester
+
+QUERY_PROCESSOR_HOST = 'me-query-processor.kearch.svc.cluster.local'
 QUERY_PROCESSOR_PORT = 10080
 REQUESTER_NAME = 'meta_front'
 MAX_URLS = 100
@@ -16,10 +17,16 @@ def search():
     if flask.request.method == 'GET':
         query = flask.request.args['query']
         queries = query.split()
-        query_processor_requester = KearchRequester(QUERY_PROCESSOR_IP, QUERY_PROCESSOR_PORT, REQUESTER_NAME)
-        response = query_processor_requester.request(path='/retrieve', method='GET', payload={'queries': queries, 'max_urls': MAX_URLS})
-        results = get_payload(response)
-        return flask.render_template('result.html', results=results['data'], query=query)
+        query_processor_requester = KearchRequester(
+            QUERY_PROCESSOR_HOST, QUERY_PROCESSOR_PORT, REQUESTER_NAME)
+        results = query_processor_requester.request(
+            path='/retrieve', method='GET',
+            params={'queries': ' '.join(queries), 'max_urls': MAX_URLS})
+
+        print('results', results)
+
+        return flask.render_template(
+            'result.html', results=results['data'], query=query)
     else:
         return flask.redirect(flask.url_for('index.html'))
 

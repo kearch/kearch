@@ -98,7 +98,7 @@ if __name__ == '__main__':
             sc_labels.append(IN_TOPIC)
         p = mult.Pool(mult.cpu_count())
         texts = p.map(
-                url_to_title_words, random_urls[:n_urls])
+            url_to_title_words, random_urls[:n_urls])
         p.close()
         texts = list(filter(lambda x: not x == [], texts))
         bows = [dictionary.doc2bow(text) for text in texts]
@@ -113,7 +113,8 @@ if __name__ == '__main__':
         print("Classifier making finish", file=sys.stderr)
 
     else:
-        dictionary = corpora.Dictionary.load_from_text(cache_file_dir + 'gensim_title.dict')
+        dictionary = corpora.Dictionary.load_from_text(
+            cache_file_dir + 'gensim_title.dict')
         with open(cache_file_dir + 'clf_title.pickle', 'rb') as f:
             clf = pickle.load(f)
 

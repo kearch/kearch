@@ -3,4 +3,4 @@ CREATE TABLE `url_queue` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY(`url`)
-)
+) CHARACTER SET=utf8mb4;

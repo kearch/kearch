@@ -17,7 +17,8 @@ OUT_OF_TOPIC = 1
 
 class TopicClassifier(object):
     def __init__(self):
-        self.dictionary = corpora.Dictionary.load_from_text('nb_topic_detect_cache/gensim.dict')
+        self.dictionary = corpora.Dictionary.load_from_text(
+            'nb_topic_detect_cache/gensim.dict')
         with open('nb_topic_detect_cache/clf.pickle', 'rb') as f:
             self.clf = pickle.load(f)
 
