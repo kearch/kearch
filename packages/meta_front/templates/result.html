@@ -83,18 +83,18 @@ p { margin: 0; }
             <button class="button">retrieve</button>
         </form>
         <ul id="list" class="nomark">
-            {% for r in results %}
+            {% for w in results %}
             <li>
                 <div class="entry">
-                    <div class="title"><a href="{{ r[0] }}">{{ r[1] }}</a></div>
-                    <div class="url"><p>{{ r[0] }}</p></div>
-                    <div class="summary"><p>{{ r[2] }}</p></div>
-                    <p>{{ r[3] }}</p>
+                    <div class="title"><a href="{{ w['url'] }}">{{ w['title'] }}</a></div>
+                    <div class="url"><p>{{ w['url'] }}</p></div>
+                    <div class="summary"><p>{{ w['summary'] }}</p></div>
+                    <p>{{ w['tfidf'] }}</p>
                 </div>
             </li>
             {% endfor %}
         </ul>
-        <script> 
+        <script>
             $("#list").each(function(){
                 $(this).find("li:gt(10)").each(function(){$(this).hide();});
                 $(this).append('<p class="more">&raquo; More</p>');

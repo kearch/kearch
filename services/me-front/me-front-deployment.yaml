@@ -23,5 +23,5 @@ spec:
       - image: kearch/me-front
         name: me-front
         ports:
-        - containerPort: 10080
+        - containerPort: 2222
         imagePullPolicy: Never

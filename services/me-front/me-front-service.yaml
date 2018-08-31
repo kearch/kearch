@@ -6,7 +6,7 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - port: 10080
+  - port: 2222
   selector:
     engine: me
     app: front
