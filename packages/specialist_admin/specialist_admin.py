@@ -6,16 +6,16 @@ DATABASE_PORT = 10080
 GATEWAY_HOST = '192.168.11.30'
 GATEWAY_PORT = 10080
 
-SPECIALIST_GLOBAL_IP = '177.18.0.13'
+SPECIALIST_GLOBAL_HOST = '177.18.0.13'
 
 REQUESTER_NAME = 'specialist_admin'
 
 
-def send_db_summary(meta_ip):
+def send_db_summary(me_host):
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
     summary = db_req.request(path='/dump_database')
-    pld = {'ip_sp': SPECIALIST_GLOBAL_IP, 'ip_me': meta_ip, 'summary': summary}
+    pld = {'ip_sp': SPECIALIST_GLOBAL_HOST, 'ip_me': me_host, 'summary': summary}
 
     gw_req = KearchRequester(
         GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)

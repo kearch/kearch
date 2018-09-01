@@ -7,8 +7,8 @@ app = flask.Flask(__name__)
 
 @app.route('/send_db_summary', methods=['GET'])
 def send_db_summary():
-    meta_ip = flask.request.args.get('meta_ip')
-    specialist_admin.send_db_summary(meta_ip)
+    me_host = flask.request.args.get('me_host')
+    specialist_admin.send_db_summary(me_host)
 
 
 @app.route('/init_crawl_urls', methods=['POST'])
