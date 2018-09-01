@@ -1,5 +1,4 @@
 import flask
-from kearch_common.data_format import unwrap_json
 import specialist_admin
 
 SP_ADMIN_PORT = 10080
@@ -14,8 +13,13 @@ def send_db_summary():
 
 @app.route('/init_crawl_urls', methods=['POST'])
 def init_crawl_urls():
-    inp = flask.request.form['urls']
-    specialist_admin.init_crawl_urls(inp)
+    form_input = flask.request.form['urls']
+    specialist_admin.init_crawl_urls(form_input)
+
+
+@app.route("/")
+def index():
+    return flask.render_template('index.html')
 
 
 if __name__ == '__main__':

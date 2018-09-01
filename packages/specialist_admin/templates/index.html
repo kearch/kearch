@@ -1,0 +1,20 @@
+<html>
+    <head>
+    </head>
+    <div class="center">
+        <body>
+            <p>URLs to crawl separated by newlines</p>
+            <form action="/init_crawl_urls" method="post">
+                URLs↓<br/>
+                <textarea name="urls" cols="50" rows="5"></textarea>
+                <br/>
+                <button class="button">init crawl urls</button>
+            </form>
+            <p>Send DB summary</p>
+            <form action="/send_db_summary" method="GET">
+                meta_ip : <textarea name="meta_ip" cols="50" rows="1"></textarea>
+                <button type="submit">send db summary</button>
+            </form>
+        </body>
+    </div>
+</html>
