@@ -19,7 +19,8 @@ def send_db_summary(me_host):
 
     gw_req = KearchRequester(
         GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
-    gw_req.request(path='/send_DB_summary', payload=pld, method='POST')
+    ret = gw_req.request(path='/send_DB_summary', payload=pld, method='POST')
+    return ret
 
 
 # inputs is just text contains URLs separated by newline.
@@ -30,4 +31,5 @@ def init_crawl_urls(form_input):
 
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
-    db_req.request(path='/push_links_to_queue', payload=json, method='POST')
+    ret = db_req.request(path='/push_links_to_queue', payload=json, method='POST')
+    return ret
