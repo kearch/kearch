@@ -1,6 +1,7 @@
 import flask
-import specialist_gateway
+from flask import jsonify
 
+import specialist_gateway
 
 SPECIALIST_GATE_PORT = 10080
 app = flask.Flask(__name__)
@@ -12,7 +13,8 @@ def send_DB_summary():
     ip_sp = data['ip_sp']
     ip_me = data['ip_me']
     summary = data['summary']
-    specialist_gateway.send_DB_summary(ip_sp, ip_me, summary)
+    result = specialist_gateway.send_DB_summary(ip_sp, ip_me, summary)
+    return jsonify(result)
 
 
 @app.route('/retrieve', methods=['GET'])
@@ -21,7 +23,7 @@ def retrieve():
     queries = queries.split(' ')
     max_urls = flask.request.args.get('max_urls', int)
     result = specialist_gateway.retrieve(queries, max_urls)
-    return flask.render_template('result.html', result=result)
+    return jsonify(result)
 
 
 if __name__ == '__main__':
