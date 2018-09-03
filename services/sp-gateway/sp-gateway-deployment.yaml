@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kearch
+  name: sp-gateway
+  labels:
+    engine: sp
+    app: gateway
+spec:
+  selector:
+    matchLabels:
+      engine: sp
+      app: gateway
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        engine: sp
+        app: gateway
+    spec:
+      containers:
+      - image: kearch/sp-gateway
+        name: sp-gateway
+        ports:
+        - containerPort: 10080
+        imagePullPolicy: Never
