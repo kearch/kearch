@@ -12,4 +12,4 @@ WORKDIR /kearch/packages/meta_gateway
 # COPY ./flask_main.py ./flask_main.py
 # COPY ./templates ./templates
 # CMD python3 flask_main.py
-CMD ["python", "-u", "kearch/packages/meta_gateway/flask_main.py"]
+CMD ["python", "-u", "flask_main.py"]
