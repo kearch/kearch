@@ -10,10 +10,10 @@ app = flask.Flask(__name__)
 @app.route('/send_DB_summary', methods=['POST'])
 def send_DB_summary():
     data = flask.request.args.get('payload')
-    ip_sp = data['ip_sp']
-    ip_me = data['ip_me']
+    sp_host = data['sp_host']
+    me_host = data['me_host']
     summary = data['summary']
-    result = specialist_gateway.send_DB_summary(ip_sp, ip_me, summary)
+    result = specialist_gateway.send_DB_summary(sp_host, me_host, summary)
     return jsonify(result)
 
 

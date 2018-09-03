@@ -1,7 +1,5 @@
 import urllib
 
-import requests
-
 from kearch_common.data_format import get_payload
 from kearch_common.requester import KearchRequester
 
@@ -16,7 +14,7 @@ def retrieve(queries, max_urls):
     kr = KearchRequester(QUERY_PROCESSOR_HOST,
                          QUERY_PROCESSOR_PORT, REQUESTER_NAME)
     results = kr.request(path='/retrieve', method='GET',
-                         payload={'queries': queries, 'max_urls': max_urls})
+                         params={'queries': ' '.join(queries), 'max_urls': max_urls})
     return results
 
 
