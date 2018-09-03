@@ -1,4 +1,6 @@
 # specialist crawler child
+If you want to chenge the topic of crawler, please change Dockerfile.
+For example, replace all `computer_science_url_list_short` to `kyoto_url_list`.
 ## Setup
 ```
 pip install -r requirements.txt
