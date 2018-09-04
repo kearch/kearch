@@ -1,8 +1,5 @@
 FROM python:3.6
 
-COPY . /kearch/packages/specialist_crawler_child
-WORKDIR /kearch/packages/specialist_crawler_child
-
 # These lines are for debug. Use when you want local files.
 # COPY ./requirements.txt ./requirements.txt
 # COPY ./computer_science_url_list_short ./computer_science_url_list
@@ -23,6 +20,9 @@ WORKDIR /kearch/packages/specialist_crawler_child
 RUN pip install -r requirements.txt
 RUN python -c "import nltk; nltk.download('punkt')"
 RUN python -c "import nltk; nltk.download('stopwords')"
+
+COPY . /kearch/packages/specialist_crawler_child
+WORKDIR /kearch/packages/specialist_crawler_child
 
 # This process take a few minutes because it downloads many webpages
 RUN python average_document.py random_url_list_short
