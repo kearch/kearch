@@ -80,9 +80,14 @@ class KearchRequester(object):
 
         parsed = urllib.parse.urlparse(path)
         parsed_path = parsed.path
+        db_name = ''
+        if parsed_path in ['/add_new_sp_server']:
+            db_name = 'kearch_me_dev'
+        else:
+            db_name = 'kearch_sp_dev'
         config = {
             'host': self.host,
-            'database': 'kearch_sp_dev',
+            'database': db_name,
             'user': 'root',
             'password': 'password',
             'charset': 'utf8',
@@ -131,7 +136,7 @@ class KearchRequester(object):
             elif parsed_path == '/push_urls_to_queue':
                 url_queue_records = [(url,) for url in payload['urls']]
                 statement = """
-                REPLACE INTO `url_queue` (`url`) VALUES (%s)
+                REPLACE INTO `url_queue` (`url`) VALUES (%s);
                 """
 
                 cur.executemany(statement, url_queue_records)
@@ -163,6 +168,23 @@ class KearchRequester(object):
 
                 ret = {
                     'data': result_webpages
+                }
+            elif parsed_path == '/add_new_sp_server':
+                sp_host = payload['host']
+                summary = payload['summary']
+                sp_server_records = [(word, sp_host, frequency)
+                                     for word, frequency in summary.items()]
+
+                statement = """
+                REPLACE INTO `sp_servers` (`word`, `host`, `frequency`)
+                VALUES (%s, %s, %s);
+                """
+
+                cur.executemany(statement, sp_server_records)
+                db.commit()
+                ret = {
+                    'host': sp_host,
+                    'summary': summary,
                 }
             else:
                 raise ValueError('Invalid path: {}'.format(path))

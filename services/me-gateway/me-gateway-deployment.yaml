@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kearch
+  name: me-gateway
+  labels:
+    engine: me
+    app: gateway
+spec:
+  selector:
+    matchLabels:
+      engine: me
+      app: gateway
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        engine: me
+        app: gateway
+    spec:
+      containers:
+      - image: kearch/me-gateway
+        name: me-gateway
+        ports:
+        - containerPort: 10080
+        imagePullPolicy: Never

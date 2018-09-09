@@ -1,6 +1,3 @@
-import urllib
-
-from kearch_common.data_format import get_payload
 from kearch_common.requester import KearchRequester
 
 META_PORT = 10080
