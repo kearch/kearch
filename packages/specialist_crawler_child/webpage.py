@@ -72,6 +72,10 @@ class Webpage(object):
         self_loc = urlparse(self.url).netloc
         for link in self.links:
             link = urlparse(link)
+            # TEMPORAL SUPPORT FOR DATABASE LIMIT
+            if len(link) > 200:
+                continue
+
             if link.netloc == self_loc:
                 inner_links.append(link.scheme + '://' +
                                    link.netloc + link.path)
