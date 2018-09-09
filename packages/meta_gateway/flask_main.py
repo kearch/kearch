@@ -8,11 +8,11 @@ app = flask.Flask(__name__)
 
 
 @app.route('/add_new_sp_server', methods=['POST'])
-def send_DB_summary():
-    data = flask.request.args.get('payload')
-    ip_sp = data['ip']
+def add_new_sp_server():
+    data = flask.request.get_json()
+    sp_host = data['host']
     summary = data['summary']
-    result = meta_gateway.add_new_sp_server(ip_sp, summary)
+    result = meta_gateway.add_new_sp_server(sp_host, summary)
     return result
 
 
