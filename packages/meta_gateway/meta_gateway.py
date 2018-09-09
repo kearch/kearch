@@ -15,7 +15,8 @@ def retrieve(sp_host, queries, max_urls):
 
 
 def add_new_sp_server(sp_host, summary):
-    kr = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME)
-    result = kr.request(path='/add_new_sp_server', method='POST',
+    kr = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
+                         conn_type='sql')
+    result = kr.request(path='/add_new_sp_server',
                         payload={'host': sp_host, 'summary': summary})
     return result

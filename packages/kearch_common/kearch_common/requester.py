@@ -131,7 +131,7 @@ class KearchRequester(object):
             elif parsed_path == '/push_urls_to_queue':
                 url_queue_records = [(url,) for url in payload['urls']]
                 statement = """
-                REPLACE INTO `url_queue` (`url`) VALUES (%s)
+                REPLACE INTO `url_queue` (`url`) VALUES (%s);
                 """
 
                 cur.executemany(statement, url_queue_records)
@@ -164,6 +164,20 @@ class KearchRequester(object):
                 ret = {
                     'data': result_webpages
                 }
+            elif parsed_path == '/add_new_sp_server':
+                sp_host = payload['hosr']
+                summary = payload['summary']
+                sp_server_records = [(word, sp_host, frequency)
+                                     for word, frequency in summary.items()]
+
+                statement = """
+                REPLACE INTO `sp_servers` (`word`, `host`, `frequency`)
+                VALUES (%s, %s, %s);
+                """
+
+                cur.executemany(statement, sp_server_records)
+                db.commit()
+                ret = cur.rowcount
             else:
                 raise ValueError('Invalid path: {}'.format(path))
         except Exception as e:
