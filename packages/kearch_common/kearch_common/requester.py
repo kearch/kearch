@@ -80,9 +80,14 @@ class KearchRequester(object):
 
         parsed = urllib.parse.urlparse(path)
         parsed_path = parsed.path
+        db_name = ''
+        if parsed_path in ['/add_new_sp_server']:
+            db_name = 'kearch_me_dev'
+        else:
+            db_name = 'kearch_sp_dev'
         config = {
             'host': self.host,
-            'database': 'kearch_sp_dev',
+            'database': db_name,
             'user': 'root',
             'password': 'password',
             'charset': 'utf8',
@@ -165,7 +170,7 @@ class KearchRequester(object):
                     'data': result_webpages
                 }
             elif parsed_path == '/add_new_sp_server':
-                sp_host = payload['hosr']
+                sp_host = payload['host']
                 summary = payload['summary']
                 sp_server_records = [(word, sp_host, frequency)
                                      for word, frequency in summary.items()]
@@ -177,7 +182,10 @@ class KearchRequester(object):
 
                 cur.executemany(statement, sp_server_records)
                 db.commit()
-                ret = cur.rowcount
+                ret = {
+                    'host': sp_host,
+                    'summary': summary,
+                }
             else:
                 raise ValueError('Invalid path: {}'.format(path))
         except Exception as e:

@@ -13,7 +13,7 @@ def add_new_sp_server():
     sp_host = data['host']
     summary = data['summary']
     result = meta_gateway.add_new_sp_server(sp_host, summary)
-    return result
+    return jsonify(result)
 
 
 @app.route('/retrieve', methods=['GET'])
