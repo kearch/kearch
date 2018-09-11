@@ -1,3 +1,4 @@
+import sys
 from kearch_common.requester import KearchRequester
 
 DATABASE_HOST = 'me-db.kearch.svc.cluster.local'
@@ -60,8 +61,10 @@ def retrieve(queries, max_urls):
             else:
                 host_to_score[host] = freq
     if len(host_to_score) == 0:
-        raise MeQueryProcessorException(
-            'No specialist server in this meta database.')
+        sys.stderr.write("No specialist server in this meta database.\n")
+        return {
+            'data': []
+        }
 
     host_to_score_list = list(host_to_score.items())
     host_to_score_list.sort(key=lambda x: x[1], reverse=True)
