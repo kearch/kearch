@@ -27,16 +27,10 @@ def get_sp_host_from_database(queries, max_urls):
             ret[q] = d
         return ret
     else:
-        # database_requester = KearchRequester(
-        #     DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME)
-        # ret = database_requester.request(
-        #     path='/retrieve', params={'queries': queries, max_urls: max_urls})
-        # return ret
-        ret = dict()
-        for q in queries:
-            d = dict()
-            d['sp-query-processor.kearch.svc.cluster.local'] = 100
-            ret[q] = d
+        database_requester = KearchRequester(
+            DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type="sql")
+        ret = database_requester.request(
+            path='/retrieve_sp_servers', params={'queries': queries, max_urls: max_urls})
         return ret
 
 
@@ -62,6 +56,7 @@ def get_result_from_sp(sp_host, queries, max_urls):
 def retrieve(queries, max_urls):
     sp_data = get_sp_host_from_database(queries, max_urls)
     host_to_score = dict()
+    # TODO: score最大のhostを選ぶ処理は db 側でやるか python 側でやるか要検討
     for d in sp_data.values():
         for host, freq in d.items():
             if host in host_to_score:

@@ -169,6 +169,9 @@ class KearchRequester(object):
                 ret = {
                     'data': result_webpages
                 }
+            elif parsed_path == '/retrieve_sp_servers':
+                # TODO: 実装
+                pass
             elif parsed_path == '/add_new_sp_server':
                 sp_host = payload['host']
                 summary = payload['summary']
