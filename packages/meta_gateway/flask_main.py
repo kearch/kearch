@@ -21,8 +21,8 @@ def retrieve():
     queries = flask.request.args.get('queries')
     queries = queries.split(' ')
     max_urls = flask.request.args.get('max_urls', int)
-    ip_sp = flask.request.args.get('ip_sp')
-    results = meta_gateway.retrieve(ip_sp, queries, max_urls)
+    sp_host = flask.request.args.get('sp_host')
+    results = meta_gateway.retrieve(sp_host, queries, max_urls)
     return jsonify(results)
 
 

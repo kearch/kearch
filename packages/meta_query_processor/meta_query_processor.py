@@ -4,8 +4,8 @@ DATABASE_HOST = 'me-db.kearch.svc.cluster.local'
 DATABASE_PORT = 3306
 REQUESTER_NAME = 'meta_query_processor'
 
-GATEWAY_HOST = '192.168.11.11'
-SP_GATEWAY_PORT = 32500
+GATEWAY_HOST = 'me-gateway.kearch.svc.cluster.local'
+GATEWAY_PORT = 10080
 
 
 # When you change DEBUG_UNIT_TEST true, this program run unit test.
@@ -41,16 +41,11 @@ def get_result_from_sp(sp_host, queries, max_urls):
             'google', 'usa'], 'title': 'google_in_usa', 'summary':'google is strong', 'score':11.0}]
         return ret
     else:
-        # sp_requester = KearchRequester(
-        #     GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
-        # ret = sp_requester.request(
-        #     path='/retrieve', params={'sp_host': sp_host, 'queries': queries,
-        #                               max_urls: max_urls})
         sp_requester = KearchRequester(
-            sp_host, SP_GATEWAY_PORT, REQUESTER_NAME)
+            GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
         ret = sp_requester.request(
             path='/retrieve',
-            params={'queries': ' '.join(queries), 'max_urls': max_urls})
+            params={'sp_host': sp_host, 'queries': ' '.join(queries), 'max_urls': max_urls})
         return ret
 
 
