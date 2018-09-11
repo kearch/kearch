@@ -5,7 +5,7 @@ DATABASE_PORT = 3306
 REQUESTER_NAME = 'meta_query_processor'
 
 GATEWAY_HOST = '192.168.11.11'
-GATEWAY_PORT = '10080'
+SP_GATEWAY_PORT = 32500
 
 
 # When you change DEBUG_UNIT_TEST true, this program run unit test.
@@ -46,7 +46,8 @@ def get_result_from_sp(sp_host, queries, max_urls):
         # ret = sp_requester.request(
         #     path='/retrieve', params={'sp_host': sp_host, 'queries': queries,
         #                               max_urls: max_urls})
-        sp_requester = KearchRequester(sp_host, 10080, REQUESTER_NAME)
+        sp_requester = KearchRequester(
+            sp_host, SP_GATEWAY_PORT, REQUESTER_NAME)
         ret = sp_requester.request(
             path='/retrieve',
             params={'queries': ' '.join(queries), 'max_urls': max_urls})
