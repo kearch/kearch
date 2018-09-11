@@ -36,7 +36,7 @@ class KearchRequester(object):
         self.requester_name = requester_name
 
     def __repr__(self):
-        return '<KearchRequester host: {:r}, port: {:r}, conn_type: {:r}>'.\
+        return '<KearchRequester host: {}, port: {}, conn_type: {}>'.\
             format(self.host, self.port, self.conn_type)
 
     def request(self, path='', method='GET',
@@ -171,12 +171,14 @@ class KearchRequester(object):
                 }
             elif parsed_path == '/retrieve_sp_servers':
                 queries = params['queries']
+
+                format_strings = ','.join(['%s'] * len(queries))
                 statement = """
                 SELECT `word`, `host`, `frequency` FROM `sp_servers`
-                WHERE `word` IN %(l)s;
-                """
+                WHERE `word` IN ({:s});
+                """.format(format_strings)
 
-                cur.execute(statement, {'l': tuple(queries)})
+                cur.execute(statement, tuple(queries))
 
                 ret = {}
                 for row in cur.fetchall():
