@@ -36,7 +36,7 @@ class KearchRequester(object):
         self.requester_name = requester_name
 
     def __repr__(self):
-        return '<KearchRequester host: %r, port: %r, conn_type: %r>'.\
+        return '<KearchRequester host: {:r}, port: {:r}, conn_type: {:r}>'.\
             format(self.host, self.port, self.conn_type)
 
     def request(self, path='', method='GET',
@@ -81,7 +81,7 @@ class KearchRequester(object):
         parsed = urllib.parse.urlparse(path)
         parsed_path = parsed.path
         db_name = ''
-        if parsed_path in ['/add_new_sp_server']:
+        if parsed_path in ['/add_new_sp_server', '/retrieve_sp_servers']:
             db_name = 'kearch_me_dev'
         else:
             db_name = 'kearch_sp_dev'
@@ -170,8 +170,20 @@ class KearchRequester(object):
                     'data': result_webpages
                 }
             elif parsed_path == '/retrieve_sp_servers':
-                # TODO: 実装
-                pass
+                queries = params['queries']
+                statement = """
+                SELECT `word`, `host`, `frequency` FROM `sp_servers`
+                WHERE `word` IN %(l)s;
+                """
+
+                cur.execute(statement, {'l': tuple(queries)})
+
+                ret = {}
+                for row in cur.fetchall():
+                    word, host, freq = row[0], row[1], row[2]
+                    if not word in ret:
+                        ret[word] = {}
+                    ret[word][host] = freq
             elif parsed_path == '/add_new_sp_server':
                 sp_host = payload['host']
                 summary = payload['summary']
