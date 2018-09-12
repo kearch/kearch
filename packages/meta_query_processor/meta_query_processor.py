@@ -18,7 +18,7 @@ class MeQueryProcessorException(Exception):
         Exception.__init__(self, e)
 
 
-def get_sp_host_from_database(queries, max_urls):
+def get_sp_host_from_database(queries):
     if DEBUG_UNIT_TEST:
         ret = dict()
         for q in queries:
@@ -31,7 +31,7 @@ def get_sp_host_from_database(queries, max_urls):
         database_requester = KearchRequester(
             DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type="sql")
         ret = database_requester.request(
-            path='/retrieve_sp_servers', params={'queries': queries, max_urls: max_urls})
+            path='/retrieve_sp_servers', params={'queries': queries})
         return ret
 
 
@@ -51,7 +51,7 @@ def get_result_from_sp(sp_host, queries, max_urls):
 
 
 def retrieve(queries, max_urls):
-    sp_data = get_sp_host_from_database(queries, max_urls)
+    sp_data = get_sp_host_from_database(queries)
     host_to_score = dict()
     # TODO: score最大のhostを選ぶ処理は db 側でやるか python 側でやるか要検討
     for d in sp_data.values():
