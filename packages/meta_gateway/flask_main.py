@@ -1,5 +1,6 @@
 import flask
 from flask import jsonify
+from kearch_common.data_format import unwrap_json
 
 import meta_gateway
 
@@ -9,7 +10,7 @@ app = flask.Flask(__name__)
 
 @app.route('/add_new_sp_server', methods=['POST'])
 def add_new_sp_server():
-    data = flask.request.get_json()
+    data = unwrap_json(flask.request.get_json())
     sp_host = data['host']
     summary = data['summary']
     result = meta_gateway.add_new_sp_server(sp_host, summary)
@@ -21,8 +22,8 @@ def retrieve():
     queries = flask.request.args.get('queries')
     queries = queries.split(' ')
     max_urls = flask.request.args.get('max_urls', int)
-    ip_sp = flask.request.args.get('ip_sp')
-    results = meta_gateway.retrieve(ip_sp, queries, max_urls)
+    sp_host = flask.request.args.get('sp_host')
+    results = meta_gateway.retrieve(sp_host, queries, max_urls)
     return jsonify(results)
 
 

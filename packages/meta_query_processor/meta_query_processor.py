@@ -1,11 +1,12 @@
+import sys
 from kearch_common.requester import KearchRequester
 
 DATABASE_HOST = 'me-db.kearch.svc.cluster.local'
 DATABASE_PORT = 3306
 REQUESTER_NAME = 'meta_query_processor'
 
-GATEWAY_HOST = '192.168.11.11'
-GATEWAY_PORT = '10080'
+GATEWAY_HOST = 'me-gateway.kearch.svc.cluster.local'
+GATEWAY_PORT = 10080
 
 
 # When you change DEBUG_UNIT_TEST true, this program run unit test.
@@ -17,7 +18,7 @@ class MeQueryProcessorException(Exception):
         Exception.__init__(self, e)
 
 
-def get_sp_host_from_database(queries, max_urls):
+def get_sp_host_from_database(queries):
     if DEBUG_UNIT_TEST:
         ret = dict()
         for q in queries:
@@ -27,16 +28,10 @@ def get_sp_host_from_database(queries, max_urls):
             ret[q] = d
         return ret
     else:
-        # database_requester = KearchRequester(
-        #     DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME)
-        # ret = database_requester.request(
-        #     path='/retrieve', params={'queries': queries, max_urls: max_urls})
-        # return ret
-        ret = dict()
-        for q in queries:
-            d = dict()
-            d['sp-query-processor.kearch.svc.cluster.local'] = 100
-            ret[q] = d
+        database_requester = KearchRequester(
+            DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type="sql")
+        ret = database_requester.request(
+            path='/retrieve_sp_servers', params={'queries': queries})
         return ret
 
 
@@ -47,21 +42,18 @@ def get_result_from_sp(sp_host, queries, max_urls):
             'google', 'usa'], 'title': 'google_in_usa', 'summary':'google is strong', 'score':11.0}]
         return ret
     else:
-        # sp_requester = KearchRequester(
-        #     GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
-        # ret = sp_requester.request(
-        #     path='/retrieve', params={'sp_host': sp_host, 'queries': queries,
-        #                               max_urls: max_urls})
-        sp_requester = KearchRequester(sp_host, 10080, REQUESTER_NAME)
+        sp_requester = KearchRequester(
+            GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
         ret = sp_requester.request(
             path='/retrieve',
-            params={'queries': ' '.join(queries), 'max_urls': max_urls})
+            params={'sp_host': sp_host, 'queries': ' '.join(queries), 'max_urls': max_urls})
         return ret
 
 
 def retrieve(queries, max_urls):
-    sp_data = get_sp_host_from_database(queries, max_urls)
+    sp_data = get_sp_host_from_database(queries)
     host_to_score = dict()
+    # TODO: score最大のhostを選ぶ処理は db 側でやるか python 側でやるか要検討
     for d in sp_data.values():
         for host, freq in d.items():
             if host in host_to_score:
@@ -69,8 +61,10 @@ def retrieve(queries, max_urls):
             else:
                 host_to_score[host] = freq
     if len(host_to_score) == 0:
-        raise MeQueryProcessorException(
-            'No specialist server in this meta database.')
+        sys.stderr.write("No specialist server in this meta database.\n")
+        return {
+            'data': []
+        }
 
     host_to_score_list = list(host_to_score.items())
     host_to_score_list.sort(key=lambda x: x[1], reverse=True)

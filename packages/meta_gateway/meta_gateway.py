@@ -1,6 +1,6 @@
 from kearch_common.requester import KearchRequester
 
-SPECIALIST_GATEWAY_PORT = 10080
+SPECIALIST_GATEWAY_PORT = 32500
 
 DATABASE_HOST = 'me-db.kearch.svc.cluster.local'
 DATABASE_PORT = 10080

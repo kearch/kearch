@@ -9,7 +9,7 @@ app = flask.Flask(__name__)
 
 @app.route('/send_DB_summary', methods=['POST'])
 def send_DB_summary():
-    data = flask.request.args.get('payload')
+    data = flask.request.get_json()
     sp_host = data['sp_host']
     me_host = data['me_host']
     summary = data['summary']
