@@ -28,7 +28,7 @@ def dump_summary_form_sp_db(cur):
     statement = """
     SELECT JSON_KEYS(`tfidf`) AS `tfidf_keys` FROM `webpages`
     LIMIT %s
-    SKIP %s;
+    OFFSET %s;
     """
 
     sp_summary = {}
