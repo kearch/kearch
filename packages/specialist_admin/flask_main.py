@@ -1,4 +1,5 @@
 import flask
+from flask import jsonify
 import specialist_admin
 
 SP_ADMIN_PORT = 10080
@@ -8,13 +9,15 @@ app = flask.Flask(__name__)
 @app.route('/send_db_summary', methods=['GET'])
 def send_db_summary():
     me_host = flask.request.args.get('me_host')
-    specialist_admin.send_db_summary(me_host)
+    result = specialist_admin.send_db_summary(me_host)
+    return jsonify(result)
 
 
 @app.route('/init_crawl_urls', methods=['POST'])
 def init_crawl_urls():
     form_input = flask.request.form['urls']
-    specialist_admin.init_crawl_urls(form_input)
+    result = specialist_admin.init_crawl_urls(form_input)
+    return jsonify(result)
 
 
 @app.route("/")
