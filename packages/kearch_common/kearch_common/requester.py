@@ -23,6 +23,31 @@ def get_tfidf_sum_statement(queries):
     return ' + '.join(tfidfs)
 
 
+def dump_summary_form_sp_db(cur):
+    page_size = 1000
+    statement = """
+    SELECT JSON_KEYS(`tfidf`) AS `tfidf_keys` FROM `webpages`
+    LIMIT %s
+    OFFSET %s;
+    """
+
+    sp_summary = {}
+    prev_rowcount = -1
+    page_cnt = 0
+    while prev_rowcount != 0:
+        cur.execute(statement, (page_size, page_cnt * page_size))
+        tfidf_keys = [json.loads(row[0]) for row in cur.fetchall()]
+        for words in tfidf_keys:
+            for word in words:
+                if not word in sp_summary:
+                    sp_summary[word] = 0
+                sp_summary[word] += 1
+
+        prev_rowcount = cur.rowcount
+        page_cnt += 1
+    return sp_summary
+
+
 class KearchRequester(object):
     """Interface for communicating between containers or servers."""
 
@@ -169,6 +194,8 @@ class KearchRequester(object):
                 ret = {
                     'data': result_webpages
                 }
+            elif parsed_path == '/dump_database':
+                ret = dump_summary_form_sp_db(cur)
             elif parsed_path == '/retrieve_sp_servers':
                 queries = params['queries']
 
@@ -190,7 +217,8 @@ class KearchRequester(object):
                 sp_host = payload['host']
                 summary = payload['summary']
                 sp_server_records = [(word, sp_host, frequency)
-                                     for word, frequency in summary.items()]
+                                     for word, frequency in summary.items()
+                                     if len(word) <= 200]
 
                 statement = """
                 REPLACE INTO `sp_servers` (`word`, `host`, `frequency`)
@@ -201,7 +229,6 @@ class KearchRequester(object):
                 db.commit()
                 ret = {
                     'host': sp_host,
-                    'summary': summary,
                 }
             else:
                 raise ValueError('Invalid path: {}'.format(path))

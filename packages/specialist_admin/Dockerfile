@@ -10,6 +10,7 @@ RUN cd /kearch/packages/kearch_common && pip install -e .
 # RUN mkdir templates
 # COPY templates/* templates/
 
+COPY . /kearch/packages/specialist_admin
 WORKDIR /kearch/packages/specialist_admin
 
 CMD ["python", "-u", "flask_main.py"]

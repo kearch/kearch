@@ -1,5 +1,6 @@
 import flask
 from flask import jsonify
+from kearch_common.data_format import unwrap_json
 
 import specialist_gateway
 
@@ -9,7 +10,7 @@ app = flask.Flask(__name__)
 
 @app.route('/send_DB_summary', methods=['POST'])
 def send_DB_summary():
-    data = flask.request.get_json()
+    data = unwrap_json(flask.request.get_json())
     sp_host = data['sp_host']
     me_host = data['me_host']
     summary = data['summary']
