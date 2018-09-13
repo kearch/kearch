@@ -217,7 +217,8 @@ class KearchRequester(object):
                 sp_host = payload['host']
                 summary = payload['summary']
                 sp_server_records = [(word, sp_host, frequency)
-                                     for word, frequency in summary.items()]
+                                     for word, frequency in summary.items()
+                                     if len(word) <= 200]
 
                 statement = """
                 REPLACE INTO `sp_servers` (`word`, `host`, `frequency`)
