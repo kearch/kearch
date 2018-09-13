@@ -228,7 +228,6 @@ class KearchRequester(object):
                 db.commit()
                 ret = {
                     'host': sp_host,
-                    'summary': summary,
                 }
             else:
                 raise ValueError('Invalid path: {}'.format(path))
