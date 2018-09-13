@@ -33,6 +33,6 @@ def init_crawl_urls(form_input):
 
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
-    ret = db_req.request(path='/push_links_to_queue',
+    ret = db_req.request(path='/push_urls_to_queue',
                          payload=json, method='POST')
     return ret
