@@ -17,12 +17,12 @@ FROM python:3.6
 # RUN mkdir title_topic_detect_cache
 
 
+COPY . /kearch/packages/specialist_crawler_child
+WORKDIR /kearch/packages/specialist_crawler_child
+
 RUN pip install -r requirements.txt
 RUN python -c "import nltk; nltk.download('punkt')"
 RUN python -c "import nltk; nltk.download('stopwords')"
-
-COPY . /kearch/packages/specialist_crawler_child
-WORKDIR /kearch/packages/specialist_crawler_child
 
 # This process take a few minutes because it downloads many webpages
 RUN python average_document.py random_url_list_short
