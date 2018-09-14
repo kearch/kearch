@@ -28,11 +28,11 @@ def send_db_summary(me_host):
 # inputs is just text contains URLs separated by newline.
 def init_crawl_urls(form_input):
     urls = form_input.split('\n')
-    json = dict()
-    json['urls'] = urls
+    payload = dict()
+    payload['urls'] = urls
 
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
     ret = db_req.request(path='/push_urls_to_queue',
-                         payload=json, method='POST')
+                         payload=payload, method='POST')
     return ret
