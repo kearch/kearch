@@ -1,5 +1,7 @@
 import sys
 import time
+import urllib.parse
+import urllib.robotparser
 from concurrent.futures import ThreadPoolExecutor
 
 from kearch_common.requester import KearchRequester
@@ -18,6 +20,26 @@ MAX_URLS = 100
 
 # When you change DEBUG_UNIT_TEST true, this program run unit test.
 DEBUG_UNIT_TEST = False
+
+
+class RobotsChecker:
+    def __init__(self):
+        self.rpcache = dict()
+
+    def isCrawlable(self, url):
+        try:
+            parsed = urllib.parse.urlparse(url)
+            roboturl = parsed.scheme + '://' + parsed.netloc + '/robots.txt'
+            if roboturl in self.rpcache:
+                return self.rpcache[roboturl].can_fetch('*', url)
+            else:
+                rp = urllib.robotparser.RobotFileParser()
+                rp.set_url(roboturl)
+                rp.read()
+                self.rpcache[roboturl] = rp
+                return rp.can_fetch('*', url)
+        except urllib.error.URLError:
+            return False
 
 
 def crawl_a_page(url):
@@ -54,6 +76,7 @@ def get_next_urls_dummy(max_urls):
 if __name__ == '__main__':
     database_requester = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    robots_checker = RobotsChecker()
 
     if DEBUG_UNIT_TEST:
         resp = get_next_urls_dummy(MAX_URLS)
@@ -66,7 +89,7 @@ if __name__ == '__main__':
 
     while True:
         if DEBUG_UNIT_TEST:
-            print('length of queue = ', len(urls_in_queue), file=sys.stderr)
+            sys.stderr.write('length of queue = ' + str(len(urls_in_queue)) + '\n')
 
         if len(urls_in_queue) == 0:
             if DEBUG_UNIT_TEST:
@@ -89,8 +112,9 @@ if __name__ == '__main__':
                 urls_in_queue = resp['urls']
 
         with ThreadPoolExecutor(max_workers=NUM_THREAD) as executor:
-            results = executor.map(
-                crawl_a_page, list(urls_in_queue[:NUM_THREAD]))
+            urls = list(urls_in_queue[:NUM_THREAD])
+            urls = map(robots_checker.isCrawlable, urls)
+            results = executor.map(crawl_a_page, urls)
         results = list(filter(lambda x: x != {}, results))
         for r in results:
             urls_to_push.extend(r['inner_links'])
