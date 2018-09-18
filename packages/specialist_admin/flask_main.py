@@ -6,10 +6,11 @@ SP_ADMIN_PORT = 10080
 app = flask.Flask(__name__)
 
 
-@app.route('/send_db_summary', methods=['GET'])
+@app.route('/send_db_summary', methods=['POST'])
 def send_db_summary():
-    me_host = flask.request.args.get('me_host')
-    result = specialist_admin.send_db_summary(me_host)
+    me_host = flask.request.form['me_host']
+    sp_host = flask.request.form['sp_host']
+    result = specialist_admin.send_db_summary(me_host, sp_host)
     return jsonify(result)
 
 

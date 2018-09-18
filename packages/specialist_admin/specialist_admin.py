@@ -6,18 +6,14 @@ DATABASE_PORT = 3306
 GATEWAY_HOST = 'sp-gateway.kearch.svc.cluster.local'
 GATEWAY_PORT = 10080
 
-# TODO: ハードコーディングやめる
-SPECIALIST_GLOBAL_HOST = '27.133.154.115'
-
 REQUESTER_NAME = 'specialist_admin'
 
 
-def send_db_summary(me_host):
+def send_db_summary(me_host, sp_host):
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
     summary = db_req.request(path='/dump_database')
-    pld = {'sp_host': SPECIALIST_GLOBAL_HOST,
-           'me_host': me_host, 'summary': summary}
+    pld = {'sp_host': sp_host, 'me_host': me_host, 'summary': summary}
 
     gw_req = KearchRequester(
         GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
