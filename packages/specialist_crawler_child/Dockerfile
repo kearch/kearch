@@ -25,6 +25,7 @@ RUN python -c "import nltk; nltk.download('punkt')"
 RUN python -c "import nltk; nltk.download('stopwords')"
 
 # This process take a few minutes because it downloads many webpages
+# You can comment out these three lines. If you comment out, cached models are used.
 RUN python average_document.py random_url_list_short
 RUN python nb_topic_detect.py computer_science_url_list_short random_url_list_short
 RUN python title_topic_detect.py computer_science_url_list_short random_url_list_short
