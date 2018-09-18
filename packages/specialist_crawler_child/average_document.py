@@ -30,7 +30,7 @@ def make_average_document_cache(links):
     word_count = dict()
 
     sys.stderr.write('Start download\n')
-    p = mult.Pool(mult.cpu_count())
+    p = mult.Pool(mult.cpu_count() * 3)
     wss = p.map(get_words, links)
     sys.stderr.write('End download\n')
 

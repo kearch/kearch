@@ -73,7 +73,7 @@ if __name__ == '__main__':
     random_urls = random_urls1[:n_urls]
 
     if not args.cache:
-        p = mult.Pool(mult.cpu_count())
+        p = mult.Pool(mult.cpu_count() * 3)
         texts = p.map(url_to_title_words,
                       topic_urls[:n_urls] + random_urls[:n_urls])
         print("Downloading finish", file=sys.stderr)
@@ -87,7 +87,7 @@ if __name__ == '__main__':
         sc_samples = list()
         sc_labels = list()
 
-        p = mult.Pool(mult.cpu_count())
+        p = mult.Pool(mult.cpu_count() * 3)
         texts = p.map(
             url_to_title_words, topic_urls[:n_urls])
         p.close()
@@ -96,7 +96,7 @@ if __name__ == '__main__':
         for bow in bows:
             sc_samples.append(alist_to_vector(bow, dictionary))
             sc_labels.append(IN_TOPIC)
-        p = mult.Pool(mult.cpu_count())
+        p = mult.Pool(mult.cpu_count() * 3)
         texts = p.map(
             url_to_title_words, random_urls[:n_urls])
         p.close()
