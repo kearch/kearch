@@ -15,6 +15,8 @@ IN_TOPIC = 0
 OUT_OF_TOPIC = 1
 
 
+
+
 class TopicClassifier(object):
     def __init__(self):
         self.dictionary = corpora.Dictionary.load_from_text(
