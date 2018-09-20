@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 
+from bs4 import BeautifulSoup
+import requests
+import re
+from urllib.parse import urlparse
+import langdetect
+import nltk
+from nltk.corpus import stopwords
 import hashlib
 import os
-import json
-from urllib.parse import urlparse
-import requests
+import pickle
+import nb_topic_detect
 import urllib3
-from bs4 import BeautifulSoup
 
 CACHE_DIR = './webpage_cache/'
 
@@ -16,15 +21,32 @@ class WebpageError(Exception):
         self.message = message
 
 
-# This class have
-# - self.url
-# - self.links
-# - self.inner_links
-# - self.outer_links
-# - self.title
-# - self.text
-# When the constructor cannot find any of them, it raise up WebpageError.
+def create_webpage_with_cache(url, language='en'):
+    cachefile = CACHE_DIR + \
+        hashlib.sha256(url.encode('utf-8')).hexdigest() + '.pickle'
+    if os.path.exists(cachefile):
+        with open(cachefile, 'rb') as f:
+            w = pickle.load(f)
+            return w
+    else:
+        w = Webpage(url, language=language)
+        # if webpage parsing was failed w.tiel == url
+        if w.title != url:
+            with open(cachefile, 'wb') as f:
+                pickle.dump(w, f)
+        return w
+
+
 class Webpage(object):
+    def remove_non_ascii_character(self, text):
+        ret = ""
+        for c in list(text):
+            if ord(c) < 128:
+                ret += c
+            else:
+                ret += " "
+        return ret
+
     def set_links(self, soup):
         row_links = list(soup.findAll("a"))
         ban_domain = list(["twitter.com", "2ch.sc", "tumblr.com"])
@@ -52,10 +74,6 @@ class Webpage(object):
         self_loc = urlparse(self.url).netloc
         for link in self.links:
             link = urlparse(link)
-            # TEMPORAL SUPPORT FOR DATABASE LIMIT
-            if len(link) > 200:
-                continue
-
             if link.netloc == self_loc:
                 inner_links.append(link.scheme + '://' +
                                    link.netloc + link.path)
@@ -65,20 +83,19 @@ class Webpage(object):
         self.inner_links = inner_links
         self.outer_links = outer_links
 
-    def __init__(self, url, cache=False):
-        cachefile = CACHE_DIR + \
-            hashlib.sha256(url.encode('utf-8')).hexdigest() + '.json'
-        if cache and os.path.exists(cachefile):
-            with open(cachefile, 'r') as f:
-                d = json.load(f)
-                self.url = d['url']
-                self.links = d['links']
-                self.inner_links = d['inner_links']
-                self.outer_links = d['outer_links']
-                self.title = d['title']
-                self.text = d['text']
-                return
+    def text_to_words(self, text):
+        words = nltk.word_tokenize(text)
+        stop_words = set(stopwords.words('english'))
+        stop_words.update(['.', ',', '"', "'", '?', '!', ':',
+                           ';', '(', ')', '[', ']', '{', '}'])
+        words = list(map(lambda x: x.lower(), words))
+        words = list(filter(lambda x: x not in stop_words, words))
+        pat = r"[a-z]+"
+        repat = re.compile(pat)
+        words = list(filter(lambda x: re.match(repat, x), words))
+        return words
 
+    def __init__(self, url, language='en'):
         self.url = url
         try:
             content = requests.get(self.url).content
@@ -104,15 +121,35 @@ class Webpage(object):
         except AttributeError:
             raise WebpageError('Cannot get title or text')
 
-        if cache:
-            os.makedirs(CACHE_DIR, exist_ok=True)
-            with open(cachefile, 'w') as f:
-                d = {'url': self.url, 'links': self.links, 'inner_links': self.inner_links,
-                     'outer_links': self.outer_links, 'title': self.title, 'text': self.text}
-                json.dump(d, f)
+        try:
+            self.language = langdetect.detect(self.text)
+        except langdetect.lang_detect_exception.LangDetectException:
+            raise WebpageError('Cannot detect language.')
+
+        self.title_words = self.text_to_words(self.title)
+        # convert all white space to sigle space
+        self.text = ' '.join(
+            filter(lambda x: not x == '', re.split('\s', self.text)))
+
+        # This version do not respond to mutibyte characters
+        self.text = self.remove_non_ascii_character(self.text)
+        self.summary = self.text[:500]
+        self.words = self.text_to_words(self.text)
 
 
 if __name__ == '__main__':
+    t = "Hé ! bonjour, Monsieur du Corbeau.Que vous êtes joli ! \
+        Que vous me semblez beau !"
+    detector = langdetect.detect(t)
+    print(detector)
+
+    # w = Webpage('https://en.wikipedia.org/wiki/X-Cops_(The_X-Files)')
+    # w = create_webpage_with_cache(
+    # 'https://en.wikipedia.org/wiki/X-Cops_(The_X-Files)')
+    # print(w.words)
     url = 'https://shedopen.deviantart.com/'
-    d = Webpage(url, cache=True)
-    print(d.title)
+    w = create_webpage_with_cache(url)
+    print(w.title)
+    c = nb_topic_detect.TopicClassifier()
+    print(w.title_words)
+    print(c.classfy(w.title_words))
