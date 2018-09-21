@@ -26,9 +26,8 @@ COPY . /kearch/packages/specialist_crawler_child
 WORKDIR /kearch/packages/specialist_crawler_child
 
 # This process take a few minutes because it downloads many webpages
-# You can comment out these three lines. If you comment out, cached models are used.
+# You can comment out these 2 lines. If you comment out, cached models are used.
 RUN python average_document.py random_url_list_short
-RUN python nb_topic_detect.py computer_science_url_list_short random_url_list_short
-RUN python title_topic_detect.py computer_science_url_list_short random_url_list_short
+RUN python classifier.py computer_science_url_list_short random_url_list_short
 
 CMD ["python", "-u", "flask_main.py"]

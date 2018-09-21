@@ -21,7 +21,7 @@ OUT_OF_TOPIC = 1
 PARAMS_FILE = 'classifier_cache_params.zip'
 
 
-class Classifier(metaclass=abc.ABCMeta):
+class AbsClassifier(metaclass=abc.ABCMeta):
     @abc.abstractclassmethod
     def learn_params(self, topic_url_list, random_url_list, language):
         pass
@@ -32,7 +32,7 @@ class Classifier(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractclassmethod
-    def load_params(self, json):
+    def load_params(self, filename):
         pass
 
     @abc.abstractmethod
@@ -41,9 +41,9 @@ class Classifier(metaclass=abc.ABCMeta):
 
 
 # You can change the implementation of classifer.
-# When you change it, the classifer class must inherit Classifier class.
-# In short, you must implment 4 functions in Classifier class.
-class NBTopicClassifier(Classifier):
+# When you change it, the classifer class must inherit AbsClassifier class.
+# In short, you must implment 4 functions in AbsClassifier class.
+class Classifier(AbsClassifier):
     def alist_to_vector(self, al, dictionary):
         r = [0 for i in range(len(dictionary))]
         for (i, f) in al:
@@ -51,11 +51,11 @@ class NBTopicClassifier(Classifier):
         return r
 
     def url_to_words(self, url):
-        w = webpage.create_webpage_with_cache(url)
+        w = webpage.create_webpage_with_cache(url, self.language)
         return w.words
 
     def url_to_title_words(self, url):
-        w = webpage.create_webpage_with_cache(url)
+        w = webpage.create_webpage_with_cache(url, self.language)
         return w.title_words
 
     def learn_params_body(self, topic_urls, random_urls, language):
@@ -208,7 +208,7 @@ if __name__ == '__main__':
     random.shuffle(random_urls1)
     random_urls = random_urls1[:n_urls]
 
-    cls = NBTopicClassifier()
+    cls = Classifier()
     cls.learn_params(topic_urls, random_urls, 'en')
 
     cls.dump_params(PARAMS_FILE)
@@ -220,14 +220,14 @@ if __name__ == '__main__':
         false_positive = 0
         false_negative = 0
         for u in topic_urls1[n_urls:n_urls + n_tests]:
-            w = webpage.create_webpage_with_cache(u)
+            w = webpage.create_webpage_with_cache(u, cls.language)
             print(u, cls.classfy_log_probability_body(w.words))
             if cls.classfy(w) == IN_TOPIC:
                 true_positive += 1
             else:
                 true_negative += 1
         for u in random_urls1[n_urls:n_urls + n_tests]:
-            w = webpage.create_webpage_with_cache(u)
+            w = webpage.create_webpage_with_cache(u, cls.language)
             print(u, cls.classfy_log_probability_body(w.words))
             if cls.classfy(w) == OUT_OF_TOPIC:
                 false_negative += 1

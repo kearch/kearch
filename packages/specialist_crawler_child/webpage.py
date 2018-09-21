@@ -10,7 +10,6 @@ from nltk.corpus import stopwords
 import hashlib
 import os
 import pickle
-import nb_topic_detect
 import urllib3
 
 CACHE_DIR = './webpage_cache/'
@@ -123,6 +122,8 @@ class Webpage(object):
 
         try:
             self.language = langdetect.detect(self.text)
+            if not self.language == language:
+                return WebpageError("Language doesn't match.")
         except langdetect.lang_detect_exception.LangDetectException:
             raise WebpageError('Cannot detect language.')
 
@@ -138,18 +139,10 @@ class Webpage(object):
 
 
 if __name__ == '__main__':
-    t = "Hé ! bonjour, Monsieur du Corbeau.Que vous êtes joli ! \
-        Que vous me semblez beau !"
+    t = "こんにちは。わたしはスーパーマンです。"
     detector = langdetect.detect(t)
     print(detector)
 
-    # w = Webpage('https://en.wikipedia.org/wiki/X-Cops_(The_X-Files)')
-    # w = create_webpage_with_cache(
-    # 'https://en.wikipedia.org/wiki/X-Cops_(The_X-Files)')
-    # print(w.words)
     url = 'https://shedopen.deviantart.com/'
-    w = create_webpage_with_cache(url)
+    w = create_webpage_with_cache(url, 'ja')
     print(w.title)
-    c = nb_topic_detect.TopicClassifier()
-    print(w.title_words)
-    print(c.classfy(w.title_words))
