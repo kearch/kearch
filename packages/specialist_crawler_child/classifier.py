@@ -36,7 +36,7 @@ class AbsClassifier(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def classfy(self, webpage):
+    def classify(self, webpage):
         pass
 
 
@@ -142,7 +142,7 @@ class Classifier(AbsClassifier):
         self.learn_params_body(topic_urls, random_urls, language)
         self.learn_params_title(topic_urls, random_urls, language)
 
-    def classfy(self, webpage):
+    def classify(self, webpage):
         bow_body = self.dictionary_body.doc2bow(webpage.words)
         res_body = self.clf_body.predict([self.alist_to_vector(bow_body, self.dictionary_body)])
 
@@ -153,7 +153,7 @@ class Classifier(AbsClassifier):
         else:
             return OUT_OF_TOPIC
 
-    def classfy_log_probability_body(self, text):
+    def classify_log_probability_body(self, text):
         bow = self.dictionary_body.doc2bow(text)
         res = self.clf_body.predict_log_proba(
             [self.alist_to_vector(bow, self.dictionary_body)])
@@ -221,15 +221,15 @@ if __name__ == '__main__':
         false_negative = 0
         for u in topic_urls1[n_urls:n_urls + n_tests]:
             w = webpage.create_webpage_with_cache(u, cls.language)
-            print(u, cls.classfy_log_probability_body(w.words))
-            if cls.classfy(w) == IN_TOPIC:
+            print(u, cls.classify_log_probability_body(w.words))
+            if cls.classify(w) == IN_TOPIC:
                 true_positive += 1
             else:
                 true_negative += 1
         for u in random_urls1[n_urls:n_urls + n_tests]:
             w = webpage.create_webpage_with_cache(u, cls.language)
-            print(u, cls.classfy_log_probability_body(w.words))
-            if cls.classfy(w) == OUT_OF_TOPIC:
+            print(u, cls.classify_log_probability_body(w.words))
+            if cls.classify(w) == OUT_OF_TOPIC:
                 false_negative += 1
             else:
                 false_positive += 1
