@@ -11,6 +11,7 @@ import hashlib
 import os
 import pickle
 import urllib3
+import janome.tokenizer
 
 CACHE_DIR = './webpage_cache/'
 
@@ -82,17 +83,29 @@ class Webpage(object):
         self.inner_links = inner_links
         self.outer_links = outer_links
 
-    def text_to_words(self, text):
-        words = nltk.word_tokenize(text)
-        stop_words = set(stopwords.words('english'))
-        stop_words.update(['.', ',', '"', "'", '?', '!', ':',
-                           ';', '(', ')', '[', ']', '{', '}'])
-        words = list(map(lambda x: x.lower(), words))
-        words = list(filter(lambda x: x not in stop_words, words))
-        pat = r"[a-z]+"
-        repat = re.compile(pat)
-        words = list(filter(lambda x: re.match(repat, x), words))
-        return words
+    def text_to_words(self, text, language='en'):
+        if language == 'en':
+            words = nltk.word_tokenize(text)
+            stop_words = set(stopwords.words('english'))
+            stop_words.update(['.', ',', '"', "'", '?', '!', ':',
+                               ';', '(', ')', '[', ']', '{', '}'])
+            words = list(map(lambda x: x.lower(), words))
+            words = list(filter(lambda x: x not in stop_words, words))
+            pat = r"[a-z]+"
+            repat = re.compile(pat)
+            words = list(filter(lambda x: re.match(repat, x), words))
+            return words
+        elif language == 'ja':
+            t = janome.tokenizer.Tokenizer()
+            r = re.compile('^(名詞|動詞).*')
+            words = list()
+            tokens = t.tokenize(text)
+            for tk in tokens:
+                if r.match(tk.part_of_speech) is not None:
+                    words.append(tk.base_form)
+            return words
+        else:
+            raise WebpageError('Cannot tokeninze language = ' + language + '.')
 
     def __init__(self, url, language='en'):
         self.url = url
@@ -127,15 +140,14 @@ class Webpage(object):
         except langdetect.lang_detect_exception.LangDetectException:
             raise WebpageError('Cannot detect language.')
 
-        self.title_words = self.text_to_words(self.title)
+        self.title_words = self.text_to_words(self.title, language=self.language)
         # convert all white space to sigle space
         self.text = ' '.join(
             filter(lambda x: not x == '', re.split('\s', self.text)))
 
         # This version do not respond to mutibyte characters
-        self.text = self.remove_non_ascii_character(self.text)
         self.summary = self.text[:500]
-        self.words = self.text_to_words(self.text)
+        self.words = self.text_to_words(self.text, language=self.language)
 
 
 if __name__ == '__main__':
@@ -143,6 +155,7 @@ if __name__ == '__main__':
     detector = langdetect.detect(t)
     print(detector)
 
-    url = 'https://shedopen.deviantart.com/'
-    w = create_webpage_with_cache(url, 'ja')
-    print(w.title)
+    url = 'https://ja.wikipedia.org/wiki/Python'
+    w = Webpage(url, 'ja')
+    print(w.title, w.title_words, w.words)
+    # print(w.text)
