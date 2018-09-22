@@ -8,7 +8,7 @@ import traceback
 
 import webpage
 
-cachefile = 'average_document_cache/average_document.pickle'
+CACHE_FILE = 'average_document.pickle'
 
 
 class AverageDocumentError(Exception):
@@ -30,7 +30,7 @@ def make_average_document_cache(links):
     word_count = dict()
 
     sys.stderr.write('Start download\n')
-    p = mult.Pool(mult.cpu_count())
+    p = mult.Pool(mult.cpu_count() * 3)
     wss = p.map(get_words, links)
     sys.stderr.write('End download\n')
 
@@ -40,18 +40,18 @@ def make_average_document_cache(links):
                 word_count[w] = 1
             else:
                 word_count[w] += 1
-    with open(cachefile, 'wb') as f:
+    with open(CACHE_FILE, 'wb') as f:
         pickle.dump(word_count, f)
     return word_count
 
 
 def average_document_dict():
-    if os.path.exists(cachefile):
-        with open(cachefile, 'rb') as f:
+    if os.path.exists(CACHE_FILE):
+        with open(CACHE_FILE, 'rb') as f:
             d = pickle.load(f)
             return d
     else:
-        raise AverageDocumentError('There is no cachefile.')
+        raise AverageDocumentError('There is no CACHE_FILE.')
 
 
 if __name__ == '__main__':

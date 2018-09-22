@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import json
 import math
 import sys
 from collections import Counter
 
 import average_document
-import nb_topic_detect
-import title_topic_detect
+import classifier
 import webpage
 
 confidence_threshold = -1.0e-10
@@ -47,15 +45,12 @@ def url_to_webpage(url):
         print('Cannot make webpage of ', url, file=sys.stderr)
         return None
 
-    tc = title_topic_detect.TitleTopicClassifier()
-    if tc.classfy(w.title_words) == title_topic_detect.IN_TOPIC:
+    cls = classifier.Classifier()
+    cls.load_params(classifier.PARAMS_FILE)
+    if cls.classfy(w):
         return w
-    elif tc.classfy_log_probability(w.title_words)[title_topic_detect.IN_TOPIC] < \
-            confidence_threshold:
-        c = nb_topic_detect.TopicClassifier()
-        if c.classfy(w.words) == nb_topic_detect.IN_TOPIC:
-            return w
-        return None
+    else:
+        None
 
 
 def url_to_json(url):
