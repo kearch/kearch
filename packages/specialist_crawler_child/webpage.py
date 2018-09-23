@@ -18,7 +18,7 @@ CACHE_DIR = './webpage_cache/'
 
 class WebpageError(Exception):
     def __init__(self, message='This is default messege'):
-        self.message = message
+        self.message = 'WebpageError: ' + message
 
 
 def create_webpage_with_cache(url, language='en'):
@@ -108,6 +108,7 @@ class Webpage(object):
             raise WebpageError('Cannot tokeninze language = ' + language + '.')
 
     def __init__(self, url, language='en'):
+        self.language = language
         self.url = url
         try:
             content = requests.get(self.url).content
@@ -136,7 +137,7 @@ class Webpage(object):
         try:
             self.language = langdetect.detect(self.text)
             if not self.language == language:
-                return WebpageError("Language doesn't match.")
+                raise WebpageError("Language doesn't match.")
         except langdetect.lang_detect_exception.LangDetectException:
             raise WebpageError('Cannot detect language.')
 

@@ -16,22 +16,27 @@ class AverageDocumentError(Exception):
         self.message = message
 
 
-def get_words(link):
+def get_words(link_and_language):
+    link = link_and_language[0]
+    language = link_and_language[1]
     ws = list()
     try:
-        web = webpage.create_webpage_with_cache(link)
+        web = webpage.create_webpage_with_cache(link, language)
         ws = list(set(web.words))
     except webpage.WebpageError:
         traceback.print_exc()
     return ws
 
 
-def make_average_document_cache(links):
+def make_average_document_cache(links, language):
     word_count = dict()
 
     sys.stderr.write('Start download\n')
     p = mult.Pool(mult.cpu_count() * 3)
-    wss = p.map(get_words, links)
+    link_and_language = list()
+    for l in links:
+        link_and_language.append((l, language))
+    wss = p.map(get_words, link_and_language)
     sys.stderr.write('End download\n')
 
     for ws in wss:
@@ -57,8 +62,9 @@ def average_document_dict():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('document_list_file')
+    parser.add_argument('language')
     args = parser.parse_args()
 
     with open(args.document_list_file, 'r') as f:
         link = list(map(lambda x: x.replace('\n', ''), f.readlines()))
-        make_average_document_cache(link)
+        make_average_document_cache(link, args.language)
