@@ -12,7 +12,7 @@ URLS_FOR_EXTRACT = ["https://en.wikipedia.org/wiki/Programming_language",
                     "https://en.wikipedia.org/wiki/Kyoto"]
 
 MAX_SIZE_OF_QUERY = 3
-CONCURRENCY_LIST = [20, 50, 100, 200, 500, 1000]
+CONCURRENCY_LIST = [30, 100, 300, 1000]
 SIZE_OF_TEST = 100
 
 if __name__ == '__main__':
