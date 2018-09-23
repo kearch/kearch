@@ -3,6 +3,7 @@
 import sys
 from gensim import corpora
 import webpage
+from webpage import WebpageError
 import argparse
 import multiprocessing as mult
 import random
@@ -51,12 +52,20 @@ class Classifier(AbsClassifier):
         return r
 
     def url_to_words(self, url):
-        w = webpage.create_webpage_with_cache(url, self.language)
-        return w.words
+        try:
+            w = webpage.create_webpage_with_cache(url, self.language)
+            return w.words
+        except WebpageError as e:
+            print(e.message, file=sys.stderr)
+            return []
 
     def url_to_title_words(self, url):
-        w = webpage.create_webpage_with_cache(url, self.language)
-        return w.title_words
+        try:
+            w = webpage.create_webpage_with_cache(url, self.language)
+            return w.title_words
+        except WebpageError as e:
+            print(e.message, file=sys.stderr)
+            return []
 
     def learn_params_body(self, topic_urls, random_urls, language):
         n_gensim_urls = int(min(len(topic_urls), len(random_urls)) / 2)
@@ -191,6 +200,8 @@ if __name__ == '__main__':
         "topic_url_list", help="sample webpages about topic")
     parser.add_argument(
         "random_url_list", help="random webpages")
+    parser.add_argument(
+        "language", help="select the language (en/ja)")
     parser.add_argument('--show-test', help='test for independent dataset', action='store_true')
     args = parser.parse_args()
 
@@ -209,7 +220,7 @@ if __name__ == '__main__':
     random_urls = random_urls1[:n_urls]
 
     cls = Classifier()
-    cls.learn_params(topic_urls, random_urls, 'en')
+    cls.learn_params(topic_urls, random_urls, args.language)
 
     cls.dump_params(PARAMS_FILE)
 
