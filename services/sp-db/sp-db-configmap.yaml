@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sp-db
+  labels:
+    engine: sp
+    app: dp
+data:
+  sp-db-mysql.cnf: |
+    [mysqld]
+    slow_query_log=ON
+    long_query_time=0
+    slow_query_log_file=/var/log/mysql/slow.log

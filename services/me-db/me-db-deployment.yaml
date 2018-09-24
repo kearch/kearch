@@ -32,7 +32,15 @@ spec:
         volumeMounts:
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
+        - name: config-volume
+          mountPath: /etc/mysql/conf.d
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
           claimName: me-mysql-pvc
+      - name: config-volume
+        configMap:
+          name: me-db
+          items:
+          - key: me-db-mysql.cnf
+            path: me-db-mysql.cnf
