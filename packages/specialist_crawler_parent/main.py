@@ -98,6 +98,9 @@ if __name__ == '__main__':
                 resp = get_next_urls_dummy(MAX_URLS)
                 urls_in_queue = resp['urls']
             else:
+                urls_to_push = list(filter(lambda x: len(x) < 200, urls_to_push))
+                for u in urls_to_push:
+                    print('len = ', len(u))
                 # push data to database
                 resp = database_requester.request(
                     path='/push_urls_to_queue', method='POST',

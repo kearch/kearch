@@ -74,6 +74,9 @@ class Webpage(object):
         self_loc = urlparse(self.url).netloc
         for link in self.links:
             link = urlparse(link)
+            # TEMPORAL SUPPORT FOR DATABASE LIMIT
+            if len(link) > 200:
+                continue
             if link.netloc == self_loc:
                 inner_links.append(link.scheme + '://' +
                                    link.netloc + link.path)
@@ -110,6 +113,8 @@ class Webpage(object):
     def __init__(self, url, language='en'):
         self.language = language
         self.url = url
+        if len(url) > 200:
+            raise WebpageError('URL is too long.')
         try:
             content = requests.get(self.url).content
         except requests.exceptions.RequestException:
