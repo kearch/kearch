@@ -5,4 +5,4 @@ CREATE TABLE `sp_servers` (
   `frequency` INTEGER DEFAULT 0,
   PRIMARY KEY(`id`),
   CONSTRAINT word_host UNIQUE (word, host)
-) CHARACTER SET=utf8mb4;
+) ENGINE=InnoDB CHARACTER SET=utf8mb4;
