@@ -78,3 +78,17 @@ cd $KEARCH_ROOT_DIR/services/sp-crawler-child
 kubectl apply -f sp-crawler-child-deployment.yaml
 kubectl apply -f sp-crawler-child-service.yaml
 echo "----- Finish deployment of specialist crawler child. -----"
+
+
+# sp-admin
+echo "----- Start deployment of specialist admin. -----"
+cd $KEARCH_ROOT_DIR/packages/specialist_admin
+
+eval $(minikube docker-env)
+docker build -t kearch/sp-admin .
+
+cd $KEARCH_ROOT_DIR/services/sp-admin
+
+kubectl apply -f sp-admin-deployment.yaml
+kubectl apply -f sp-admin-service.yaml
+echo "----- Finish deployment of specialist admin. -----"
