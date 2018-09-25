@@ -13,6 +13,6 @@ do
     kubectl exec $sp_db_pod_name -- bash -c "mysql -uroot -ppassword kearch_sp_dev -e'show create table $t' " 2>/dev/null
 done
 echo "---- URLs in queue -----"
-kubectl exec $sp_db_pod_name -- bash -c 'echo "use kearch_sp_dev; select * from url_queue;" | mysql -uroot -ppassword' 2>/dev/null
+kubectl exec $sp_db_pod_name -- bash -c 'echo "use kearch_sp_dev; select count(*) from url_queue;" | mysql -uroot -ppassword' 2>/dev/null
 echo "---- webpages in DB -----"
-kubectl exec $sp_db_pod_name -- bash -c 'echo "use kearch_sp_dev; select * from webpages;" | mysql -uroot -ppassword' 2>/dev/null
+kubectl exec $sp_db_pod_name -- bash -c 'echo "use kearch_sp_dev; select count(*) from webpages;" | mysql -uroot -ppassword' 2>/dev/null

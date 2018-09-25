@@ -92,3 +92,7 @@ cd $KEARCH_ROOT_DIR/services/sp-admin
 kubectl apply -f sp-admin-deployment.yaml
 kubectl apply -f sp-admin-service.yaml
 echo "----- Finish deployment of specialist admin. -----"
+
+
+echo "----- Delete all pods -----"
+kubectl delete pod --all
