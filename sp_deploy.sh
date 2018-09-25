@@ -87,6 +87,33 @@ kubectl --namespace=kearch apply -f sp-admin-deployment.yaml
 kubectl --namespace=kearch apply -f sp-admin-service.yaml
 echo "----- Finish deployment of specialist admin. -----"
 
+# sp-query-proc
+echo "----- Start deployment of specialist query processor. -----"
+
+cd $KEARCH_ROOT_DIR/packages/specialist_query_processor
+eval $(minikube docker-env)
+docker build -t kearch/sp-query-processor .
+
+
+cd $KEARCH_ROOT_DIR/services/sp-query-processor
+kubectl --namespace=kearch apply -f sp-query-processor-deployment.yaml
+kubectl --namespace=kearch apply -f sp-query-processor-service.yaml
+
+echo "----- Finish deployment of specialist query processor. -----"
+
+# sp-gateway
+echo "----- Start deployment of specialist gateway. -----"
+
+cd $KEARCH_ROOT_DIR/packages/specialist_gateway
+eval $(minikube docker-env)
+docker build -t kearch/sp-gateway .
+
+
+cd $KEARCH_ROOT_DIR/services/sp-gateway
+kubectl --namespace=kearch apply -f sp-gateway-deployment.yaml
+kubectl --namespace=kearch apply -f sp-gateway-service.yaml
+
+echo "----- Finish deployment of specialist gateway. -----"
 
 echo "----- Delete all pods -----"
 kubectl --namespace=kearch delete pod --all
