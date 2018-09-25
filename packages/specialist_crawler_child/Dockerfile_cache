@@ -1,0 +1,19 @@
+FROM python:3.6
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+RUN python -c "import nltk; nltk.download('punkt')"
+RUN python -c "import nltk; nltk.download('stopwords')"
+
+COPY . /kearch/packages/specialist_crawler_child
+WORKDIR /kearch/packages/specialist_crawler_child
+
+# This process take a few minutes because it downloads many webpages
+# You can comment out these 2 lines. If you comment out, cached models are used.
+# RUN python average_document.py random_url_list en
+# RUN python classifier.py computer_science_url_list random_url_list en
+# If you want to select Japanse, please use
+# RUN python average_document.py random_ja_url_list_short ja
+# RUN python classifier.py computer_science_ja_url_list random_ja_url_list ja
+
+CMD ["python", "-u", "flask_main.py"]

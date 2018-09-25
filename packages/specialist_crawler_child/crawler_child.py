@@ -47,7 +47,7 @@ def url_to_webpage(url):
 
     cls = classifier.Classifier()
     cls.load_params(classifier.PARAMS_FILE)
-    if cls.classfy(w):
+    if cls.classify(w) == classifier.IN_TOPIC:
         return w
     else:
         None
