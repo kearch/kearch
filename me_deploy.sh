@@ -55,9 +55,10 @@ kubectl --namespace=kearch apply -f me-db-service.yaml
 
 me_db_pod_name=$(kubectl --namespace=kearch get po -l engine=me,app=db -o go-template --template '{{(index .items 0).metadata.name}}')
 echo "----- me_db_pod_name = "${me_db_pod_name} "-----"
-kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'echo "CREATE DATABASE kearch_me_dev CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" | mysql -uroot -ppassword'
-kubectl --namespace=kearch cp $(pwd)/sql/sp_servers_schema.sql $me_db_pod_name:/tmp/sp_servers_schema.sql
-kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/sp_servers_schema.sql'
+# Please uncomment 3 following lines when you want to create DB from scratch.
+# kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'echo "CREATE DATABASE kearch_me_dev CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" | mysql -uroot -ppassword'
+# kubectl --namespace=kearch cp $(pwd)/sql/sp_servers_schema.sql $me_db_pod_name:/tmp/sp_servers_schema.sql
+# kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/sp_servers_schema.sql'
 
 echo "----- Finish deployment of meta db. -----"
 
