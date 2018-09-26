@@ -44,7 +44,6 @@ done
 echo "----- Finish deployment of specialist DB. -----"
 
 # sp-crawler-parent
-kubectl --namespace=kearch apply -f sp-crawler-parent-service.yaml
 echo "----- Start deployment of specialist crawler parent. -----"
 cd $KEARCH_ROOT_DIR/packages/specialist_crawler_parent
 eval $(minikube docker-env)
