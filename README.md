@@ -1,7 +1,7 @@
 # kearch
 Open and distributed search engine
 
-## How to deploy your kubernetes cluster
+## How to deploy kearch to your kubernetes cluster
 ```
 git clone https://github.com/kearch/kearch.git
 cd kearch
