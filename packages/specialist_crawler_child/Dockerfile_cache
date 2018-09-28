@@ -1,12 +1,14 @@
 FROM python:3.6
 
-COPY requirements.txt .
+COPY packages/kearch_classifier /kearch/packages/kearch_classifier
+RUN cd /kearch/packages/kearch_classifier && pip install -e .
+
+COPY packages/specialist_crawler_child /kearch/packages/specialist_crawler_child
+WORKDIR /kearch/packages/specialist_crawler_child
+
 RUN pip install -r requirements.txt
 RUN python -c "import nltk; nltk.download('punkt')"
 RUN python -c "import nltk; nltk.download('stopwords')"
-
-COPY . /kearch/packages/specialist_crawler_child
-WORKDIR /kearch/packages/specialist_crawler_child
 
 # This process take a few minutes because it downloads many webpages
 # You can comment out these 2 lines. If you comment out, cached models are used.
