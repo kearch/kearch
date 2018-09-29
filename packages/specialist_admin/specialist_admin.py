@@ -24,7 +24,7 @@ def send_db_summary(me_host, sp_host):
 # inputs is just text contains URLs separated by newline.
 def init_crawl_urls(form_input):
     urls = form_input.split('\n')
-    urls = map(lambda x:x.rstrip(), urls)
+    urls = map(lambda x: x.rstrip(), urls)
     payload = dict()
     payload['urls'] = urls
 

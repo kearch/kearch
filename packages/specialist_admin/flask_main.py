@@ -21,6 +21,11 @@ def init_crawl_urls():
     return jsonify(result)
 
 
+@app.route('/learn_params', methods=['POST'])
+def learn_params():
+    pass
+
+
 @app.route("/")
 def index():
     return flask.render_template('index.html')
