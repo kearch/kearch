@@ -57,14 +57,14 @@ echo "----- Finish deployment of specialist crawler parent. -----"
 
 # sp-crawler-child
 echo "----- Start deployment of specialist crawler child. -----"
-cd $KEARCH_ROOT_DIR/packages/specialist_crawler_child
 rm -f $KEARCH_ROOT_DIR/packages/specialist_crawler_child/webpage_cache/*.pickle
+cd $KEARCH_ROOT_DIR
 
 eval $(minikube docker-env)
 echo "----- Use cache file and skip model learning. -----"
 echo "----- If you don't want to use cache file,  use -----"
 echo "----- 'docker build -t kearch/sp-crawler-child .' instead -----"
-docker build -t kearch/sp-crawler-child -f Dockerfile_cache .
+docker build -t kearch/sp-crawler-child -f packages/specialist_crawler_child/Dockerfile_cache .
 
 cd $KEARCH_ROOT_DIR/services/sp-crawler-child
 
@@ -75,10 +75,10 @@ echo "----- Finish deployment of specialist crawler child. -----"
 
 # sp-admin
 echo "----- Start deployment of specialist admin. -----"
-cd $KEARCH_ROOT_DIR/packages/specialist_admin
+cd $KEARCH_ROOT_DIR
 
 eval $(minikube docker-env)
-docker build -t kearch/sp-admin .
+docker build -f packages/specialist_admin/Dockerfile -t kearch/sp-admin .
 
 cd $KEARCH_ROOT_DIR/services/sp-admin
 
