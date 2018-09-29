@@ -5,7 +5,7 @@ import sys
 from collections import Counter
 
 import average_document
-import classifier
+import kearch_classifier.classifier
 import webpage
 
 confidence_threshold = -1.0e-10
@@ -45,9 +45,9 @@ def url_to_webpage(url):
         print('Cannot make webpage of ', url, file=sys.stderr)
         return None
 
-    cls = classifier.Classifier()
-    cls.load_params(classifier.PARAMS_FILE)
-    if cls.classify(w) == classifier.IN_TOPIC:
+    cls = kearch_classifier.classifier.Classifier()
+    cls.load_params(kearch_classifier.classifier.PARAMS_FILE)
+    if cls.classify(w) == kearch_classifier.classifier.IN_TOPIC:
         return w
     else:
         None

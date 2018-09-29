@@ -21,6 +21,16 @@ def init_crawl_urls():
     return jsonify(result)
 
 
+@app.route('/learn_params', methods=['POST'])
+def learn_params():
+    form_input_topic = flask.request.form['topic_urls']
+    form_input_random = flask.request.form['random_urls']
+    language = flask.request.form['language']
+    result = specialist_admin.learn_params(
+        form_input_topic, form_input_random, language)
+    return result
+
+
 @app.route("/")
 def index():
     return flask.render_template('index.html')

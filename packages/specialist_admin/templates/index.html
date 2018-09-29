@@ -1,27 +1,42 @@
 <html>
-  <head>
-  </head>
-  <div class="center">
-    <body>
-      <p>URLs to crawl separated by newlines</p>
-      <form action="/init_crawl_urls" method="post">
-        URLs↓<br/>
-        <textarea name="urls" cols="50" rows="5"></textarea>
-        <br/>
-        <button class="button">init crawl urls</button>
-      </form>
-      <p>Send DB summary</p>
-      <form action="/send_db_summary" method="post">
-        <div>
-          <label for="me_host">me_host</label>
-          <input type="text" id="me_host" name="me_host" cols="50" />
-        </div>
-        <div>
-          <label for="sp_host">sp_host</label>
-          <input type="text" id="sp_host" name="sp_host" cols="50" />
-        </div>
-        <button type="submit">send db summary</button>
-      </form>
-    </body>
-  </div>
+    <head>
+    </head>
+    <div class="center">
+        <body>
+            <p>URLs to crawl separated by newlines</p>
+            <form action="/init_crawl_urls" method="post">
+                URLs↓<br/>
+                <textarea name="urls" cols="50" rows="5"></textarea>
+                <br/>
+                <button class="button">init crawl urls</button>
+            </form>
+
+            <p>Send DB summary</p>
+            <form action="/send_db_summary" method="post">
+                <div>
+                    <label for="me_host">me_host</label>
+                    <input type="text" id="me_host" name="me_host" cols="50" />
+                </div>
+                <div>
+                    <label for="sp_host">sp_host</label>
+                    <input type="text" id="sp_host" name="sp_host" cols="50" />
+                </div>
+                <button type="submit">send db summary</button>
+            </form>
+
+            <p>Learn Parameter for the classifier in the crawler</p>
+            <form action="/learn_params" method="post">
+                language<br/>
+                <input type="text" id="language" name="language" cols="10" />
+                <br/>
+                URLs in your crawling topic↓<br/>
+                <textarea name="topic_urls" cols="50" rows="5"></textarea>
+                <br/>
+                URLs in random topic↓<br/>
+                <textarea name="random_urls" cols="50" rows="5"></textarea>
+                <br/>
+                <button class="button">learn crawler parameters</button>
+            </form>
+        </body>
+    </div>
 </html>
