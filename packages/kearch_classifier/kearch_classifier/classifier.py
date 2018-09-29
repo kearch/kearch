@@ -4,8 +4,7 @@ from kearch_classifier._version import __version__
 
 import sys
 from gensim import corpora
-import webpage
-from webpage import WebpageError
+from . import webpage
 import argparse
 import multiprocessing as mult
 import random
@@ -57,7 +56,7 @@ class Classifier(AbsClassifier):
         try:
             w = webpage.create_webpage_with_cache(url, self.language)
             return w.words
-        except WebpageError as e:
+        except webpage.WebpageError as e:
             print(e.message, file=sys.stderr)
             return []
 
@@ -65,7 +64,7 @@ class Classifier(AbsClassifier):
         try:
             w = webpage.create_webpage_with_cache(url, self.language)
             return w.title_words
-        except WebpageError as e:
+        except webpage.WebpageError as e:
             print(e.message, file=sys.stderr)
             return []
 
@@ -81,7 +80,8 @@ class Classifier(AbsClassifier):
         texts = list(filter(lambda x: not x == [], texts))
         p.close()
         self.dictionary_body = corpora.Dictionary(texts)
-        print('classifer.py -- Dictionary size = ' + str(len(self.dictionary_body)) + '', file=sys.stderr)
+        print('classifer.py -- Dictionary size = ' +
+              str(len(self.dictionary_body)) + '', file=sys.stderr)
 
         print('classifer.py -- Making Classifier for main text start', file=sys.stderr)
         sc_samples = list()
@@ -155,10 +155,12 @@ class Classifier(AbsClassifier):
 
     def classify(self, webpage):
         bow_body = self.dictionary_body.doc2bow(webpage.words)
-        res_body = self.clf_body.predict([self.alist_to_vector(bow_body, self.dictionary_body)])
+        res_body = self.clf_body.predict(
+            [self.alist_to_vector(bow_body, self.dictionary_body)])
 
         bow_title = self.dictionary_title.doc2bow(webpage.title_words)
-        res_title = self.clf_title.predict([self.alist_to_vector(bow_title, self.dictionary_title)])
+        res_title = self.clf_title.predict(
+            [self.alist_to_vector(bow_title, self.dictionary_title)])
         if res_title[0] == IN_TOPIC or res_body[0] == IN_TOPIC:
             return IN_TOPIC
         else:
@@ -172,24 +174,32 @@ class Classifier(AbsClassifier):
 
     def dump_params(self, filename):
         with tempfile.TemporaryDirectory() as temp_path:
-            self.dictionary_body.save(os.path.join(temp_path, 'gensim_dictionary_body.pickle'))
-            self.dictionary_title.save(os.path.join(temp_path, 'gensim_dictionary_title.pickle'))
+            self.dictionary_body.save(os.path.join(
+                temp_path, 'gensim_dictionary_body.pickle'))
+            self.dictionary_title.save(os.path.join(
+                temp_path, 'gensim_dictionary_title.pickle'))
             with open(os.path.join(temp_path, 'nb_clf_body.pickle'), 'wb') as f:
                 pickle.dump(self.clf_body, f)
             with open(os.path.join(temp_path, 'nb_clf_title.pickle'), 'wb') as f:
                 pickle.dump(self.clf_title, f)
             with zipfile.ZipFile(filename, 'w') as f:
-                f.write(os.path.join(temp_path, 'gensim_dictionary_body.pickle'), arcname='gensim_dictionary_body.pickle')
-                f.write(os.path.join(temp_path, 'gensim_dictionary_title.pickle'), arcname='gensim_dictionary_title.pickle')
-                f.write(os.path.join(temp_path, 'nb_clf_body.pickle'), arcname='nb_clf_body.pickle')
-                f.write(os.path.join(temp_path, 'nb_clf_title.pickle'), arcname='nb_clf_title.pickle')
+                f.write(os.path.join(temp_path, 'gensim_dictionary_body.pickle'),
+                        arcname='gensim_dictionary_body.pickle')
+                f.write(os.path.join(temp_path, 'gensim_dictionary_title.pickle'),
+                        arcname='gensim_dictionary_title.pickle')
+                f.write(os.path.join(temp_path, 'nb_clf_body.pickle'),
+                        arcname='nb_clf_body.pickle')
+                f.write(os.path.join(temp_path, 'nb_clf_title.pickle'),
+                        arcname='nb_clf_title.pickle')
 
     def load_params(self, filename):
         with tempfile.TemporaryDirectory() as temp_path:
             with zipfile.ZipFile(filename) as z:
                 z.extractall(temp_path)
-                self.dictionary_body = corpora.Dictionary.load(os.path.join(temp_path, 'gensim_dictionary_body.pickle'))
-                self.dictionary_title = corpora.Dictionary.load(os.path.join(temp_path, 'gensim_dictionary_title.pickle'))
+                self.dictionary_body = corpora.Dictionary.load(
+                    os.path.join(temp_path, 'gensim_dictionary_body.pickle'))
+                self.dictionary_title = corpora.Dictionary.load(
+                    os.path.join(temp_path, 'gensim_dictionary_title.pickle'))
                 with open(os.path.join(temp_path, 'nb_clf_body.pickle'), 'rb') as f:
                     self.clf_body = pickle.load(f)
                 with open(os.path.join(temp_path, 'nb_clf_title.pickle'), 'rb') as f:
@@ -204,7 +214,8 @@ if __name__ == '__main__':
         "random_url_list", help="random webpages")
     parser.add_argument(
         "language", help="select the language (en/ja)")
-    parser.add_argument('--show-test', help='test for independent dataset', action='store_true')
+    parser.add_argument(
+        '--show-test', help='test for independent dataset', action='store_true')
     args = parser.parse_args()
 
     with open(args.topic_url_list, 'r') as f:

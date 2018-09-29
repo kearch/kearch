@@ -7,6 +7,12 @@ RUN pip install flask
 COPY packages/kearch_common /kearch/packages/kearch_common
 RUN cd /kearch/packages/kearch_common && pip install -e .
 
+COPY packages/kearch_classifier /kearch/packages/kearch_classifier
+RUN cd /kearch/packages/kearch_classifier && pip install -e .
+
+RUN python -c "import nltk; nltk.download('punkt')"
+RUN python -c "import nltk; nltk.download('stopwords')"
+
 COPY /packages/specialist_admin /kearch/packages/specialist_admin
 WORKDIR /kearch/packages/specialist_admin
 

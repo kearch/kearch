@@ -1,4 +1,5 @@
 from kearch_common.requester import KearchRequester
+import kearch_classifier.classifier
 
 DATABASE_HOST = 'sp-db.kearch.svc.cluster.local'
 DATABASE_PORT = 3306
@@ -33,3 +34,15 @@ def init_crawl_urls(form_input):
     ret = db_req.request(path='/push_urls_to_queue',
                          payload=payload, method='POST')
     return ret
+
+
+def learn_params(form_input_topic, form_input_random, language):
+    topic_urls = form_input_topic.split('\n')
+    topic_urls = list(map(lambda x: x.rstrip(), topic_urls))
+    random_urls = form_input_random.split('\n')
+    random_urls = list(map(lambda x: x.rstrip(), random_urls))
+
+    cls = kearch_classifier.classifier.Classifier()
+    cls.learn_params(topic_urls, random_urls, language)
+
+    return "OK"
