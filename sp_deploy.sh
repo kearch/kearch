@@ -9,6 +9,8 @@ fi
 
 KEARCH_ROOT_DIR=$(cd $(dirname $0); pwd)
 echo "KEARCH_ROOT_DIR = "${KEARCH_ROOT_DIR}
+KEARCH_COMMON_BRANCH=${KEARCH_COMMON_BRANCH:-"dev"}
+echo "KEARCH_COMMON_BRANCH = "$KEARCH_COMMON_BRANCH""
 
 echo "----- Start to make namespace and configure context. -----"
 cd $KEARCH_ROOT_DIR/services
@@ -52,7 +54,7 @@ echo "----- Finish deployment of specialist DB. -----"
 echo
 echo "----- Start deployment of specialist crawler parent. -----"
 cd $KEARCH_ROOT_DIR/packages/specialist_crawler_parent
-docker build -t kearch/sp-crawler-parent .
+docker build -t kearch/sp-crawler-parent --build-arg KEARCH_COMMON_BRANCH=$KEARCH_COMMON_BRANCH .
 
 cd $KEARCH_ROOT_DIR/services/sp-crawler-parent
 
@@ -68,7 +70,7 @@ cd $KEARCH_ROOT_DIR
 echo "----- Use cache file and skip model learning. -----"
 echo "----- If you don't want to use cache file,  use -----"
 echo "----- 'docker build -t kearch/sp-crawler-child .' instead -----"
-docker build -t kearch/sp-crawler-child -f packages/specialist_crawler_child/Dockerfile_cache .
+docker build -t kearch/sp-crawler-child -f packages/specialist_crawler_child/Dockerfile_cache --build-arg KEARCH_COMMON_BRANCH=$KEARCH_COMMON_BRANCH .
 
 cd $KEARCH_ROOT_DIR/services/sp-crawler-child
 
@@ -81,7 +83,7 @@ echo
 echo "----- Start deployment of specialist admin. -----"
 cd $KEARCH_ROOT_DIR
 
-docker build -f packages/specialist_admin/Dockerfile -t kearch/sp-admin .
+docker build -f packages/specialist_admin/Dockerfile -t kearch/sp-admin --build-arg KEARCH_COMMON_BRANCH=$KEARCH_COMMON_BRANCH .
 
 cd $KEARCH_ROOT_DIR/services/sp-admin
 
@@ -93,7 +95,7 @@ echo
 echo "----- Start deployment of specialist query processor. -----"
 
 cd $KEARCH_ROOT_DIR/packages/specialist_query_processor
-docker build -t kearch/sp-query-processor .
+docker build -t kearch/sp-query-processor --build-arg KEARCH_COMMON_BRANCH=$KEARCH_COMMON_BRANCH .
 
 
 cd $KEARCH_ROOT_DIR/services/sp-query-processor
@@ -106,7 +108,7 @@ echo
 echo "----- Start deployment of specialist gateway. -----"
 
 cd $KEARCH_ROOT_DIR/packages/specialist_gateway
-docker build -t kearch/sp-gateway .
+docker build -t kearch/sp-gateway --build-arg KEARCH_COMMON_BRANCH=$KEARCH_COMMON_BRANCH .
 
 
 cd $KEARCH_ROOT_DIR/services/sp-gateway

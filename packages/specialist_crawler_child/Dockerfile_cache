@@ -1,4 +1,5 @@
 FROM python:3.6
+ARG KEARCH_COMMON_BRANCH="dev"
 
 COPY packages/kearch_classifier /kearch/packages/kearch_classifier
 RUN cd /kearch/packages/kearch_classifier && pip install -e .

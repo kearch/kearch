@@ -1,6 +1,7 @@
 # You must build this Dockerfile at project root.
 # > docker build -f packages/specialist_admin/Dockerfile .
 From python:3.6
+ARG KEARCH_COMMON_BRANCH="dev"
 
 RUN pip install flask
 
