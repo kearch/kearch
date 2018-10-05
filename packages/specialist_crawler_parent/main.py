@@ -16,7 +16,7 @@ NUM_THREAD = 5
 
 REQUESTER_NAME = 'specialist_crawler_parent'
 
-MAX_URLS = 100
+MAX_URLS = 20
 
 # When you change DEBUG_UNIT_TEST true, this program run unit test.
 DEBUG_UNIT_TEST = False
@@ -89,7 +89,8 @@ if __name__ == '__main__':
 
     while True:
         if DEBUG_UNIT_TEST:
-            sys.stderr.write('length of queue = ' + str(len(urls_in_queue)) + '\n')
+            sys.stderr.write('length of queue = ' +
+                             str(len(urls_in_queue)) + '\n')
 
         if len(urls_in_queue) == 0:
             if DEBUG_UNIT_TEST:
@@ -98,7 +99,8 @@ if __name__ == '__main__':
                 resp = get_next_urls_dummy(MAX_URLS)
                 urls_in_queue = resp['urls']
             else:
-                urls_to_push = list(filter(lambda x: len(x) < 200, urls_to_push))
+                urls_to_push = list(
+                    filter(lambda x: len(x) < 200, urls_to_push))
                 for u in urls_to_push:
                     print('len = ', len(u))
                 # push data to database
