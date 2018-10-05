@@ -27,7 +27,7 @@ def post_webpage_to_db(db, cur, webpage):
     statement = """
     REPLACE INTO `webpages`
     (`url`, `title`, `summary`)
-    VALUES (%s)
+    VALUES (%s, %s, %s)
     """
     cur.execute(statement,
                 (webpage['url'], webpage['title'], webpage['summary']))
