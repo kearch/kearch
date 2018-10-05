@@ -7,6 +7,9 @@ import requests
 from kearch_common.data_format import wrap_json
 
 
+MAX_WORD_LEN = 200
+
+
 def get_has_overlap_statement(queries):
     # TODO(gky360): escape words
     json_contains_funcs = map(
@@ -46,7 +49,8 @@ def post_webpage_to_db(db, cur, webpage):
     VALUES (%s)
     """
     words = list(webpage['tfidf']) + webpage['title_words']
-    word_records = map(lambda w: (w,), words)
+    word_records = map(lambda w: (w,),
+                       filter(lambda w: len(w) < MAX_WORD_LEN, words))
     cur.executemany(statement, word_records)
     db.commit()
 
@@ -56,7 +60,8 @@ def post_webpage_to_db(db, cur, webpage):
     SELECT %s, `words`.`id` FROM `words` WHERE `str` = %s LIMIT 1
     """
     title_word_records = map(lambda w: (webpage_id, w), webpage['title_words'])
-    cur.execute(statement, params=title_word_records, multi=True)
+    for record in title_word_records:
+        cur.execute(statement, record)
     db.commit()
 
     statement = """
@@ -66,7 +71,8 @@ def post_webpage_to_db(db, cur, webpage):
     """
     tfidfs_records = map(lambda w: (
         webpage_id, webpage['tfidf'][w], w), webpage['tfidf'].keys())
-    cur.execute(statement, params=tfidfs_records, multi=True)
+    for record in tfidfs_records:
+        cur.execute(statement, record)
     db.commit()
 
 
@@ -252,7 +258,7 @@ class KearchRequester(object):
                 summary = payload['summary']
                 sp_server_records = [(word, sp_host, frequency)
                                      for word, frequency in summary.items()
-                                     if len(word) <= 200]
+                                     if len(word) <= MAX_WORD_LEN]
 
                 statement = """
                 REPLACE INTO `sp_servers` (`word`, `host`, `frequency`)
