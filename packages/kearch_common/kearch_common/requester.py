@@ -23,6 +23,53 @@ def get_tfidf_sum_statement(queries):
     return ' + '.join(tfidfs)
 
 
+def post_webpage_to_db(db, cur, webpage):
+    statement = """
+    REPLACE INTO `webpages`
+    (`url`, `title`, `summary`)
+    VALUES (%s)
+    """
+    cur.execute(statement,
+                (webpage['url'], webpage['title'], webpage['summary']))
+    db.commit()
+
+    statement = """
+    SELECT `id` FROM `webpages` WHERE `url` = %s LIMIT 1
+    """
+    cur.execute(statement, (webpage['url'],))
+    row = cur.fetchone()
+    webpage_id = row[0]
+
+    statement = """
+    REPLACE INTO `words`
+    (`str`)
+    VALUES (%s)
+    """
+    words = list(webpage['tfidf']) + webpage['title_words']
+    word_records = map(lambda w: (w,), words)
+    cur.executemany(statement, word_records)
+    db.commit()
+
+    statement = """
+    REPLACE INTO `title_words`
+    (`webpage_id`, `word_id`)
+    SELECT %s, `words`.`id` FROM `words` WHERE `str` = %s LIMIT 1
+    """
+    title_word_records = map(lambda w: (webpage_id, w), webpage['title_words'])
+    cur.execute(statement, params=title_word_records, multi=True)
+    db.commit()
+
+    statement = """
+    REPLACE INTO `tfidfs`
+    (`webpage_id`, `word_id`, `value`)
+    SELECT %s, `words`.`id`, %s FROM `words` WHERE `str` = %s LIMIT 1
+    """
+    tfidfs_records = map(lambda w: (
+        webpage_id, webpage['tfidf'][w], w), webpage['tfidf'].keys())
+    cur.execute(statement, params=tfidfs_records, multi=True)
+    db.commit()
+
+
 def dump_summary_form_sp_db(cur):
     page_size = 1000
     statement = """
@@ -126,22 +173,9 @@ class KearchRequester(object):
 
         try:
             if parsed_path == '/push_webpage_to_database':
-                # get webpage records from payload
-                webpage_records = [(w['url'],
-                                    w['title'],
-                                    json.dumps(w['title_words']),
-                                    w['summary'],
-                                    json.dumps(w['tfidf']))
-                                   for w in payload['data']]
-                statement = """
-                REPLACE INTO `webpages`
-                (`url`, `title`, `title_words`, `summary`, `tfidf`)
-                VALUES (%s, %s, %s, %s, %s)
-                """
-
-                cur.executemany(statement, webpage_records)
-                db.commit()
-                ret = cur.rowcount
+                for webpage in payload['data']:
+                    post_webpage_to_db(db, cur, webpage)
+                ret = len(payload['data'])
             elif parsed_path == '/get_next_urls':
                 max_urls = int(params['max_urls'])
                 select_statement = """
