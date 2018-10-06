@@ -1,4 +1,5 @@
 import flask
+import sys
 from flask import jsonify
 import specialist_admin
 
@@ -10,6 +11,9 @@ app = flask.Flask(__name__)
 def send_db_summary():
     me_host = flask.request.form['me_host']
     sp_host = flask.request.form['sp_host']
+
+    print(me_host, sp_host, file=sys.stderr)
+
     result = specialist_admin.send_db_summary(me_host, sp_host)
     return jsonify(result)
 

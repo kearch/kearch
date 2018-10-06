@@ -12,7 +12,23 @@
             </form>
 
             <p>Send DB summary</p>
-            <form action="/send_db_summary" method="post">
+            <script>
+<!--
+function send_db_summary() {
+    button_status = document.getElementById("submit_button");
+    button_status.disabled = "disabled";
+
+    var formData = new FormData();
+    formData.append("sp_host","192.168.11.100");
+    formData.append("me_host","192.168.11.100");
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/send_db_summary', true);
+    xhr.send(formData);
+}
+// -->
+            </script>
+            <form id=send_db_summary_form onsubmit="send_db_summary()">
                 <div>
                     <label for="me_host">me_host</label>
                     <input type="text" id="me_host" name="me_host" cols="50" />
@@ -21,11 +37,21 @@
                     <label for="sp_host">sp_host</label>
                     <input type="text" id="sp_host" name="sp_host" cols="50" />
                 </div>
-                <button type="submit">send db summary</button>
+                <button id="submit_button" type="submit">send db summary</button>
             </form>
 
             <p>Learn Parameter for the classifier in the crawler</p>
-            <form action="/learn_params" method="post">
+
+            <script>
+<!--
+function send_urls() {
+    document.learn_params_form.action="/learn_params";
+    document.learn_params_form.method="post";
+    document.learn_params_form.submit();
+}
+// -->
+            </script>
+            <form name=learn_params_form>
                 language<br/>
                 <input type="text" id="language" name="language" cols="10" />
                 <br/>
@@ -35,7 +61,7 @@
                 URLs in random topic↓<br/>
                 <textarea name="random_urls" cols="50" rows="5"></textarea>
                 <br/>
-                <button class="button">learn crawler parameters</button>
+                <button type="button" onclick="return send_urls()">learn crawler parameters</button>
             </form>
         </body>
     </div>
