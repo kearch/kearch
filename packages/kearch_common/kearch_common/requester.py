@@ -213,35 +213,24 @@ class KearchRequester(object):
                 queries = params['queries']
                 max_urls = int(params['max_urls'])
 
-                # statement = """
-                # SELECT `webpages`.`id`, `url`, `title`, `summary`, SUM(`value`) AS `score`
-                # FROM `words`
-                # JOIN `title_words` ON words`.`id` = `title_words`.`word_id`
-                # JOIN `tfidfs` ON words`.`id` = `tfidfs`.`word_id`
-                # JOIN `webpages` ON `tfidfs`.`webpage_id` = `webpages`.`id`
-                # WHERE `words`.`str` = 'google'
-                # GROUP BY `webpages`.`id`
-                # ORDER BY `score` DESC;
-                # """
-
-                select_statement = """
-                SELECT
-                    `url`, `title`, `title_words`, `summary`, `tfidf`,
-                    ({}) AS has_overwrap,
-                    ({}) AS tfidf_sum
-                FROM `webpages`
-                ORDER BY has_overwrap DESC, tfidf_sum DESC
+                statement = """
+                SELECT `webpages`.`id`, `url`, `title`, `summary`, SUM(`value`) AS `score`
+                FROM `words`
+                JOIN `title_words` ON words`.`id` = `title_words`.`word_id`
+                JOIN `tfidfs` ON words`.`id` = `tfidfs`.`word_id`
+                JOIN `webpages` ON `tfidfs`.`webpage_id` = `webpages`.`id`
+                WHERE `words`.`str` IN ({})
+                GROUP BY `webpages`.`id`
+                ORDER BY `score` DESC
                 LIMIT %s;
-                """.format(get_has_overlap_statement(queries),
-                           get_tfidf_sum_statement(queries))
-
-                cur.execute(select_statement, (max_urls,))
+                """.format(','.join(['%s'] * len(queries)))
+                cur.execute(statement, tuple(queries) + (max_urls,))
                 result_webpages = [{
-                    'url': row[0],
-                    'title': row[1],
-                    'title_words': json.loads(row[2]),
+                    'id': row[0],
+                    'url': row[1],
+                    'title': row[2],
                     'summary': row[3],
-                    'tfidf': json.loads(row[4])
+                    'score': row[4],
                 } for row in cur.fetchall()]
 
                 ret = {
