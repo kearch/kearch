@@ -1,4 +1,6 @@
 import json
+import sys
+import traceback
 import urllib
 
 import mysql.connector
@@ -279,6 +281,7 @@ class KearchRequester(object):
             else:
                 raise ValueError('Invalid path: {}'.format(path))
         except Exception as e:
+            print(traceback.format_exc(), file=sys.stderr)
             raise RequesterError('at {}\n{}'.format(parsed_path, e))
         finally:
             cur.close()
