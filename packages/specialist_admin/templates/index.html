@@ -18,17 +18,28 @@ function send_db_summary() {
     button_status = document.getElementById("submit_button");
     button_status.disabled = "disabled";
 
-    var formData = new FormData();
-    formData.append("sp_host","192.168.11.100");
-    formData.append("me_host","192.168.11.100");
+    var formData = "sp_host="+document.getElementById('sp_host').value+"&me_host="+document.getElementById('me_host').value;
 
     var xhr = new XMLHttpRequest();
+
+    xhr.addEventListener('load', function(event) {
+        button_status.disabled = "";
+        return false;
+    });
+
+    xhr.addEventListener('error', function(event) {
+        alert('failed');
+        return false;
+    });
     xhr.open('POST', '/send_db_summary', true);
+
+    xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
     xhr.send(formData);
+    return false;
 }
 // -->
             </script>
-            <form id=send_db_summary_form onsubmit="send_db_summary()">
+            <form id=send_db_summary_form onsubmit="send_db_summary();return false;">
                 <div>
                     <label for="me_host">me_host</label>
                     <input type="text" id="me_host" name="me_host" cols="50" />
@@ -43,15 +54,9 @@ function send_db_summary() {
             <p>Learn Parameter for the classifier in the crawler</p>
 
             <script>
-<!--
-function send_urls() {
-    document.learn_params_form.action="/learn_params";
-    document.learn_params_form.method="post";
-    document.learn_params_form.submit();
-}
-// -->
+
             </script>
-            <form name=learn_params_form>
+            <form name=learn_params_form action="/learn_params" method="post">
                 language<br/>
                 <input type="text" id="language" name="language" cols="10" />
                 <br/>
@@ -61,7 +66,7 @@ function send_urls() {
                 URLs in random topic↓<br/>
                 <textarea name="random_urls" cols="50" rows="5"></textarea>
                 <br/>
-                <button type="button" onclick="return send_urls()">learn crawler parameters</button>
+                <button type="submit">learn crawler parameters</button>
             </form>
         </body>
     </div>
