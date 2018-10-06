@@ -28,9 +28,10 @@ def get_tfidf_sum_statement(queries):
 
 def post_webpage_to_db(db, cur, webpage):
     statement = """
-    REPLACE INTO `webpages`
+    INSERT INTO `webpages`
     (`url`, `title`, `summary`)
     VALUES (%s, %s, %s)
+    ON DUPLICATE KEY UPDATE `title` = VALUES(`title`), `summary` = VALUES(`summary`)
     """
     cur.execute(statement,
                 (webpage['url'], webpage['title'], webpage['summary']))
@@ -44,7 +45,7 @@ def post_webpage_to_db(db, cur, webpage):
     webpage_id = row[0]
 
     statement = """
-    REPLACE INTO `words`
+    INSERT IGNORE INTO `words`
     (`str`)
     VALUES (%s)
     """
@@ -55,7 +56,7 @@ def post_webpage_to_db(db, cur, webpage):
     db.commit()
 
     statement = """
-    REPLACE INTO `title_words`
+    INSERT IGNORE INTO `title_words`
     (`webpage_id`, `word_id`)
     SELECT %s, `words`.`id` FROM `words` WHERE `str` = %s LIMIT 1
     """
@@ -65,9 +66,10 @@ def post_webpage_to_db(db, cur, webpage):
     db.commit()
 
     statement = """
-    REPLACE INTO `tfidfs`
+    INSERT INTO `tfidfs`
     (`webpage_id`, `word_id`, `value`)
     SELECT %s, `words`.`id`, %s FROM `words` WHERE `str` = %s LIMIT 1
+    ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)
     """
     tfidfs_records = map(lambda w: (
         webpage_id, webpage['tfidf'][w], w), webpage['tfidf'].keys())
@@ -210,6 +212,17 @@ class KearchRequester(object):
             elif parsed_path == '/retrieve_webpages':
                 queries = params['queries']
                 max_urls = int(params['max_urls'])
+
+                # statement = """
+                # SELECT `webpages`.`id`, `url`, `title`, `summary`, SUM(`value`) AS `score`
+                # FROM `words`
+                # JOIN `title_words` ON words`.`id` = `title_words`.`word_id`
+                # JOIN `tfidfs` ON words`.`id` = `tfidfs`.`word_id`
+                # JOIN `webpages` ON `tfidfs`.`webpage_id` = `webpages`.`id`
+                # WHERE `words`.`str` = 'google'
+                # GROUP BY `webpages`.`id`
+                # ORDER BY `score` DESC;
+                # """
 
                 select_statement = """
                 SELECT
