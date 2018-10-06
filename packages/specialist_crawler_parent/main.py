@@ -4,7 +4,7 @@ import urllib.parse
 import urllib.robotparser
 from concurrent.futures import ThreadPoolExecutor
 
-from kearch_common.requester import KearchRequester
+from kearch_common.requester import KearchRequester, RequesterError
 
 CRAWLER_CHILD_HOST = 'sp-crawler-child.kearch.svc.cluster.local'
 CRAWLER_CHILD_PORT = 10080
@@ -103,18 +103,29 @@ if __name__ == '__main__':
                     filter(lambda x: len(x) < 200, urls_to_push))
                 for u in urls_to_push:
                     print('len = ', len(u))
-                # push data to database
-                resp = database_requester.request(
-                    path='/push_urls_to_queue', method='POST',
-                    payload={'urls': urls_to_push})
-                resp = database_requester.request(
-                    path='/push_webpage_to_database', method='POST',
-                    payload={'data': data_to_push})
 
-                # fetch urls from database
-                resp = database_requester.request(
-                    path='/get_next_urls', params={'max_urls': MAX_URLS})
-                urls_in_queue = resp['urls']
+                try:
+                    # push data to database
+                    resp = database_requester.request(
+                        path='/push_urls_to_queue', method='POST',
+                        payload={'urls': urls_to_push})
+                except RequesterError as e:
+                    print(e, file=sys.stderr)
+
+                try:
+                    resp = database_requester.request(
+                        path='/push_webpage_to_database', method='POST',
+                        payload={'data': data_to_push})
+                except RequesterError as e:
+                    print(e, file=sys.stderr)
+
+                try:
+                    # fetch urls from database
+                    resp = database_requester.request(
+                        path='/get_next_urls', params={'max_urls': MAX_URLS})
+                    urls_in_queue = resp['urls']
+                except RequesterError as e:
+                    print(e, file=sys.stderr)
 
         with ThreadPoolExecutor(max_workers=NUM_THREAD) as executor:
             urls = list(urls_in_queue[:NUM_THREAD])

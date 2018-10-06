@@ -10,6 +10,11 @@ from kearch_common.data_format import wrap_json
 MAX_WORD_LEN = 200
 
 
+class RequesterError(Exception):
+    def __init__(self, message='This is default messege'):
+        self.message = 'RequesterError: ' + message
+
+
 def get_has_overlap_statement(queries):
     # TODO(gky360): escape words
     json_contains_funcs = map(
@@ -274,7 +279,7 @@ class KearchRequester(object):
             else:
                 raise ValueError('Invalid path: {}'.format(path))
         except Exception as e:
-            raise
+            raise RequesterError('at {}\n{}'.format(parsed_path, e))
         finally:
             cur.close()
             db.close()
