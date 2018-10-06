@@ -216,8 +216,7 @@ class KearchRequester(object):
                 statement = """
                 SELECT `webpages`.`id`, `url`, `title`, `summary`, SUM(`value`) AS `score`
                 FROM `words`
-                JOIN `title_words` ON words`.`id` = `title_words`.`word_id`
-                JOIN `tfidfs` ON words`.`id` = `tfidfs`.`word_id`
+                JOIN `tfidfs` ON `words`.`id` = `tfidfs`.`word_id`
                 JOIN `webpages` ON `tfidfs`.`webpage_id` = `webpages`.`id`
                 WHERE `words`.`str` IN ({})
                 GROUP BY `webpages`.`id`
