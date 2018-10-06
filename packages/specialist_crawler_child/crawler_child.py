@@ -4,9 +4,9 @@ import math
 import sys
 from collections import Counter
 
-import average_document
+import kearch_classifier.average_document
 import kearch_classifier.classifier
-import webpage
+import kearch_classifier.webpage
 
 confidence_threshold = -1.0e-10
 n_outer_derives = 100
@@ -20,7 +20,7 @@ def web_to_tfidf(web):
         sum_count += c
 
     tfidf = dict()
-    average_document_dict = average_document.average_document_dict()
+    average_document_dict = kearch_classifier.average_document.average_document_dict()
     size_of_average_document = len(average_document_dict)
 
     for w, c in counter:
@@ -40,8 +40,8 @@ def web_to_tfidf(web):
 
 def url_to_webpage(url):
     try:
-        w = webpage.Webpage(url)
-    except webpage.WebpageError:
+        w = kearch_classifier.webpage.Webpage(url)
+    except kearch_classifier.webpage.WebpageError:
         print('Cannot make webpage of ', url, file=sys.stderr)
         return None
 
