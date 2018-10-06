@@ -101,11 +101,10 @@ if __name__ == '__main__':
             else:
                 urls_to_push = list(
                     filter(lambda x: len(x) < 200, urls_to_push))
-                for u in urls_to_push:
-                    print('len = ', len(u))
 
                 try:
                     # push data to database
+                    print('pushing {} urls ...'.format(len(urls_to_push)))
                     resp = database_requester.request(
                         path='/push_urls_to_queue', method='POST',
                         payload={'urls': urls_to_push})
@@ -113,6 +112,7 @@ if __name__ == '__main__':
                     print(e, file=sys.stderr)
 
                 try:
+                    print('pushing {} webpages ...'.format(len(data_to_push)))
                     resp = database_requester.request(
                         path='/push_webpage_to_database', method='POST',
                         payload={'data': data_to_push})
