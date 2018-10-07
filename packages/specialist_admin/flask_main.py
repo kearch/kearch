@@ -10,6 +10,7 @@ app = flask.Flask(__name__)
 def send_db_summary():
     me_host = flask.request.form['me_host']
     sp_host = flask.request.form['sp_host']
+
     result = specialist_admin.send_db_summary(me_host, sp_host)
     return jsonify(result)
 
