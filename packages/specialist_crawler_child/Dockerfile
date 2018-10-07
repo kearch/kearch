@@ -12,8 +12,8 @@ RUN python -c "import nltk; nltk.download('stopwords')"
 
 # This process take a few minutes because it downloads many webpages
 # You can comment out these 2 lines. If you comment out, cached models are used.
-RUN python average_document.py random_url_list en
-RUN python classifier.py computer_science_url_list random_url_list en
+RUN python /kearch/packages/kearch_classifier/kearch_classifier/average_document.py random_url_list en
+RUN python /kearch/packages/kearch_classifier/kearch_classifier/classifier.py computer_science_url_list random_url_list en
 # If you want to select Japanse, please use
 # RUN python average_document.py random_ja_url_list_short ja
 # RUN python classifier.py computer_science_ja_url_list random_ja_url_list ja
