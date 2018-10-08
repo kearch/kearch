@@ -100,7 +100,8 @@ def dump_summary_form_sp_db(cur):
     prev_rowcount = -1
     last_word_id = 0
     while prev_rowcount != 0:
-        print('Dumping words word_id >', last_word_id, '...')
+        print('Dumping words word_id >', last_word_id, '...',
+              file=sys.stderr, flush=True)
         cur.execute(statement, (last_word_id, page_size))
         for row in cur.fetchall():
             last_word_id = row[0]
