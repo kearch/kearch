@@ -88,25 +88,26 @@ def post_webpage_to_db(db, cur, webpage):
 def dump_summary_form_sp_db(cur):
     page_size = 1000
     statement = """
-    SELECT JSON_KEYS(`tfidf`) AS `tfidf_keys` FROM `webpages`
+    SELECT `words`.`id`, `str`, COUNT(`webpage_id`)
+    FROM `words`
+    JOIN `tfidfs` ON `words`.`id` = `word_id`
+    WHERE `words`.`id` > %s
+    GROUP BY `words`.`id`
     LIMIT %s
-    OFFSET %s;
     """
 
     sp_summary = {}
     prev_rowcount = -1
-    page_cnt = 0
+    last_word_id = 0
     while prev_rowcount != 0:
-        cur.execute(statement, (page_size, page_cnt * page_size))
-        tfidf_keys = [json.loads(row[0]) for row in cur.fetchall()]
-        for words in tfidf_keys:
-            for word in words:
-                if not word in sp_summary:
-                    sp_summary[word] = 0
-                sp_summary[word] += 1
-
+        print('Dumping words word_id >', last_word_id, '...')
+        cur.execute(statement, (last_word_id, page_size))
+        for row in cur.fetchall():
+            last_word_id = row[0]
+            word = row[1]
+            cnt = row[2]
+            sp_summary[word] = cnt
         prev_rowcount = cur.rowcount
-        page_cnt += 1
     return sp_summary
 
 
