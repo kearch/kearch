@@ -1,10 +1,20 @@
 import json
+import sys
+import traceback
 import urllib
 
 import mysql.connector
 import requests
 
 from kearch_common.data_format import wrap_json
+
+
+MAX_WORD_LEN = 200
+
+
+class RequesterError(Exception):
+    def __init__(self, message='This is default messege'):
+        self.message = 'RequesterError: ' + message
 
 
 def get_has_overlap_statement(queries):
@@ -23,28 +33,82 @@ def get_tfidf_sum_statement(queries):
     return ' + '.join(tfidfs)
 
 
+def post_webpage_to_db(db, cur, webpage):
+    statement = """
+    INSERT INTO `webpages`
+    (`url`, `title`, `summary`)
+    VALUES (%s, %s, %s)
+    ON DUPLICATE KEY UPDATE `title` = VALUES(`title`), `summary` = VALUES(`summary`)
+    """
+    cur.execute(statement,
+                (webpage['url'], webpage['title'], webpage['summary']))
+    db.commit()
+
+    statement = """
+    SELECT `id` FROM `webpages` WHERE `url` = %s LIMIT 1
+    """
+    cur.execute(statement, (webpage['url'],))
+    row = cur.fetchone()
+    webpage_id = row[0]
+
+    statement = """
+    INSERT IGNORE INTO `words`
+    (`str`)
+    VALUES (%s)
+    """
+    words = list(webpage['tfidf']) + webpage['title_words']
+    word_records = map(lambda w: (w,),
+                       filter(lambda w: len(w) < MAX_WORD_LEN, words))
+    cur.executemany(statement, word_records)
+    db.commit()
+
+    statement = """
+    INSERT IGNORE INTO `title_words`
+    (`webpage_id`, `word_id`)
+    SELECT %s, `words`.`id` FROM `words` WHERE `str` = %s LIMIT 1
+    """
+    title_word_records = map(lambda w: (webpage_id, w), webpage['title_words'])
+    for record in title_word_records:
+        cur.execute(statement, record)
+    db.commit()
+
+    statement = """
+    INSERT INTO `tfidfs`
+    (`webpage_id`, `word_id`, `value`)
+    SELECT %s, `words`.`id`, %s FROM `words` WHERE `str` = %s LIMIT 1
+    ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)
+    """
+    tfidfs_records = map(lambda w: (
+        webpage_id, webpage['tfidf'][w], w), webpage['tfidf'].keys())
+    for record in tfidfs_records:
+        cur.execute(statement, record)
+    db.commit()
+
+
 def dump_summary_form_sp_db(cur):
     page_size = 1000
     statement = """
-    SELECT JSON_KEYS(`tfidf`) AS `tfidf_keys` FROM `webpages`
+    SELECT `words`.`id`, `str`, COUNT(`webpage_id`)
+    FROM `words`
+    JOIN `tfidfs` ON `words`.`id` = `word_id`
+    WHERE `words`.`id` > %s
+    GROUP BY `words`.`id`
     LIMIT %s
-    OFFSET %s;
     """
 
     sp_summary = {}
     prev_rowcount = -1
-    page_cnt = 0
+    last_word_id = 0
     while prev_rowcount != 0:
-        cur.execute(statement, (page_size, page_cnt * page_size))
-        tfidf_keys = [json.loads(row[0]) for row in cur.fetchall()]
-        for words in tfidf_keys:
-            for word in words:
-                if not word in sp_summary:
-                    sp_summary[word] = 0
-                sp_summary[word] += 1
-
+        print('Dumping words word_id >', last_word_id, '...',
+              file=sys.stderr, flush=True)
+        cur.execute(statement, (last_word_id, page_size))
+        for row in cur.fetchall():
+            last_word_id = row[0]
+            word = row[1]
+            cnt = row[2]
+            sp_summary[word] = cnt
         prev_rowcount = cur.rowcount
-        page_cnt += 1
     return sp_summary
 
 
@@ -126,22 +190,9 @@ class KearchRequester(object):
 
         try:
             if parsed_path == '/push_webpage_to_database':
-                # get webpage records from payload
-                webpage_records = [(w['url'],
-                                    w['title'],
-                                    json.dumps(w['title_words']),
-                                    w['summary'],
-                                    json.dumps(w['tfidf']))
-                                   for w in payload['data']]
-                statement = """
-                REPLACE INTO `webpages`
-                (`url`, `title`, `title_words`, `summary`, `tfidf`)
-                VALUES (%s, %s, %s, %s, %s)
-                """
-
-                cur.executemany(statement, webpage_records)
-                db.commit()
-                ret = cur.rowcount
+                for webpage in payload['data']:
+                    post_webpage_to_db(db, cur, webpage)
+                ret = len(payload['data'])
             elif parsed_path == '/get_next_urls':
                 max_urls = int(params['max_urls'])
                 select_statement = """
@@ -171,24 +222,23 @@ class KearchRequester(object):
                 queries = params['queries']
                 max_urls = int(params['max_urls'])
 
-                select_statement = """
-                SELECT
-                    `url`, `title`, `title_words`, `summary`, `tfidf`,
-                    ({}) AS has_overwrap,
-                    ({}) AS tfidf_sum
-                FROM `webpages`
-                ORDER BY has_overwrap DESC, tfidf_sum DESC
+                statement = """
+                SELECT `webpages`.`id`, `url`, `title`, `summary`, SUM(`value`) AS `score`
+                FROM `words`
+                JOIN `tfidfs` ON `words`.`id` = `tfidfs`.`word_id`
+                JOIN `webpages` ON `tfidfs`.`webpage_id` = `webpages`.`id`
+                WHERE `words`.`str` IN ({})
+                GROUP BY `webpages`.`id`
+                ORDER BY `score` DESC
                 LIMIT %s;
-                """.format(get_has_overlap_statement(queries),
-                           get_tfidf_sum_statement(queries))
-
-                cur.execute(select_statement, (max_urls,))
+                """.format(','.join(['%s'] * len(queries)))
+                cur.execute(statement, tuple(queries) + (max_urls,))
                 result_webpages = [{
-                    'url': row[0],
-                    'title': row[1],
-                    'title_words': json.loads(row[2]),
+                    'id': row[0],
+                    'url': row[1],
+                    'title': row[2],
                     'summary': row[3],
-                    'tfidf': json.loads(row[4])
+                    'score': row[4],
                 } for row in cur.fetchall()]
 
                 ret = {
@@ -218,7 +268,7 @@ class KearchRequester(object):
                 summary = payload['summary']
                 sp_server_records = [(word, sp_host, frequency)
                                      for word, frequency in summary.items()
-                                     if len(word) <= 200]
+                                     if len(word) <= MAX_WORD_LEN]
 
                 statement = """
                 REPLACE INTO `sp_servers` (`word`, `host`, `frequency`)
@@ -233,7 +283,8 @@ class KearchRequester(object):
             else:
                 raise ValueError('Invalid path: {}'.format(path))
         except Exception as e:
-            raise
+            print(traceback.format_exc(), file=sys.stderr)
+            raise RequesterError('at {}\n{}'.format(parsed_path, e))
         finally:
             cur.close()
             db.close()
