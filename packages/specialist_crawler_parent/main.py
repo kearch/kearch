@@ -110,6 +110,7 @@ if __name__ == '__main__':
                         payload={'urls': urls_to_push})
                 except RequesterError as e:
                     print(e, file=sys.stderr)
+                urls_to_push = list()
 
                 try:
                     print('pushing {} webpages ...'.format(len(data_to_push)))
@@ -118,6 +119,7 @@ if __name__ == '__main__':
                         payload={'data': data_to_push})
                 except RequesterError as e:
                     print(e, file=sys.stderr)
+                data_to_push = list()
 
                 try:
                     # fetch urls from database
