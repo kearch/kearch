@@ -73,6 +73,16 @@ def get_next_urls_dummy(max_urls):
     return ret
 
 
+def exclude_deeper_link(original, derives):
+    res = list()
+    for d in derives:
+        original_parsed = urllib.parse.urlparse(original)
+        derived_parsed = urllib.parse.urlparse(d)
+        if original_parsed.path.count('/') >= derived_parsed.path.count('/'):
+            res.append(d)
+    return res
+
+
 if __name__ == '__main__':
     database_requester = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
@@ -135,7 +145,8 @@ if __name__ == '__main__':
             results = executor.map(crawl_a_page, urls)
         results = list(filter(lambda x: x != {}, results))
         for r in results:
-            urls_to_push.extend(r['inner_links'])
+            urls_to_push.extend(exclude_deeper_link(
+                r['url'], r['inner_links']))
             urls_to_push.extend(r['outer_links'])
         for r in results:
             d = r
