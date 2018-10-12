@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kearch
+  name: sp-front
+  labels:
+    engine: sp
+    app: front
+spec:
+  selector:
+    matchLabels:
+      engine: sp
+      app: front
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        engine: sp
+        app: front
+    spec:
+      containers:
+      - image: kearch/sp-front
+        name: sp-front
+        ports:
+        - containerPort: 2222
+        imagePullPolicy: Never

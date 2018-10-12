@@ -13,4 +13,4 @@ WORKDIR /kearch/packages/specialist_front
 # COPY ./static ./static
 # COPY ./templates ./templates
 # CMD python3 flask_main.py
-CMD ["python", "-u", "kearch/packages/specialist_front/flask_main.py"]
+CMD ["python", "-u", "flask_main.py"]
