@@ -6,7 +6,7 @@ import pickle
 import sys
 import traceback
 
-import webpage
+from . import webpage
 
 CACHE_FILE = 'average_document.pickle'
 
