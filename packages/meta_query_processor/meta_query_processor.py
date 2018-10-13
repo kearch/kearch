@@ -53,7 +53,6 @@ def get_result_from_sp(sp_host, queries, max_urls):
 def retrieve(queries, max_urls):
     sp_data = get_sp_host_from_database(queries)
     host_to_score = dict()
-    # TODO: score最大のhostを選ぶ処理は db 側でやるか python 側でやるか要検討
     for d in sp_data.values():
         for host, freq in d.items():
             if host in host_to_score:
