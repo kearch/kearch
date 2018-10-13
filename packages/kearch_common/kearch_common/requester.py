@@ -251,18 +251,18 @@ class KearchRequester(object):
 
                 format_strings = ','.join(['%s'] * len(queries))
                 statement = """
-                SELECT `host`, SUM(`frequency`) AS `score` FROM `sp_servers`
+                SELECT `word`, `host`, `frequency` FROM `sp_servers`
                 WHERE `word` IN ({:s})
-                GROUP BY `host`
-                ORDER BY `score` DESC
-                LIMIT 1
                 """.format(format_strings)
 
                 cur.execute(statement, tuple(queries))
 
-                row = cur.fetchone()
-                sp_host = row[0]
-                ret = sp_host
+                ret = {}
+                for row in cur.fetchall():
+                    word, host, freq = row[0], row[1], row[2]
+                    if not word in ret:
+                        ret[word] = {}
+                    ret[word][host] = freq
             elif parsed_path == '/add_new_sp_server':
                 sp_host = payload['host']
                 summary = payload['summary']
