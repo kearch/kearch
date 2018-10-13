@@ -6,5 +6,5 @@ CREATE TABLE `sp_servers` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY(`id`),
-  UNIQUE KEY index_sp_servers_on_word_and_host UNIQUE (word, host)
+  UNIQUE KEY index_sp_servers_on_word_and_host (word, host)
 ) ENGINE=InnoDB CHARACTER SET=utf8mb4;
