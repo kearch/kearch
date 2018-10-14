@@ -252,7 +252,7 @@ class KearchRequester(object):
                 format_strings = ','.join(['%s'] * len(queries))
                 statement = """
                 SELECT `word`, `host`, `frequency` FROM `sp_servers`
-                WHERE `word` IN ({:s});
+                WHERE `word` IN ({:s})
                 """.format(format_strings)
 
                 cur.execute(statement, tuple(queries))
