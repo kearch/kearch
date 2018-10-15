@@ -86,7 +86,7 @@ Return JSON
   }
 }
 ```
-## Push data of webpage to database
+## [Deperecated] Push data of webpage to database
 Access URL (POST)
 ```
 $(ip adress of the database server)/push_webpage_to_database
@@ -104,7 +104,21 @@ JSON for POST method
         }
     },...
 ]}
+```
 
+## [TODO] Update dump of sp-db
+Access URL (POST)
+```
+$(ip adress of the database server)/update_dump
+```
+JSON for POST method
+```
+{'data':
+    {
+        'haskell': 10,
+        'lisp': 5
+    }
+}
 ```
 
 ## Fetch urls from FIFO queue in database
