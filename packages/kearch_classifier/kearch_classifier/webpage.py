@@ -116,7 +116,7 @@ class Webpage(object):
         if len(url) > 200:
             raise WebpageError('URL is too long.')
         try:
-            content = requests.get(self.url).content
+            content = requests.get(self.url, timeout=5).content
         except requests.exceptions.RequestException:
             raise WebpageError('Cannot get content.')
         except (UnicodeError, urllib3.exceptions.LocationValueError):
@@ -146,10 +146,11 @@ class Webpage(object):
         except langdetect.lang_detect_exception.LangDetectException:
             raise WebpageError('Cannot detect language.')
 
-        self.title_words = self.text_to_words(self.title, language=self.language)
+        self.title_words = self.text_to_words(
+            self.title, language=self.language)
         # convert all white space to sigle space
-        self.text = ' '.join(
-            filter(lambda x: not x == '', re.split('\s', self.text)))
+        # self.text = ' '.join(
+        # filter(lambda x: not x == '', re.split('\s', self.text)))
 
         # This version do not respond to mutibyte characters
         self.summary = self.text[:500]
@@ -161,7 +162,10 @@ if __name__ == '__main__':
     detector = langdetect.detect(t)
     print(detector)
 
-    url = 'https://ja.wikipedia.org/wiki/Python'
-    w = Webpage(url, 'ja')
-    print(w.title, w.title_words, w.words)
+    url = 'https://en.wikipedia.org/wiki/Python_(programming_language)'
+    # url = 'https://news.ycombinator.com/'
+    url = 'https://nginx-c-function.github.io/'
+    url = 'https://www.haskell.org/'
+    w = Webpage(url, 'en')
+    print(w.text)
     # print(w.text)
