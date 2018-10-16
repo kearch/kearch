@@ -1,0 +1,16 @@
+piVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  labels:
+    engine: sp
+    component: elasticsearch
+    role: data
+spec:
+  selector:
+    component: elasticsearch
+    role: data
+  ports:
+  - name: http
+    port: 9200
+#type: LoadBalancer
