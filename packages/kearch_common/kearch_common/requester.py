@@ -130,10 +130,10 @@ class KearchRequester(object):
 
     def request(self, path='', method='GET',
                 params=None, payload=None,
-                headers=None, timeout=None):
+                headers=None, timeout=None,wrapping=True):
         if self.conn_type == 'json':
             return self.request_json(path, method, params, payload,
-                                     headers, timeout)
+                                     headers, timeout, wrapping)
         elif self.conn_type == 'sql':
             return self.request_sql(path, method, params, payload,
                                     headers, timeout)
@@ -142,15 +142,16 @@ class KearchRequester(object):
 
     def request_json(self, path='', method='GET',
                      params=None, payload=None,
-                     headers=None, timeout=None):
+                     headers=None, timeout=None, wrapping=True):
         if self.port is None:
             url = urllib.parse.urljoin(self.host, path)
         else:
             url = urllib.parse.urljoin(
                 'http://{}:{}'.format(self.host, self.port), path)
 
-        if method == 'GET':
+        if method == 'GET' or not wrapping:
             # GET の場合は payload を url param にする
+            # ElasticSearchを使うためにwrapping optionを追加した
             resp = requests.get(url, params=params, timeout=timeout)
         else:
             # GET 以外は json に payload を含めて送る
