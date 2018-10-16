@@ -10,6 +10,7 @@ spec:
   selector:
     component: elasticsearch
     role: data
+  type: NodePort
   ports:
   - name: http
     port: 9200
