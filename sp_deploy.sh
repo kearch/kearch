@@ -8,6 +8,7 @@ if [ $# -lt 1 ]; then
     echo "You can specify like ./sp_deploy.sh all or ./sp_deploy spdb spfront."
     echo "\"all\" : Deploy all deployment except sp-db."
     echo "\"spdb\" : Deploy sp-db. !!THIS OPTION DELETE ALL DATABASE.!!"
+    echo "\"spes\" : Deploy sp-es. !!THIS OPTION DELETE ALL ELASTICSEARCH INDICES.!!"
     echo "\"spfront\": Deploy sp-front."
     echo "\"spcchi\": Deploy sp-crawler-child."
     echo "\"spcpar\": Deploy sp-crawler-parent."
@@ -77,6 +78,22 @@ do
 
         $KEARCH_ROOT_DIR/sp_db_checker.sh
         echo "----- Finish deployment of specialist DB. -----"
+    fi
+
+    if [ $arg = spes ]; then
+        # sp-es
+        echo
+        read -p "Are you sure? This operation destroy all your elasticsearch indices. (y/n)" yn
+        if [ "$yn" != 'y' ]; then
+            exit
+        fi
+
+        echo "----- Start to deploy specialist elasticsearch. -----"
+        cd $KEARCH_ROOT_DIR/services/sp-es
+
+        kubectl --namespace=kearch apply --recursive -f .
+
+        echo "----- Finish deployment of specialist elasticsearch. -----"
     fi
 
     if [ $arg = spfront ] || [ $arg = all ]; then
