@@ -149,16 +149,19 @@ class KearchRequester(object):
             url = urllib.parse.urljoin(
                 'http://{}:{}'.format(self.host, self.port), path)
 
-        if method == 'GET' or not wrapping:
+        if method == 'GET':
             # GET の場合は payload を url param にする
-            # ElasticSearchを使うためにwrapping optionを追加した
             resp = requests.get(url, params=params, timeout=timeout)
         else:
             # GET 以外は json に payload を含めて送る
-            meta = {
-                'requester': self.requester_name,
-            }
-            data = wrap_json(payload, meta)
+            # ElasticSearchを使うためにwrapping optionを追加した
+            if wrapping:
+                meta = {
+                    'requester': self.requester_name,
+                }
+                data = wrap_json(payload, meta)
+            else:
+                data = payload
             resp = requests.request(
                 method, url, params=params, json=data, timeout=timeout)
 
