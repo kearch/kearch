@@ -141,7 +141,7 @@ class KearchRequester(object):
             return self.request_elastic(path, method, params, payload,
                                      headers, timeout)
         else:
-            raise ValueError('conn_type should be "json" or "sql".')
+            raise ValueError('conn_type should be "json", "elastic" or "sql".')
 
     def request_json(self, path='', method='GET',
                      params=None, payload=None,
