@@ -5,10 +5,8 @@ Open and distributed search engine
 ```
 git clone https://github.com/kearch/kearch.git
 cd kearch
-./sp_deploy.sh spdb
-./sp_deploy.sh all
-./me_deploy.sh spdb
-./me_deploy.sh all
+./sp_deploy.sh spdb spes all
+./me_deploy.sh medb all
 ```
 ## Check your DB in kearch
 Check the specialist DB.
