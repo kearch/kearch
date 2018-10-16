@@ -25,6 +25,7 @@ fi
 KEARCH_ROOT_DIR=$(cd $(dirname $0); pwd)
 echo "KEARCH_ROOT_DIR = "${KEARCH_ROOT_DIR}
 KEARCH_COMMON_BRANCH=${KEARCH_COMMON_BRANCH:-"dev"}
+# KEARCH_COMMON_BRANCH=feature/crawler-elastic
 echo "KEARCH_COMMON_BRANCH = "$KEARCH_COMMON_BRANCH""
 # CMD_DOCKER_BUILD="docker build --build-arg KEARCH_COMMON_BRANCH=$KEARCH_COMMON_BRANCH"
 # use '--no-cache' to disable docker's cahce
@@ -77,6 +78,10 @@ do
         kubectl --namespace=kearch exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/title_words_schema.sql'
 
         $KEARCH_ROOT_DIR/sp_db_checker.sh
+
+        pods=$(kubectl get pods --namespace=kearch | grep sp-db | cut -d" " -f1)
+        kubectl delete pods --namespace=kearch $pods
+
         echo "----- Finish deployment of specialist DB. -----"
     fi
 
@@ -93,6 +98,9 @@ do
 
         kubectl --namespace=kearch apply --recursive -f .
 
+        pods=$(kubectl get pods --namespace=kearch | grep sp-es | cut -d" " -f1)
+        kubectl delete pods --namespace=kearch $pods
+
         echo "----- Finish deployment of specialist elasticsearch. -----"
     fi
 
@@ -107,6 +115,10 @@ do
         cd $KEARCH_ROOT_DIR/services/sp-front
 
         kubectl --namespace=kearch apply --recursive -f .
+
+        pods=$(kubectl get pods --namespace=kearch | grep sp-front | cut -d" " -f1)
+        kubectl delete pods --namespace=kearch $pods
+
         echo "----- Finish deployment of specialist front. -----"
     fi
 
@@ -120,6 +132,10 @@ do
         cd $KEARCH_ROOT_DIR/services/sp-crawler-parent
 
         kubectl --namespace=kearch apply --recursive -f .
+
+        pods=$(kubectl get pods --namespace=kearch | grep sp-crawler-parent | cut -d" " -f1)
+        kubectl delete pods --namespace=kearch $pods
+
         echo "----- Finish deployment of specialist crawler parent. -----"
     fi
 
@@ -138,6 +154,10 @@ do
         cd $KEARCH_ROOT_DIR/services/sp-crawler-child
 
         kubectl --namespace=kearch apply --recursive -f .
+
+        pods=$(kubectl get pods --namespace=kearch | grep sp-crawler-child | cut -d" " -f1)
+        kubectl delete pods --namespace=kearch $pods
+
         echo "----- Finish deployment of specialist crawler child. -----"
     fi
 
@@ -152,6 +172,10 @@ do
         cd $KEARCH_ROOT_DIR/services/sp-admin
 
         kubectl --namespace=kearch apply --recursive -f .
+
+        pods=$(kubectl get pods --namespace=kearch | grep sp-admin | cut -d" " -f1)
+        kubectl delete pods --namespace=kearch $pods
+
         echo "----- Finish deployment of specialist admin. -----"
     fi
 
@@ -166,6 +190,9 @@ do
 
         cd $KEARCH_ROOT_DIR/services/sp-query-processor
         kubectl --namespace=kearch apply --recursive -f .
+
+        pods=$(kubectl get pods --namespace=kearch | grep sp-query-processor | cut -d" " -f1)
+        kubectl delete pods --namespace=kearch $pods
 
         echo "----- Finish deployment of specialist query processor. -----"
     fi
@@ -182,10 +209,9 @@ do
         cd $KEARCH_ROOT_DIR/services/sp-gateway
         kubectl --namespace=kearch apply --recursive -f .
 
+        pods=$(kubectl get pods --namespace=kearch | grep sp-gateway | cut -d" " -f1)
+        kubectl delete pods --namespace=kearch $pods
+
         echo "----- Finish deployment of specialist gateway. -----"
     fi
 done
-
-echo
-echo "----- Delete all pods -----"
-kubectl --namespace=kearch delete pod -l engine=sp
