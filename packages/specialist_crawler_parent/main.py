@@ -12,7 +12,12 @@ CRAWLER_CHILD_PORT = 10080
 DATABASE_HOST = 'sp-db.kearch.svc.cluster.local'
 DATABASE_PORT = 3306
 
-NUM_THREAD = 5
+ELASTIC_HOST = 'sp-es.kearch.svc.cluster.local'
+ELASTIC_PORT = 9200
+ELASTIC_INDEX = 'sp'
+ELASTIC_TYPE = 'webpage'
+
+NUM_THREAD = 10
 
 REQUESTER_NAME = 'specialist_crawler_parent'
 
@@ -48,9 +53,8 @@ def crawl_a_page(url):
     if DEBUG_UNIT_TEST:
         ret = {
             'url': 'www.google.com',
-            'title_words': ['google', 'USA'],
-            'summary': 'Google is the biggest IT company.',
-            'tfidf': {'google': 1.0},
+            'title': 'Google is the biggest IT company.',
+            'text': 'hello world!',
             'inner_links': ['www.facebook.com'],
             'outer_links': []}
         time.sleep(2)
@@ -86,6 +90,8 @@ def exclude_deeper_link(original, derives):
 if __name__ == '__main__':
     database_requester = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    elastic_requester = KearchRequester(
+        ELASTIC_HOST, ELASTIC_PORT, REQUESTER_NAME, conn_type='elastic')
     robots_checker = RobotsChecker()
 
     if DEBUG_UNIT_TEST:
@@ -122,14 +128,16 @@ if __name__ == '__main__':
                     print(e, file=sys.stderr)
                 urls_to_push = list()
 
-                try:
-                    print('pushing {} webpages ...'.format(len(data_to_push)))
-                    resp = database_requester.request(
-                        path='/push_webpage_to_database', method='POST',
-                        payload={'data': data_to_push})
-                except RequesterError as e:
-                    print(e, file=sys.stderr)
-                data_to_push = list()
+                print('pushing {} webpages ...'.format(len(data_to_push)))
+                for d in data_to_push:
+                    try:
+                        resp = elastic_requester.request(
+                            path='/' + ELASTIC_INDEX + '/' + ELASTIC_TYPE + '/', method='POST',
+                            payload=d)
+                        print('resp = ', resp)
+                    except RequesterError as e:
+                        print(e, file=sys.stderr)
+                    data_to_push = list()
 
                 try:
                     # fetch urls from database
@@ -149,10 +157,8 @@ if __name__ == '__main__':
                 r['url'], r['inner_links']))
             urls_to_push.extend(r['outer_links'])
         for r in results:
-            d = r
-            del d['inner_links']
-            del d['outer_links']
-            data_to_push.append(d)
+            data_to_push.append(
+                {'url': r['url'], 'title': r['title'], 'text': r['text']})
 
         urls_in_queue = urls_in_queue[NUM_THREAD:]
         time.sleep(2)

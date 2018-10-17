@@ -130,19 +130,22 @@ class KearchRequester(object):
 
     def request(self, path='', method='GET',
                 params=None, payload=None,
-                headers=None, timeout=None,wrapping=True):
+                headers=None, timeout=None):
         if self.conn_type == 'json':
             return self.request_json(path, method, params, payload,
-                                     headers, timeout, wrapping)
+                                     headers, timeout)
         elif self.conn_type == 'sql':
             return self.request_sql(path, method, params, payload,
                                     headers, timeout)
+        elif self.conn_type == 'elastic':
+            return self.request_elastic(path, method, params, payload,
+                                     headers, timeout)
         else:
-            raise ValueError('conn_type should be "json" or "sql".')
+            raise ValueError('conn_type should be "json", "elastic" or "sql".')
 
     def request_json(self, path='', method='GET',
                      params=None, payload=None,
-                     headers=None, timeout=None, wrapping=True):
+                     headers=None, timeout=None):
         if self.port is None:
             url = urllib.parse.urljoin(self.host, path)
         else:
@@ -154,18 +157,35 @@ class KearchRequester(object):
             resp = requests.get(url, params=params, timeout=timeout)
         else:
             # GET 以外は json に payload を含めて送る
-            # ElasticSearchを使うためにwrapping optionを追加した
-            if wrapping:
-                meta = {
-                    'requester': self.requester_name,
-                }
-                data = wrap_json(payload, meta)
-            else:
-                data = payload
+            meta = {
+                'requester': self.requester_name,
+            }
+            data = wrap_json(payload, meta)
             resp = requests.request(
                 method, url, params=params, json=data, timeout=timeout)
 
         return resp.json()
+
+    def request_elastic(self, path='', method='GET',
+                     params=None, payload=None,
+                     headers=None, timeout=None):
+        if self.port is None:
+            url = urllib.parse.urljoin(self.host, path)
+        else:
+            url = urllib.parse.urljoin(
+                'http://{}:{}'.format(self.host, self.port), path)
+
+        if method == 'GET':
+            # GET の場合は payload を url param にする
+            resp = requests.get(url, params=params, timeout=timeout)
+        else:
+            # In the other cases, send the payload just as it is.
+            resp = requests.request(
+                method, url, params=params, json=payload, timeout=timeout)
+
+        return resp.json()
+
+
 
     def request_sql(self, path='', method='GET',
                     params=None, payload=None,
