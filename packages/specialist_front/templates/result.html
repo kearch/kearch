@@ -86,10 +86,10 @@ p { margin: 0; }
             {% for r in results %}
             <li>
                 <div class="entry">
-                    <div class="title"><a href="{{ r[0] }}">{{ r[1] }}</a></div>
-                    <div class="url"><p>{{ r[0] }}</p></div>
-                    <div class="summary"><p>{{ r[2] }}</p></div>
-                    <p>{{ r[3] }}</p>
+                    <div class="title"><a href="{{ r['url'] }}">{{ r['title'] }}</a></div>
+                    <div class="url"><p>{{ r['url'] }}</p></div>
+                    <div class="summary"><p>{{ r['summary'] }}</p></div>
+                    <p>{{ r['score'] }}</p>
                 </div>
             </li>
             {% endfor %}
