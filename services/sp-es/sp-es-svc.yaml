@@ -4,6 +4,7 @@ metadata:
   name: sp-es
   labels:
     engine: sp
+    app: es
     component: elasticsearch
     role: data
 spec:

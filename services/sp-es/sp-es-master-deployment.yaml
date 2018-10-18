@@ -4,6 +4,7 @@ metadata:
   name: sp-es-master
   labels:
     engine: sp
+    app: es
     component: elasticsearch
     role: master
 spec:
@@ -12,6 +13,7 @@ spec:
     metadata:
       labels:
         engine: sp
+        app: es
         component: elasticsearch
         role: master
     spec:

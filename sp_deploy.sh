@@ -6,7 +6,7 @@ set -eu
 if [ $# -lt 1 ]; then
     echo "Please specify services which you want to deploy or re-deploy."
     echo "You can specify like ./sp_deploy.sh all or ./sp_deploy spdb spfront."
-    echo "\"all\" : Deploy all deployment except sp-db."
+    echo "\"all\" : Deploy all deployment except sp-db and sp-es."
     echo "\"spdb\" : Deploy sp-db. !!THIS OPTION DELETE ALL DATABASE.!!"
     echo "\"spes\" : Deploy sp-es. !!THIS OPTION DELETE ALL ELASTICSEARCH INDICES.!!"
     echo "\"spfront\": Deploy sp-front."
