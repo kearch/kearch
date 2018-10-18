@@ -57,7 +57,7 @@ do
 
         sp_db_pod_name=$(kubectl --namespace=kearch get po -l engine=sp,app=db -o go-template --template '{{(index .items 0).metadata.name}}')
         echo "----- sp_db_pod_name = "${sp_db_pod_name}" -----"
-        kubectl --namespace=kearch exec $sp_db_pod_name -- mysql -uroot -ppassword -e 'DROP DATABASE kearch_sp_dev'
+        kubectl --namespace=kearch exec $sp_db_pod_name -- mysql -uroot -ppassword -e 'DROP DATABASE IF EXISTS kearch_sp_dev'
         kubectl --namespace=kearch exec $sp_db_pod_name -- mysql -uroot -ppassword -e 'CREATE DATABASE kearch_sp_dev CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
 
         kubectl --namespace=kearch cp $(pwd)/sql/url_queue_schema.sql $sp_db_pod_name:/tmp/url_queue_schema.sql
