@@ -287,6 +287,9 @@ class KearchRequester(object):
                 ret = {
                     'data': result_webpages
                 }
+            elif parsed_path == '/update_dump':
+                # TODO(gky360): implement
+                pass
             elif parsed_path == '/dump_database':
                 ret = dump_summary_form_sp_db(cur)
             elif parsed_path == '/retrieve_sp_servers':
