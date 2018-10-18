@@ -68,7 +68,7 @@ do
         # me-front
         echo
         echo "----- Start deployment of meta front. -----"
-        cd $KEARCH_ROOT_DIR/packages/meta_front
+        cd $KEARCH_ROOT_DIR/packages/me-front
 
         $CMD_DOCKER_BUILD -t kearch/me-front .
 
@@ -82,7 +82,7 @@ do
         # me-query-processor
         echo
         echo "----- Start deployment of meta query processor. -----"
-        cd $KEARCH_ROOT_DIR/packages/meta_query_processor
+        cd $KEARCH_ROOT_DIR/packages/me-query_processor
 
         $CMD_DOCKER_BUILD -t kearch/me-query-processor .
 
@@ -96,7 +96,7 @@ do
         # me-gateway
         echo
         echo "----- Start deployment of meta gateway. -----"
-        cd $KEARCH_ROOT_DIR/packages/meta_gateway
+        cd $KEARCH_ROOT_DIR/packages/me-gateway
 
         $CMD_DOCKER_BUILD -t kearch/me-gateway .
 
