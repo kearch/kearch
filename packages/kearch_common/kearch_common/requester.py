@@ -287,11 +287,20 @@ class KearchRequester(object):
                 ret = {
                     'data': result_webpages
                 }
-            elif parsed_path == '/update_dump':
-                # TODO(gky360): implement
-                pass
             elif parsed_path == '/dump_database':
                 ret = dump_summary_form_sp_db(cur)
+            elif parsed_path == '/update_dump':
+                summary_records = [(word, freq)
+                                   for word, freq in payload['data'].items()]
+                statement = """
+                INSERT INTO `summary`
+                (`word`, `frequency`)
+                VALUES (%s, %s)
+                ON DUPLICATE KEY UPDATE `frequency` = `frequency` + VALUES(`frequency`)
+                """
+                cur.executemany(statement, summary_records)
+                db.commit()
+                ret = cur.rowcount
             elif parsed_path == '/retrieve_sp_servers':
                 queries = params['queries']
 
