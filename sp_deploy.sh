@@ -61,6 +61,7 @@ do
         kubectl --namespace=kearch exec $sp_db_pod_name -- mysql -uroot -ppassword -e 'CREATE DATABASE kearch_sp_dev CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
 
         kubectl --namespace=kearch cp $(pwd)/sql/url_queue_schema.sql $sp_db_pod_name:/tmp/url_queue_schema.sql
+        kubectl --namespace=kearch cp $(pwd)/sql/summary_schema.sql $sp_db_pod_name:/tmp/summary_schema.sql
         kubectl --namespace=kearch cp $(pwd)/sql/webpages_schema.sql $sp_db_pod_name:/tmp/webpages_schema.sql
         kubectl --namespace=kearch cp $(pwd)/sql/words_schema.sql $sp_db_pod_name:/tmp/words_schema.sql
         kubectl --namespace=kearch cp $(pwd)/sql/tfidfs_schema.sql $sp_db_pod_name:/tmp/tfidfs_schema.sql
@@ -68,6 +69,8 @@ do
 
         echo url_queue_schema
         kubectl --namespace=kearch exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/url_queue_schema.sql'
+        echo summary_schema
+        kubectl --namespace=kearch exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/summary_schema.sql'
         echo webpages_schema
         kubectl --namespace=kearch exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/webpages_schema.sql'
         echo words_schema
