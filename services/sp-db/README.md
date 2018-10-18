@@ -145,3 +145,17 @@ JSON for POST method
     'http://www.facebook.com']
 }
 ```
+
+## Push crawled urls to database
+Path
+```
+/push_crawled_urls
+```
+JSON
+```
+{'data':[
+    {
+        'url':'www.google.com',
+    },...
+]}
+```

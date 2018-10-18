@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import sys
 import traceback
@@ -139,7 +140,7 @@ class KearchRequester(object):
                                     headers, timeout)
         elif self.conn_type == 'elastic':
             return self.request_elastic(path, method, params, payload,
-                                     headers, timeout)
+                                        headers, timeout)
         else:
             raise ValueError('conn_type should be "json", "elastic" or "sql".')
 
@@ -167,8 +168,8 @@ class KearchRequester(object):
         return resp.json()
 
     def request_elastic(self, path='', method='GET',
-                     params=None, payload=None,
-                     headers=None, timeout=None):
+                        params=None, payload=None,
+                        headers=None, timeout=None):
         if self.port is None:
             url = urllib.parse.urljoin(self.host, path)
         else:
@@ -184,8 +185,6 @@ class KearchRequester(object):
                 method, url, params=params, json=payload, timeout=timeout)
 
         return resp.json()
-
-
 
     def request_sql(self, path='', method='GET',
                     params=None, payload=None,
@@ -217,13 +216,33 @@ class KearchRequester(object):
                 for webpage in payload['data']:
                     post_webpage_to_db(db, cur, webpage)
                 ret = len(payload['data'])
+            elif parsed_path == '/push_crawled_urls':
+                now = datetime.now()
+                url_queue_records = map(
+                    lambda w: (w['url'], now), payload['data'])
+                statement = """
+                INSERT INTO `url_queue`
+                (`url`, `crawled_at`)
+                VALUES (%s, %s)
+                ON DUPLICATE KEY UPDATE `crawled_at` = VALUES(`crawled_at`)
+                """
+
+                cur.executemany(statement, url_queue_records)
+                db.commit()
+                ret = cur.rowcount
             elif parsed_path == '/get_next_urls':
                 max_urls = int(params['max_urls'])
                 select_statement = """
-                SELECT `url` FROM `url_queue` ORDER BY `updated_at` LIMIT %s
+                SELECT `url` FROM `url_queue`
+                WHERE `crawled_at` IS NULL
+                ORDER BY `updated_at`
+                LIMIT %s
                 """
                 delete_statement = """
-                DELETE FROM `url_queue` ORDER BY `updated_at` LIMIT %s
+                DELETE FROM `url_queue`
+                WHERE `crawled_at` IS NULL
+                ORDER BY `updated_at`
+                LIMIT %s
                 """
 
                 cur.execute(select_statement, (max_urls,))
