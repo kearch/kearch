@@ -4,6 +4,7 @@ metadata:
   name: elasticsearch-discovery
   labels:
     engine: sp
+    app: es
     component: elasticsearch
     role: master
 spec:
