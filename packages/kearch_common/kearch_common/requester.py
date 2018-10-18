@@ -255,7 +255,7 @@ class KearchRequester(object):
             elif parsed_path == '/push_urls_to_queue':
                 url_queue_records = [(url,) for url in payload['urls']]
                 statement = """
-                REPLACE INTO `url_queue` (`url`) VALUES (%s);
+                INSERT IGNORE INTO `url_queue` (`url`) VALUES (%s);
                 """
 
                 cur.executemany(statement, url_queue_records)
