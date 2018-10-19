@@ -64,7 +64,7 @@ def url_to_json(url):
         ret['url'] = url
         ret['title'] = web.title
         ret['text'] = web.text
-        ret['tfidf'] = web_to_tfidf(w)
+        ret['tfidf'] = web_to_tfidf(web)
         ret['inner_links'] = web.inner_links
         ret['outer_links'] = web.outer_links
         print("ret['url'] =", ret['url'], file=sys.stderr)
