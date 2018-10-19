@@ -140,6 +140,17 @@ if __name__ == '__main__':
                     print(e, file=sys.stderr)
                 dump_to_push = dict()
 
+                print('pushing {} crawled urls'.format(len(data_to_push)))
+                crawled_url = list()
+                for d in data_to_push:
+                    crawled_url.append({'url': d['url']})
+                try:
+                    resp = database_requester.request(
+                        path='/push_crawled_urls', method='POST',
+                        payload=crawled_url)
+                except RequesterError as e:
+                    print(e, file=sys.stderr)
+
                 print('pushing {} webpages ...'.format(len(data_to_push)))
                 for d in data_to_push:
                     try:
@@ -149,7 +160,7 @@ if __name__ == '__main__':
                         print('resp = ', resp)
                     except RequesterError as e:
                         print(e, file=sys.stderr)
-                    data_to_push = list()
+                data_to_push = list()
 
                 try:
                     # fetch urls from database
