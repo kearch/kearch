@@ -4,7 +4,7 @@ from kearch_classifier._version import __version__
 
 import sys
 from gensim import corpora
-from . import webpage
+import kearch_classifier.webpage
 import argparse
 import multiprocessing as mult
 import random
@@ -54,17 +54,17 @@ class Classifier(AbsClassifier):
 
     def url_to_words(self, url):
         try:
-            w = webpage.create_webpage_with_cache(url, self.language)
+            w = kearch_classifier.webpage.create_webpage_with_cache(url, self.language)
             return w.words
-        except webpage.WebpageError as e:
+        except kearch_classifier.webpage.WebpageError as e:
             print(e.message, file=sys.stderr)
             return []
 
     def url_to_title_words(self, url):
         try:
-            w = webpage.create_webpage_with_cache(url, self.language)
+            w = kearch_classifier.webpage.create_webpage_with_cache(url, self.language)
             return w.title_words
-        except webpage.WebpageError as e:
+        except kearch_classifier.webpage.WebpageError as e:
             print(e.message, file=sys.stderr)
             return []
 
@@ -244,14 +244,14 @@ if __name__ == '__main__':
         false_positive = 0
         false_negative = 0
         for u in topic_urls1[n_urls:n_urls + n_tests]:
-            w = webpage.create_webpage_with_cache(u, cls.language)
+            w = kearch_classifier.webpage.create_webpage_with_cache(u, cls.language)
             print(u, cls.classify_log_probability_body(w.words))
             if cls.classify(w) == IN_TOPIC:
                 true_positive += 1
             else:
                 true_negative += 1
         for u in random_urls1[n_urls:n_urls + n_tests]:
-            w = webpage.create_webpage_with_cache(u, cls.language)
+            w = kearch_classifier.webpage.create_webpage_with_cache(u, cls.language)
             print(u, cls.classify_log_probability_body(w.words))
             if cls.classify(w) == OUT_OF_TOPIC:
                 false_negative += 1
