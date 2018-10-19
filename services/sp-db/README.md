@@ -65,7 +65,7 @@ Return JSON
   ...
 }
 ```
-## Retrieve documents with given queries
+## [Deprecated] Retrieve documents with given queries
 Access URL (GET)
 - Multiple queries are connected by '+'.
 ```
