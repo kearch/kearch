@@ -147,7 +147,7 @@ if __name__ == '__main__':
                 try:
                     resp = database_requester.request(
                         path='/push_crawled_urls', method='POST',
-                        payload=crawled_url)
+                        payload={'data': crawled_url})
                 except RequesterError as e:
                     print(e, file=sys.stderr)
 

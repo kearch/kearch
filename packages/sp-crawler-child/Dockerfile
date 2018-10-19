@@ -4,8 +4,8 @@ ARG KEARCH_COMMON_BRANCH="dev"
 COPY packages/kearch_classifier /kearch/packages/kearch_classifier
 RUN cd /kearch/packages/kearch_classifier && pip install -e .
 
-COPY packages/specialist_crawler_child /kearch/packages/specialist_crawler_child
-WORKDIR /kearch/packages/specialist_crawler_child
+COPY packages/sp-crawler-child /kearch/packages/sp-crawler-child
+WORKDIR /kearch/packages/sp-crawler-child
 
 RUN pip install -r requirements.txt
 RUN python -c "import nltk; nltk.download('punkt')"

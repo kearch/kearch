@@ -126,7 +126,7 @@ do
         # sp-crawler-parent
         echo
         echo "----- Start deployment of specialist crawler parent. -----"
-        cd $KEARCH_ROOT_DIR/packages/sp-crawler_parent
+        cd $KEARCH_ROOT_DIR/packages/sp-crawler-parent
         $CMD_DOCKER_BUILD -t kearch/sp-crawler-parent .
 
         cd $KEARCH_ROOT_DIR/services/sp-crawler-parent
@@ -142,13 +142,13 @@ do
         # sp-crawler-child
         echo
         echo "----- Start deployment of specialist crawler child. -----"
-        rm -f $KEARCH_ROOT_DIR/packages/sp-crawler_child/webpage_cache/*.pickle
+        rm -f $KEARCH_ROOT_DIR/packages/sp-crawler-child/webpage_cache/*.pickle
         cd $KEARCH_ROOT_DIR
 
         echo "----- Use cache file and skip model learning. -----"
         echo "----- If you don't want to use cache file,  use -----"
         echo "----- 'docker build -t kearch/sp-crawler-child .' instead -----"
-        $CMD_DOCKER_BUILD -t kearch/sp-crawler-child -f packages/sp-crawler_child/Dockerfile_cache .
+        $CMD_DOCKER_BUILD -t kearch/sp-crawler-child -f packages/sp-crawler-child/Dockerfile_cache .
 
         cd $KEARCH_ROOT_DIR/services/sp-crawler-child
 
@@ -181,7 +181,7 @@ do
         echo
         echo "----- Start deployment of specialist query processor. -----"
 
-        cd $KEARCH_ROOT_DIR/packages/sp-query_processor
+        cd $KEARCH_ROOT_DIR/packages/sp-query-processor
         $CMD_DOCKER_BUILD -t kearch/sp-query-processor .
 
 
