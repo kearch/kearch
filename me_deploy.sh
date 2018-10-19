@@ -82,7 +82,7 @@ do
         # me-query-processor
         echo
         echo "----- Start deployment of meta query processor. -----"
-        cd $KEARCH_ROOT_DIR/packages/me-query_processor
+        cd $KEARCH_ROOT_DIR/packages/me-query-processor
 
         $CMD_DOCKER_BUILD -t kearch/me-query-processor .
 
