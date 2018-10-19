@@ -2,6 +2,7 @@ import sys
 import time
 import urllib.parse
 import urllib.robotparser
+import ssl
 from concurrent.futures import ThreadPoolExecutor
 
 from kearch_common.requester import KearchRequester, RequesterError
@@ -46,6 +47,8 @@ class RobotsChecker:
                 self.rpcache[roboturl] = rp
                 return rp.can_fetch('*', url)
         except urllib.error.URLError:
+            return False
+        except ssl.CertificateError:
             return False
 
 
@@ -135,7 +138,7 @@ if __name__ == '__main__':
                     print('pushing {} dumps ...'.format(len(dump_to_push)))
                     resp = database_requester.request(
                         path='/update_dump', method='POST',
-                        payload={'urls': urls_to_push})
+                        payload={'data': dump_to_push})
                 except RequesterError as e:
                     print(e, file=sys.stderr)
                 dump_to_push = dict()
