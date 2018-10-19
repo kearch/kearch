@@ -1,5 +1,4 @@
 *.db
-*.pickle
 *.dict
 
 __pycache__
