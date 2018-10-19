@@ -147,8 +147,9 @@ do
 
         echo "----- Use cache file and skip model learning. -----"
         echo "----- If you don't want to use cache file,  use -----"
-        echo "----- 'docker build -t kearch/sp-crawler-child .' instead -----"
+        echo "----- packages/sp-crawler-child/Dockerfile instead of Dockerfile_cache -----"
         $CMD_DOCKER_BUILD -t kearch/sp-crawler-child -f packages/sp-crawler-child/Dockerfile_cache .
+        # $CMD_DOCKER_BUILD -t kearch/sp-crawler-child -f packages/sp-crawler-child/Dockerfile .
 
         cd $KEARCH_ROOT_DIR/services/sp-crawler-child
 
