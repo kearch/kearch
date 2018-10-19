@@ -23,6 +23,8 @@ REQUESTER_NAME = 'specialist_crawler_parent'
 
 MAX_URLS = 20
 
+NUM_OF_WORDS_FOR_DUMP = 100
+
 # When you change DEBUG_UNIT_TEST true, this program run unit test.
 DEBUG_UNIT_TEST = False
 
@@ -102,6 +104,7 @@ if __name__ == '__main__':
     urls_in_queue = resp['urls']
     urls_to_push = list()
     data_to_push = list()
+    dump_to_push = dict()
 
     while True:
         if DEBUG_UNIT_TEST:
@@ -128,16 +131,36 @@ if __name__ == '__main__':
                     print(e, file=sys.stderr)
                 urls_to_push = list()
 
+                try:
+                    print('pushing {} dumps ...'.format(len(dump_to_push)))
+                    resp = database_requester.request(
+                        path='/update_dump', method='POST',
+                        payload={'urls': urls_to_push})
+                except RequesterError as e:
+                    print(e, file=sys.stderr)
+                dump_to_push = dict()
+
+                print('pushing {} crawled urls'.format(len(data_to_push)))
+                crawled_url = list()
+                for d in data_to_push:
+                    crawled_url.append({'url': d['url']})
+                try:
+                    resp = database_requester.request(
+                        path='/push_crawled_urls', method='POST',
+                        payload={'data': crawled_url})
+                except RequesterError as e:
+                    print(e, file=sys.stderr)
+
                 print('pushing {} webpages ...'.format(len(data_to_push)))
                 for d in data_to_push:
                     try:
                         resp = elastic_requester.request(
-                            path='/' + ELASTIC_INDEX + '/' + ELASTIC_TYPE + '/', method='POST',
-                            payload=d)
+                            path='/' + ELASTIC_INDEX + '/' + ELASTIC_TYPE + '/',
+                            method='POST', payload=d)
                         print('resp = ', resp)
                     except RequesterError as e:
                         print(e, file=sys.stderr)
-                    data_to_push = list()
+                data_to_push = list()
 
                 try:
                     # fetch urls from database
@@ -159,6 +182,14 @@ if __name__ == '__main__':
         for r in results:
             data_to_push.append(
                 {'url': r['url'], 'title': r['title'], 'text': r['text']})
+        for r in results:
+            tfidf = list(r['tfidf'].items())
+            tfidf.sort(key=lambda x: x[1], reverse=True)
+            for t in tfidf[:NUM_OF_WORDS_FOR_DUMP]:
+                if t[0] in dump_to_push:
+                    dump_to_push[t[0]] += 1
+                else:
+                    dump_to_push[t[0]] = 1
 
         urls_in_queue = urls_in_queue[NUM_THREAD:]
         time.sleep(2)

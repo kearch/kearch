@@ -14,7 +14,7 @@ RUN cd /kearch/packages/kearch_classifier && pip install -e .
 RUN python -c "import nltk; nltk.download('punkt')"
 RUN python -c "import nltk; nltk.download('stopwords')"
 
-COPY /packages/specialist_admin /kearch/packages/specialist_admin
-WORKDIR /kearch/packages/specialist_admin
+COPY /packages/sp-admin /kearch/packages/sp-admin
+WORKDIR /kearch/packages/sp-admin
 
 CMD ["python", "-u", "flask_main.py"]
