@@ -159,3 +159,42 @@ JSON
     },...
 ]}
 ```
+
+## [TODO] Push binary file to the database
+This API is used to push configure data of crawlers.
+Path
+```
+[POST] /push_binary_file
+```
+JSON
+```
+{'data':{
+    'filename': 'hogefile',
+    'contents': "binary contents"}
+}
+```
+
+## [TODO] Check the timestamp of binary file
+Path
+```
+[GET] /chec_binary_file_timestamp?filename=hogename
+```
+JSON
+```
+{
+    'timestamp': "UNIX time when the file is uploaded"
+}
+```
+## [TODO] Pull binary file from the database
+This API is used to pull configure data of crawlers.
+Path
+```
+[GET] /pull_binary_file?filename=hgoefile
+```
+JSON
+```
+{
+    'timestamp': "UNIX time when the file is uploaded",
+    'contents': "binary contents"
+}
+```
