@@ -19,6 +19,7 @@ ELASTIC_INDEX = 'sp'
 ELASTIC_TYPE = 'webpage'
 
 NUM_THREAD = 10
+SP_CHILD_TIMEOUT = 60
 
 REQUESTER_NAME = 'specialist_crawler_parent'
 
@@ -69,7 +70,7 @@ def crawl_a_page(url):
             CRAWLER_CHILD_HOST, CRAWLER_CHILD_PORT, REQUESTER_NAME)
         try:
             ret = crawler_requester.request(
-                path='/crawl_a_page', params={'url': url}, timeout=10)
+                path='/crawl_a_page', params={'url': url}, timeout=SP_CHILD_TIMEOUT)
         except RequesterError as e:
             print(e, file=sys.stderr)
             ret = {}

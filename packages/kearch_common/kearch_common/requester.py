@@ -145,7 +145,7 @@ class KearchRequester(object):
                 raise ValueError('conn_type should be "json", "elastic" or "sql".')
         except Exception as e:
             print(traceback.format_exc(), file=sys.stderr)
-            raise RequesterError('at {}\n{}'.format(parsed_path, e))
+            raise RequesterError('at {}\n{}'.format(path, e))
 
         return result
 
@@ -223,8 +223,8 @@ class KearchRequester(object):
                 ret = len(payload['data'])
             elif parsed_path == '/push_crawled_urls':
                 now = datetime.now()
-                url_queue_records = map(
-                    lambda w: (w['url'], now), payload['data'])
+                url_queue_records = list(map(
+                    lambda w: (w['url'], now), payload['data']))
                 statement = """
                 INSERT INTO `url_queue`
                 (`url`, `crawled_at`)
