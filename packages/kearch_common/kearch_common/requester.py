@@ -89,11 +89,9 @@ def post_webpage_to_db(db, cur, webpage):
 def dump_summary_form_sp_db(cur):
     page_size = 1000
     statement = """
-    SELECT `words`.`id`, `str`, COUNT(`webpage_id`)
-    FROM `words`
-    JOIN `tfidfs` ON `words`.`id` = `word_id`
-    WHERE `words`.`id` > %s
-    GROUP BY `words`.`id`
+    SELECT `id`, `word`, `frequency`
+    FROM `summary`
+    WHERE `id` > %s
     LIMIT %s
     """
 
