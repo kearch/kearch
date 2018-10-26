@@ -232,9 +232,12 @@ class KearchRequester(object):
                 ON DUPLICATE KEY UPDATE `crawled_at` = VALUES(`crawled_at`)
                 """
 
-                cur.executemany(statement, url_queue_records)
-                db.commit()
-                ret = cur.rowcount
+                if len(url_queue_records) == 0:
+                    ret = 0
+                else:
+                    cur.executemany(statement, url_queue_records)
+                    db.commit()
+                    ret = cur.rowcount
             elif parsed_path == '/get_next_urls':
                 max_urls = int(params['max_urls'])
                 select_statement = """
