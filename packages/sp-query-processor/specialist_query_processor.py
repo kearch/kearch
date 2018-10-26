@@ -21,9 +21,13 @@ def retrieve(queries, max_urls):
         payload={'query': {'match_phrase': {'text': ' '.join(queries)}}},
         method='POST')
 
-    print(resp['hits']['hits'], file=sys.stderr)
+    hits = []
+    if 'hits' in resp and 'hits' in resp['hits']:
+        hits = resp['hits']['hits']
+
+    print(hits, file=sys.stderr)
     results = {'data': []}
-    for d in resp['hits']['hits']:
+    for d in hits:
         results['data'].append(
             {'url': d['_source']['url'],
              'title': d['_source']['title'],
