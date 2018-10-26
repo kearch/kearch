@@ -67,8 +67,12 @@ def crawl_a_page(url):
     else:
         crawler_requester = KearchRequester(
             CRAWLER_CHILD_HOST, CRAWLER_CHILD_PORT, REQUESTER_NAME)
-        ret = crawler_requester.request(
-            path='/crawl_a_page', params={'url': url})
+        try:
+            ret = crawler_requester.request(
+                path='/crawl_a_page', params={'url': url}, timeout=10)
+        except RequesterError as e:
+            print(e, file=sys.stderr)
+            ret = {}
         return ret
 
 
