@@ -143,7 +143,7 @@ class KearchRequester(object):
                                               headers, timeout)
             else:
                 raise ValueError('conn_type should be "json", "elastic" or "sql".')
-        except e:
+        except Exception as e:
             print(traceback.format_exc(), file=sys.stderr)
             raise RequesterError('at {}\n{}'.format(parsed_path, e))
 
