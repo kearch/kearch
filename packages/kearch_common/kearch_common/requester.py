@@ -130,17 +130,24 @@ class KearchRequester(object):
     def request(self, path='', method='GET',
                 params=None, payload=None,
                 headers=None, timeout=None):
-        if self.conn_type == 'json':
-            return self.request_json(path, method, params, payload,
-                                     headers, timeout)
-        elif self.conn_type == 'sql':
-            return self.request_sql(path, method, params, payload,
-                                    headers, timeout)
-        elif self.conn_type == 'elastic':
-            return self.request_elastic(path, method, params, payload,
-                                        headers, timeout)
-        else:
-            raise ValueError('conn_type should be "json", "elastic" or "sql".')
+        result = None
+        try:
+            if self.conn_type == 'json':
+                result = self.request_json(path, method, params, payload,
+                                           headers, timeout)
+            elif self.conn_type == 'sql':
+                result = self.request_sql(path, method, params, payload,
+                                          headers, timeout)
+            elif self.conn_type == 'elastic':
+                result = self.request_elastic(path, method, params, payload,
+                                              headers, timeout)
+            else:
+                raise ValueError('conn_type should be "json", "elastic" or "sql".')
+        except e:
+            print(traceback.format_exc(), file=sys.stderr)
+            raise RequesterError('at {}\n{}'.format(parsed_path, e))
+
+        return result
 
     def request_json(self, path='', method='GET',
                      params=None, payload=None,
