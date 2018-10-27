@@ -130,17 +130,24 @@ class KearchRequester(object):
     def request(self, path='', method='GET',
                 params=None, payload=None,
                 headers=None, timeout=None):
-        if self.conn_type == 'json':
-            return self.request_json(path, method, params, payload,
-                                     headers, timeout)
-        elif self.conn_type == 'sql':
-            return self.request_sql(path, method, params, payload,
-                                    headers, timeout)
-        elif self.conn_type == 'elastic':
-            return self.request_elastic(path, method, params, payload,
-                                        headers, timeout)
-        else:
-            raise ValueError('conn_type should be "json", "elastic" or "sql".')
+        result = None
+        try:
+            if self.conn_type == 'json':
+                result = self.request_json(path, method, params, payload,
+                                           headers, timeout)
+            elif self.conn_type == 'sql':
+                result = self.request_sql(path, method, params, payload,
+                                          headers, timeout)
+            elif self.conn_type == 'elastic':
+                result = self.request_elastic(path, method, params, payload,
+                                              headers, timeout)
+            else:
+                raise ValueError('conn_type should be "json", "elastic" or "sql".')
+        except Exception as e:
+            print(traceback.format_exc(), file=sys.stderr)
+            raise RequesterError('at {}\n{}'.format(path, e))
+
+        return result
 
     def request_json(self, path='', method='GET',
                      params=None, payload=None,
@@ -216,8 +223,8 @@ class KearchRequester(object):
                 ret = len(payload['data'])
             elif parsed_path == '/push_crawled_urls':
                 now = datetime.now()
-                url_queue_records = map(
-                    lambda w: (w['url'], now), payload['data'])
+                url_queue_records = list(map(
+                    lambda w: (w['url'], now), payload['data']))
                 statement = """
                 INSERT INTO `url_queue`
                 (`url`, `crawled_at`)
@@ -225,9 +232,12 @@ class KearchRequester(object):
                 ON DUPLICATE KEY UPDATE `crawled_at` = VALUES(`crawled_at`)
                 """
 
-                cur.executemany(statement, url_queue_records)
-                db.commit()
-                ret = cur.rowcount
+                if len(url_queue_records) == 0:
+                    ret = 0
+                else:
+                    cur.executemany(statement, url_queue_records)
+                    db.commit()
+                    ret = cur.rowcount
             elif parsed_path == '/get_next_urls':
                 max_urls = int(params['max_urls'])
                 select_statement = """
