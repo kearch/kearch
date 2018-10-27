@@ -51,6 +51,10 @@ class RobotsChecker:
             return False
         except ssl.CertificateError:
             return False
+        except ConnectionResetError:
+            return False
+        except UnicodeDecodeError:
+            return False
 
 
 def crawl_a_page(url):
