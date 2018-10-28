@@ -40,7 +40,7 @@ def index():
     database_requester = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type="sql")
     sp_servers = database_requester.request(
-        PATH='/list_up_sp_servers', method='GET')
+        path='/list_up_sp_servers', method='GET')
 
     return flask.render_template('index.html', sp_servers=sp_servers)
 
