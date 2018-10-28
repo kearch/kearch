@@ -12,7 +12,6 @@ import os
 import pickle
 import urllib3
 import janome.tokenizer
-import sys
 
 CACHE_DIR = './webpage_cache/'
 BAN_EXTENTION = [
@@ -53,7 +52,6 @@ class Webpage(object):
         return ret
 
     def is_normal_link(self, link):
-        print("link = ", link, file=sys.stderr)
         if link is None:
             return False
         for b in BAN_DOMAIN:
