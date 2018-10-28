@@ -20,7 +20,7 @@ def search():
     if flask.request.method == 'GET':
         query = flask.request.args['query']
         queries = query.split()
-        sp = flask.request.args['query']
+        sp = flask.request.args['sp']
 
         query_processor_requester = KearchRequester(
             QUERY_PROCESSOR_HOST, QUERY_PROCESSOR_PORT, REQUESTER_NAME)
