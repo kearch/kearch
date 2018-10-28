@@ -5,6 +5,10 @@ from kearch_common.requester import KearchRequester
 
 QUERY_PROCESSOR_HOST = 'me-query-processor.kearch.svc.cluster.local'
 QUERY_PROCESSOR_PORT = 10080
+
+DATABASE_HOST = 'me-db.kearch.svc.cluster.local'
+DATABASE_PORT = 3306
+
 REQUESTER_NAME = 'meta_front'
 MAX_URLS = 100
 
@@ -12,7 +16,7 @@ MAX_URLS = 100
 app = flask.Flask(__name__)
 
 
-@app.route('/search', methods=['GET', 'POST'])
+@app.route('/search', methods=['GET'])
 def search():
     if flask.request.method == 'GET':
         query = flask.request.args['query']
@@ -33,7 +37,12 @@ def search():
 
 @app.route("/")
 def index():
-    return flask.render_template('index.html')
+    database_requester = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type="sql")
+    sp_servers = database_requester.request(
+        PATH='/list_up_sp_servers', method='GET')
+
+    return flask.render_template('index.html', sp_servers=sp_servers)
 
 
 if __name__ == '__main__':

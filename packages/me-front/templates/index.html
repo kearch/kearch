@@ -12,7 +12,7 @@
 }
 
 input[type=window] {
-    width: 350px;
+    width: 250px;
     padding: 12px 20px;
     margin: 8px 20px;
     box-sizing: border-box;
@@ -44,6 +44,12 @@ input[type=window] {
             <form action="/search" method="get">
                 <input type="window" name="query">
                 <button class="button">retrieve</button>
+                <select name="sp">
+                    <option value="select-automatically">select automatically</option>
+                    {% for h,d in sp_servers.items() %}
+                        <option value="{{ h }}">{{ d }}</option>
+                    {% endfor %}
+                </select>
             </form>
         </body>
     </div>
