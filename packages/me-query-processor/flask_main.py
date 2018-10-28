@@ -14,7 +14,11 @@ def post():
     queries = flask.request.args.get('queries')
     queries = queries.split(' ')
     max_urls = flask.request.args.get('max_urls')
-    result = meta_query_processor.retrieve(queries, max_urls)
+    if 'sp' in flask.request.args:
+        sp = flask.request.args.get('sp')
+        result = meta_query_processor.retrieve(queries, max_urls, sp=sp)
+    else:
+        result = meta_query_processor.retrieve(queries, max_urls)
     return jsonify(result)
 
 

@@ -50,23 +50,26 @@ def get_result_from_sp(sp_host, queries, max_urls):
         return ret
 
 
-def retrieve(queries, max_urls):
-    sp_data = get_sp_host_from_database(queries)
-    host_to_score = dict()
-    for d in sp_data.values():
-        for host, freq in d.items():
-            if host in host_to_score:
-                host_to_score[host] += freq
-            else:
-                host_to_score[host] = freq
-    if len(host_to_score) == 0:
-        sys.stderr.write("No specialist server in this meta database.\n")
-        return {
-            'data': []
-        }
+def retrieve(queries, max_urls, sp=None):
+    if sp is None:
+        sp_data = get_sp_host_from_database(queries)
+        host_to_score = dict()
+        for d in sp_data.values():
+            for host, freq in d.items():
+                if host in host_to_score:
+                    host_to_score[host] += freq
+                else:
+                    host_to_score[host] = freq
+        if len(host_to_score) == 0:
+            sys.stderr.write("No specialist server in this meta database.\n")
+            return {
+                'data': []
+            }
 
-    host_to_score_list = list(host_to_score.items())
-    host_to_score_list.sort(key=lambda x: x[1], reverse=True)
-    best_host = host_to_score_list[0][0]
+        host_to_score_list = list(host_to_score.items())
+        host_to_score_list.sort(key=lambda x: x[1], reverse=True)
+        best_host = host_to_score_list[0][0]
+    else:
+        best_host = sp
     res = get_result_from_sp(best_host, queries, max_urls)
     return res

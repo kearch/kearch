@@ -20,13 +20,19 @@ def search():
     if flask.request.method == 'GET':
         query = flask.request.args['query']
         queries = query.split()
+        sp = flask.request.args['query']
+
         query_processor_requester = KearchRequester(
             QUERY_PROCESSOR_HOST, QUERY_PROCESSOR_PORT, REQUESTER_NAME)
         database_requester = KearchRequester(
             DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type="sql")
+
+        params = {'queries': ' '.join(queries), 'max_urls': MAX_URLS}
+        if sp != "select-automatically":
+            params['sp'] = sp
+
         results = query_processor_requester.request(
-            path='/retrieve', method='GET',
-            params={'queries': ' '.join(queries), 'max_urls': MAX_URLS})
+            path='/retrieve', method='GET', params=params)
         sp_servers = database_requester.request(
             path='/list_up_sp_servers', method='GET')
 
