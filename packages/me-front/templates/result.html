@@ -81,6 +81,12 @@ p { margin: 0; }
             <img src="{{url_for('static', filename='logo.png')}}" alt="logo" title="keach logo" class="logo">
             <input class="input" name="query" value="{{ query }}">
             <button class="button">retrieve</button>
+            <select name="sp">
+                <option value="select-automatically">select automatically</option>
+                {% for h,d in sp_servers.items() %}
+                <option value="{{ h }}">{{ d }}</option>
+                {% endfor %}
+            </select>
         </form>
         <ul id="list" class="nomark">
             {% for w in results %}
@@ -95,11 +101,11 @@ p { margin: 0; }
             {% endfor %}
         </ul>
         <script>
-            $("#list").each(function(){
-                $(this).find("li:gt(10)").each(function(){$(this).hide();});
-                $(this).append('<p class="more">&raquo; More</p>');
-                $(this).find("p:last").click(function(){$(this).parent().find("li").show(400); $(this).remove();});
-            });
+$("#list").each(function(){
+    $(this).find("li:gt(10)").each(function(){$(this).hide();});
+    $(this).append('<p class="more">&raquo; More</p>');
+    $(this).find("p:last").click(function(){$(this).parent().find("li").show(400); $(this).remove();});
+});
         </script>
     </body>
 </html>
