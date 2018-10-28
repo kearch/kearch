@@ -54,6 +54,8 @@ class Webpage(object):
 
     def is_normal_link(self, link):
         print("link = ", link, file=sys.stderr)
+        if link is None:
+            return False
         for b in BAN_DOMAIN:
             if b in link:
                 return False
