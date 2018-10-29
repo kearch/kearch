@@ -56,13 +56,10 @@ do
         kubectl --namespace=kearch exec $me_db_pod_name -- mysql -uroot -ppassword -e 'CREATE DATABASE kearch_me_dev CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
 
         kubectl --namespace=kearch cp $(pwd)/sql/sp_servers_schema.sql $me_db_pod_name:/tmp/sp_servers_schema.sql
-        kubectl --namespace=kearch cp $(pwd)/sql/connection_requests_schema.sql $me_db_pod_name:/tmp/connection_requests_schema.sql
         kubectl --namespace=kearch cp $(pwd)/sql/config_variables_schema.sql $me_db_pod_name:/tmp/config_variables_schema.sql
 
         echo sp_servers_schema
         kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/sp_servers_schema.sql'
-        echo connection_requests_schema
-        kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/connection_requests_schema.sql'
         echo config_variables_schema
         kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/config_variables_schema.sql'
 
