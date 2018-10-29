@@ -198,7 +198,7 @@ class KearchRequester(object):
         parsed = urllib.parse.urlparse(path)
         parsed_path = parsed.path
         db_name = ''
-        if parsed_path in ['/add_new_sp_server', '/retrieve_sp_servers']:
+        if parsed_path in ['/add_new_sp_server', '/retrieve_sp_servers', '/list_up_sp_servers']:
             db_name = 'kearch_me_dev'
         else:
             db_name = 'kearch_sp_dev'
@@ -323,7 +323,7 @@ class KearchRequester(object):
                 ret = {}
                 for row in cur.fetchall():
                     word, host, freq = row[0], row[1], row[2]
-                    if not word in ret:
+                    if word not in ret:
                         ret[word] = {}
                     ret[word][host] = freq
             elif parsed_path == '/add_new_sp_server':
@@ -343,6 +343,12 @@ class KearchRequester(object):
                 ret = {
                     'host': sp_host,
                 }
+            elif parsed_path == '/list_up_sp_servers':
+                statement = """SELECT DISTINCT `host` FROM `sp_servers`"""
+                cur.execute(statement)
+                ret = {}
+                for row in cur.fetchall():
+                    ret[row[0]] = row[0]
             else:
                 raise ValueError('Invalid path: {}'.format(path))
         except Exception as e:

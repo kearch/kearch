@@ -46,7 +46,7 @@ kubectl exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev <
 
 
 
-# Meta DB
+# APIs of Meta DB
 ## Add new sp server to meta DB
 This API is accessed using KearchRequester.   
 So the acutual JSON is wrapped by KearchRequester.
@@ -76,32 +76,32 @@ Structure of JSON
     }
 }
 ```
-# Meta Gateway
-## Add Information about Specialist Server to meta database
-Access URL (POST)
+## Select sp server for queries
+Access URL (GET)
 ```
-$(ip adress of meta query processor)/add_sp_server
+$(ip address of meta DB)/add_new_sp_server?queries=haskell+language
 ```
-Posted JSON Example
+Example of returned JSON
 ```
 {
-    'ip':'10.229.55.110',
-    'port':10022,
-    'database_dump':{
-        'google':100,
-        'facebook':20,
-        'yahoo':120
+    'haskell':{
+        '192.168.99.100':1.00
+    },
+    'language':{
+        '192.168.99.100':1.00
     }
 }
 ```
-Structure of JSON
+## List up sp servers in me DB
+This API returns sp servers and their short description in me DB.
+Access URL(GET)
+```
+$(ip address of meta DB)/list_up_sp_servers
+```
+Example of returned JSON
 ```
 {
-    'ip':ip adress of the sp server,
-    'database_dump':{
-        word1:the number of documents containing word1,
-        word2:the number of documents containing word2,
-        word3:the number of documents containing word3
-    }
+    '192.168.99.100':'computer',
+    'hogehoge.example.com':'kyoto'
 }
 ```
