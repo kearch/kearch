@@ -14,6 +14,10 @@ import urllib3
 import janome.tokenizer
 
 CACHE_DIR = './webpage_cache/'
+BAN_EXTENTION = [
+        "pdf", "PDF", "jpg", "JPG", "png", "PNG",
+        "gif", "GIF", "ogv", "webm", "mp4", "avi"]
+BAN_DOMAIN = ["twitter.com", "2ch.sc", "tumblr.com"]
 
 
 class WebpageError(Exception):
@@ -47,25 +51,25 @@ class Webpage(object):
                 ret += " "
         return ret
 
+    def is_normal_link(self, link):
+        if link is None:
+            return False
+        for b in BAN_DOMAIN:
+            if b in link:
+                return False
+        # last condition is excluding web archives
+        if link is None or link[:4] != 'http' or ":" not in link or \
+                link[-3:] in BAN_EXTENTION or '://' in link[7:]:
+                return False
+        return True
+
     def set_links(self, soup):
         row_links = list(soup.findAll("a"))
-        ban_domain = list(["twitter.com", "2ch.sc", "tumblr.com"])
-        ban_extension = list(
-            ["pdf", "PDF", "jpg", "JPG", "png", "PNG", "gif", "GIF"])
-
-        def check_domain(link):
-            for b in ban_domain:
-                if b in link:
-                    return False
-            return True
 
         res = list()
         for rl in row_links:
             link = rl.get("href")
-            # last condition is excluding web archives
-            if link is not None and link[:4] == 'http' and ":" in link and \
-                    check_domain(link) and link[-3:] not in ban_extension and \
-                    '://' not in link[7:]:
+            if self.is_normal_link(link):
                 res.append(link)
         self.links = res
 
@@ -113,10 +117,14 @@ class Webpage(object):
     def __init__(self, url, language='en'):
         self.language = language
         self.url = url
+        if not self.is_normal_link(url):
+            raise WebpageError('This link is excluded by "is_normal_link" \
+                    function in Webpage class')
         if len(url) > 200:
             raise WebpageError('URL is too long.')
         try:
             content = requests.get(self.url, timeout=5).content
+
         except requests.exceptions.RequestException:
             raise WebpageError('Cannot get content.')
         except (UnicodeError, urllib3.exceptions.LocationValueError):
