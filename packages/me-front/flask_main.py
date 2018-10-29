@@ -28,7 +28,7 @@ def search():
             DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type="sql")
 
         params = {'queries': ' '.join(queries), 'max_urls': MAX_URLS}
-        if sp != "select-automatically":
+        if sp != "":
             params['sp'] = sp
 
         results = query_processor_requester.request(
