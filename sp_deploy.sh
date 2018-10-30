@@ -66,6 +66,7 @@ do
         kubectl --namespace=kearch cp $(pwd)/sql/words_schema.sql $sp_db_pod_name:/tmp/words_schema.sql
         kubectl --namespace=kearch cp $(pwd)/sql/tfidfs_schema.sql $sp_db_pod_name:/tmp/tfidfs_schema.sql
         kubectl --namespace=kearch cp $(pwd)/sql/title_words_schema.sql $sp_db_pod_name:/tmp/title_words_schema.sql
+        kubectl --namespace=kearch cp $(pwd)/sql/config_variables_schema.sql $sp_db_pod_name:/tmp/config_variables_schema.sql
 
         echo url_queue_schema
         kubectl --namespace=kearch exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/url_queue_schema.sql'
@@ -79,6 +80,9 @@ do
         kubectl --namespace=kearch exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/tfidfs_schema.sql'
         echo title_words_schema
         kubectl --namespace=kearch exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/title_words_schema.sql'
+
+        echo config_variables_schema
+        kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/config_variables_schema.sql'
 
         $KEARCH_ROOT_DIR/sp_db_checker.sh
 

@@ -142,7 +142,8 @@ class KearchRequester(object):
                 result = self.request_elastic(path, method, params, payload,
                                               headers, timeout)
             else:
-                raise ValueError('conn_type should be "json", "elastic" or "sql".')
+                raise ValueError(
+                    'conn_type should be "json", "elastic" or "sql".')
         except Exception as e:
             print(traceback.format_exc(), file=sys.stderr)
             raise RequesterError('at {}\n{}'.format(path, e))
@@ -197,8 +198,10 @@ class KearchRequester(object):
 
         parsed = urllib.parse.urlparse(path)
         parsed_path = parsed.path
+        splited_path = list(
+            filter((lambda x: x != ''), parsed_path.split('/')))
         db_name = ''
-        if parsed_path in ['/add_new_sp_server', '/retrieve_sp_servers', '/list_up_sp_servers']:
+        if parsed_path in ['/add_new_sp_server', '/retrieve_sp_servers', '/list_up_sp_servers'] or splited_path[0] == 'me':
             db_name = 'kearch_me_dev'
         else:
             db_name = 'kearch_sp_dev'
@@ -217,7 +220,26 @@ class KearchRequester(object):
         ret = None
 
         try:
-            if parsed_path == '/push_webpage_to_database':
+            if splited_path[1] == 'db' and splited_path[2] == 'get_config_variables':
+                select_statement = """
+                SELECT `name`,`value` FROM `config_variables`
+                """
+                cur.execute(select_statement)
+                ret = dict()
+                for r in cur.fetchall():
+                    ret[r[0]] = r[1]
+            elif splited_path[1] == 'db' and splited_path[2] == 'set_config_variables':
+                statement = """
+                INSERT INTO config_variables (`name`, `value`) VALUES (%s, %s)
+                ON DUPLICATE KEY UPDATE `value` = %s
+                """
+                records = list()
+                for n, v in payload['data']:
+                    records.append((n, v, v))
+                cur.executemany(statement, records)
+                db.commit()
+                ret = cur.rowcount
+            elif parsed_path == '/push_webpage_to_database':
                 for webpage in payload['data']:
                     post_webpage_to_db(db, cur, webpage)
                 ret = len(payload['data'])
