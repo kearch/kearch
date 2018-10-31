@@ -82,7 +82,7 @@ do
         kubectl --namespace=kearch exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/title_words_schema.sql'
 
         echo config_variables_schema
-        kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/config_variables_schema.sql'
+        kubectl --namespace=kearch exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/config_variables_schema.sql'
 
         $KEARCH_ROOT_DIR/sp_db_checker.sh
 

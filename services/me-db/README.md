@@ -105,3 +105,30 @@ Example of returned JSON
     'hogehoge.example.com':'kyoto'
 }
 ```
+## Set Config Variables
+This API could be used to set public/protected status.
+Access URL (POST)
+```
+$(ip address of meta DB)/me/db/set_config_variables
+```
+POSTed JSON Example
+```
+{
+    'data':{
+        'public_or_protected':'public'
+    }
+}
+```
+## Get Config Variables
+This API could be used to get public/protected status.
+Access URL (POST)
+```
+$(ip address of meta DB)/me/db/get_config_variables
+```
+GETed JSON Example
+```
+{
+    'public_or_protected':'public'
+}
+```
+
