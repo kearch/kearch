@@ -19,7 +19,7 @@ ELASTIC_INDEX = 'sp'
 ELASTIC_TYPE = 'webpage'
 
 NUM_THREAD = 10
-SP_CHILD_TIMEOUT = 60
+SP_CHILD_TIMEOUT = 300
 
 REQUESTER_NAME = 'specialist_crawler_parent'
 
