@@ -50,6 +50,51 @@ kubectl exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev <
 
 
 # APIs of Specialist Database Server
+## Get connection requests
+Access URL (GET)
+```
+$(ip adress of the database server)/sp/db/get_connection_requests
+```
+Return JSON
+```
+{
+    'in':{
+        '192.168.99.100':true
+    },
+    'out':{
+        '192.168.99.123':false
+    }
+}
+```
+## Add a connection request
+Access URL (POST)
+```
+$(ip adress of the database server)/sp/db/add_a_connection_request
+```
+JSON for POST
+```
+{
+    'data':{
+        'in_or_out':'in',
+        'me_host':'192.168.99.100'
+    }
+}
+```
+## Approve a connection request
+Access URL (PUT)
+```
+$(ip adress of the database server)/sp/db/approve_a_connection_request
+```
+JSON for PUT
+```
+{
+    'data':{
+        'in_or_out':'in',
+        'me_host':'192.168.99.100'
+    }
+}
+```
+
 ## Dump the Content of Database
 Access URL (GET)
 ```
