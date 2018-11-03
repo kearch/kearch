@@ -4,6 +4,10 @@ META_GATEWAY_PORT = 32400
 
 QUERY_PROCESSOR_HOST = 'sp-query-processor.kearch.svc.cluster.local'
 QUERY_PROCESSOR_PORT = 10080
+
+DATABASE_HOST = 'sp-db.kearch.svc.cluster.local'
+DATABASE_PORT = 3306
+
 REQUESTER_NAME = 'specialist_gateway'
 
 
@@ -24,3 +28,10 @@ def send_DB_summary(sp_host, me_host, summary):
     result = kr.request(path='/add_new_sp_server', method='POST',
                         payload=d)
     return result
+
+
+def get_a_dump():
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    dump = db_req.request(path='/dump_database')
+    return dump
