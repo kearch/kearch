@@ -37,7 +37,7 @@ Posted JSON example
 ## Send a database summary from sp to me
 URL (POST)
 ```
-$(ip adress of specialist gateway)/send_DB_summary (POST)
+$(ip adress of specialist gateway)/sp/gateway/send_a_dump (POST)
 ```
 Scheme of Posted JSON
 ```
@@ -64,6 +64,22 @@ Posted JSON example
             'facebook':10022
         }
     }
+}
+```
+
+## Get a database summary
+Access URL (GET)
+```
+$(ip adress of the database server)/sp/gateway/get_a_dump
+```
+Return JSON
+- Count how many urls exists in the database which contain each words
+```
+{
+  'google':100,
+  'facebook':20,
+  'lisp':10
+  ...
 }
 ```
 

@@ -28,6 +28,12 @@ def send_a_dump():
     return jsonify(result)
 
 
+@app.route('/sp/gateway/get_a_dump', methods=['GET'])
+def get_a_dump():
+    result = specialist_gateway.get_a_dump()
+    return jsonify(result)
+
+
 @app.route('/retrieve', methods=['GET'])
 def retrieve():
     queries = flask.request.args.get('queries')
