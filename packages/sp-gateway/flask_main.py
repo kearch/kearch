@@ -18,6 +18,16 @@ def send_DB_summary():
     return jsonify(result)
 
 
+@app.route('/sp/gateway/send_a_dump', methods=['POST'])
+def send_a_dump():
+    data = unwrap_json(flask.request.get_json())
+    sp_host = data['sp_host']
+    me_host = data['me_host']
+    summary = data['summary']
+    result = specialist_gateway.send_DB_summary(sp_host, me_host, summary)
+    return jsonify(result)
+
+
 @app.route('/retrieve', methods=['GET'])
 def retrieve():
     queries = flask.request.args.get('queries')
