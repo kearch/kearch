@@ -26,6 +26,13 @@ def add_a_dump():
     return jsonify(result)
 
 
+@app.route('/me/gateway/fetch_a_dump', methods=['GET'])
+def fetch_a_dump():
+    sp_host = flask.request.args.get('sp_host')
+    dump = meta_gateway.fetch_a_dump(sp_host)
+    return jsonify(dump)
+
+
 @app.route('/retrieve', methods=['GET'])
 def retrieve():
     queries = flask.request.args.get('queries')

@@ -20,3 +20,9 @@ def add_new_sp_server(sp_host, summary):
     result = kr.request(path='/add_new_sp_server',
                         payload={'host': sp_host, 'summary': summary})
     return result
+
+
+def fetch_a_dump(sp_host):
+    kr = KearchRequester(sp_host, SPECIALIST_GATEWAY_PORT, REQUESTER_NAME)
+    results = kr.request(path='/sp/gateway/get_a_dump', method='GET')
+    return results
