@@ -17,6 +17,15 @@ def add_new_sp_server():
     return jsonify(result)
 
 
+@app.route('/me/gateway/add_a_dump', methods=['POST'])
+def add_a_dump():
+    data = unwrap_json(flask.request.get_json())
+    sp_host = data['host']
+    summary = data['summary']
+    result = meta_gateway.add_new_sp_server(sp_host, summary)
+    return jsonify(result)
+
+
 @app.route('/retrieve', methods=['GET'])
 def retrieve():
     queries = flask.request.args.get('queries')
