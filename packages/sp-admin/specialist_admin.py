@@ -17,6 +17,15 @@ def get_config():
     return config
 
 
+def update_config(update):
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    db_req.request(path='/sp/db/set_config_variables',
+                   payload=update, method='POST')
+    config = get_config()
+    return config
+
+
 def send_db_summary(me_host, sp_host):
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
