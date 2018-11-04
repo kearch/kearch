@@ -200,6 +200,10 @@ class KearchRequester(object):
         parsed_path = parsed.path
         splited_path = list(
             filter((lambda x: x != ''), parsed_path.split('/')))
+
+        # The purpose of this extension is to avoid out-of-range reference.
+        splited_path.extend(["", "", ""])
+
         db_name = ''
         if parsed_path in ['/add_new_sp_server', '/retrieve_sp_servers', '/list_up_sp_servers'] or splited_path[0] == 'me':
             db_name = 'kearch_me_dev'
