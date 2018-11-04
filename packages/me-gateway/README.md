@@ -10,7 +10,7 @@ $(ip adress of meta gateway)/me/gateway/add_a_connection_request (POST)
 JSON to POST
 ```
 {
-    sp_host:192.168.99.100
+    'sp_host':'192.168.99.100'
 }
 ```
 ## Sebd a connection request
@@ -21,7 +21,7 @@ $(ip adress of meta gateway)/me/gateway/send_a_connection_request (POST)
 JSON to POST
 ```
 {
-    sp_host:192.168.99.100
+    'sp_host':'192.168.99.100'
 }
 ```
 ## Featch a dump from sp
