@@ -14,7 +14,7 @@ def send_DB_summary():
     sp_host = data['sp_host']
     me_host = data['me_host']
     summary = data['summary']
-    result = specialist_gateway.send_DB_summary(sp_host, me_host, summary)
+    result = specialist_gateway.send_a_dump(sp_host, me_host, summary)
     return jsonify(result)
 
 
@@ -24,14 +24,31 @@ def send_a_dump():
     sp_host = data['sp_host']
     me_host = data['me_host']
     summary = data['summary']
-    result = specialist_gateway.send_DB_summary(sp_host, me_host, summary)
+    result = specialist_gateway.send_a_dump(sp_host, me_host, summary)
     return jsonify(result)
 
 
 @app.route('/sp/gateway/get_a_dump', methods=['GET'])
 def get_a_dump():
-    result = specialist_gateway.get_a_dump()
+    me_host = flask.request.args.get('me_host')
+    result = specialist_gateway.get_a_dump(me_host)
     return jsonify(result)
+
+
+@app.route('/sp/gateway/add_a_connection_request', methods=['POST'])
+def add_a_connection_request():
+    data = unwrap_json(flask.request.get_json())
+    me_host = data['me_host']
+    result = specialist_gateway.add_a_connection_request(me_host)
+    return jsonify(result)
+
+
+@app.route('/sp/gateway/send_a_connection_request', methods=['POST'])
+def send_a_connection_request():
+    data = unwrap_json(flask.request.get_json())
+    me_host = data['me_host']
+    res = specialist_gateway.send_a_connection_request(me_host)
+    return jsonify(res)
 
 
 @app.route('/retrieve', methods=['GET'])

@@ -33,6 +33,22 @@ def fetch_a_dump():
     return jsonify(dump)
 
 
+@app.route('/me/gateway/add_a_connection_request', methods=['POST'])
+def add_a_connection_request():
+    data = unwrap_json(flask.request.get_json())
+    sp_host = data['sp_host']
+    result = meta_gateway.add_a_connection_request(sp_host)
+    return jsonify(result)
+
+
+@app.route('/me/gateway/send_a_connection_request', methods=['POST'])
+def send_a_connection_request():
+    data = unwrap_json(flask.request.get_json())
+    sp_host = data['sp_host']
+    res = meta_gateway.send_a_connection_request(sp_host)
+    return jsonify(res)
+
+
 @app.route('/retrieve', methods=['GET'])
 def retrieve():
     queries = flask.request.args.get('queries')

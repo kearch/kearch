@@ -47,6 +47,50 @@ kubectl exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev <
 
 
 # APIs of Meta DB
+## Get connection requests
+Access URL (GET)
+```
+$(ip adress of the database server)/me/db/get_connection_requests
+```
+Return JSON
+```
+{
+    'in':{
+        '192.168.99.100':true
+    },
+    'out':{
+        '192.168.99.123':false
+    }
+}
+```
+## Add a connection request
+Access URL (POST)
+```
+$(ip adress of the database server)/me/db/add_a_connection_request
+```
+JSON for POST
+```
+{
+    {
+        'in_or_out':'in',
+        'sp_host':'192.168.99.100'
+    }
+}
+```
+## Approve a connection request
+Access URL (PUT)
+```
+$(ip adress of the database server)/me/db/approve_a_connection_request
+```
+JSON for PUT
+```
+{
+    {
+        'in_or_out':'in',
+        'sp_host':'192.168.99.100'
+    }
+}
+```
 ## Add new sp server to meta DB
 This API is accessed using KearchRequester.   
 So the acutual JSON is wrapped by KearchRequester.
@@ -57,7 +101,7 @@ $(ip address of meta DB)/add_new_sp_server
 Given JSON Example
 ```
 {
-    'ip':'10.229.55.110',
+    'host':'10.229.55.110',
     'summary':{
         'google':100,
         'facebook':20,

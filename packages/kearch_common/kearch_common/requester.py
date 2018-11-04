@@ -200,6 +200,10 @@ class KearchRequester(object):
         parsed_path = parsed.path
         splited_path = list(
             filter((lambda x: x != ''), parsed_path.split('/')))
+
+        # The purpose of this extension is to avoid out-of-range reference.
+        splited_path.extend(["", "", ""])
+
         db_name = ''
         if parsed_path in ['/add_new_sp_server', '/retrieve_sp_servers', '/list_up_sp_servers'] or splited_path[0] == 'me':
             db_name = 'kearch_me_dev'
@@ -220,7 +224,125 @@ class KearchRequester(object):
         ret = None
 
         try:
-            if splited_path[1] == 'db' and splited_path[2] == 'get_config_variables':
+            if splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+               splited_path[2] == 'get_connection_requests':
+                ret = dict()
+                ret['in'] = dict()
+                in_statement = """
+                SELECT `me_hosts`.`name`, `is_approved` FROM `in_requests`
+                INNER JOIN `me_hosts` ON `me_hosts`.`id` = `in_requests`.`host_id`
+                """
+                cur.execute(in_statement)
+                for row in cur.fetchall():
+                    ret['in'][row[0]] = row[1]
+
+                ret['out'] = dict()
+                out_statement = """
+                SELECT `me_hosts`.`name`, `is_approved` FROM `out_requests`
+                INNER JOIN `me_hosts` ON `me_hosts`.`id` = `in_requests`.`host_id`
+                """
+                cur.execute(out_statement)
+                for row in cur.fetchall():
+                    ret['out'][row[0]] = row[1]
+
+            elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'get_connection_requests':
+                ret = dict()
+                ret['in'] = dict()
+                in_statement = """
+                SELECT `sp_hosts`.`name`, `is_approved` FROM `in_requests`
+                INNER JOIN `sp_hosts` ON `sp_hosts`.`id` = `in_requests`.`host_id`
+                """
+                cur.execute(in_statement)
+                for row in cur.fetchall():
+                    ret['in'][row[0]] = row[1]
+
+                ret['out'] = dict()
+                out_statement = """
+                SELECT `sp_hosts`.`name`, `is_approved` FROM `out_requests`
+                INNER JOIN `sp_hosts` ON `sp_hosts`.`id` = `in_requests`.`host_id`
+                """
+                cur.execute(out_statement)
+                for row in cur.fetchall():
+                    ret['out'][row[0]] = row[1]
+
+            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'add_a_connection_request':
+                in_or_out = payload['in_or_out']
+                me_host = payload['me_host']
+                hosts_insert_statement = """
+                INSERT IGNORE INTO me_hosts (`name`) VALUES (%s)"""
+                cur.execute(hosts_insert_statement, (me_host,))
+                db.commit()
+                host_id_statement = """
+                SELECT `id` FROM `me_hosts` WHERE `name` == %s"""
+                cur.execute(host_id_statement, (me_host,))
+                host_id = cur.fetchone()[0]
+                requests_statement = """
+                INSERT INTO %s (`host_id`, `is_approved`) VALUES (%s, false)
+                ON DUPLICATE KEY UPDATE `is_approved` = false"""
+                if in_or_out == 'in':
+                    cur.execute(requests_statement, ('in_requests', host_id))
+                    db.commit()
+                else:
+                    cur.execute(requests_statement, ('out_requests', host_id))
+                    db.commit()
+            elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'add_a_connection_request':
+                in_or_out = payload['in_or_out']
+                sp_host = payload['sp_host']
+                hosts_insert_statement = """
+                INSERT IGNORE INTO sp_hosts (`name`) VALUES (%s)"""
+                cur.execute(hosts_insert_statement, (sp_host,))
+                db.commit()
+                host_id_statement = """
+                SELECT `id` FROM `sp_hosts` WHERE `name` == %s"""
+                cur.execute(host_id_statement, (sp_host,))
+                host_id = cur.fetchone()[0]
+                requests_statement = """
+                INSERT INTO %s (`host_id`, `is_approved`) VALUES (%s, false)
+                ON DUPLICATE KEY UPDATE `is_approved` = false"""
+                if in_or_out == 'in':
+                    cur.execute(requests_statement, ('in_requests', host_id))
+                    db.commit()
+                else:
+                    cur.execute(requests_statement, ('out_requests', host_id))
+                    db.commit()
+            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'approve_a_connection_request':
+                in_or_out = payload['in_or_out']
+                me_host = payload['me_host']
+                cur.execute(host_id_statement, (me_host,))
+                host_id_statement = """
+                SELECT `id` FROM `me_hosts` WHERE `name` == %s"""
+                host_id = cur.fetchone()[0]
+                requests_statement = """
+                INSERT INTO %s (`host_id`, `is_approved`) VALUES (%s, true)
+                ON DUPLICATE KEY UPDATE `is_approved` = true"""
+                if in_or_out == 'in':
+                    cur.execute(requests_statement, ('in_requests', host_id))
+                    db.commit()
+                else:
+                    cur.execute(requests_statement, ('out_requests', host_id))
+                    db.commit()
+            elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'approve_a_connection_request':
+                in_or_out = payload['in_or_out']
+                sp_host = payload['sp_host']
+                cur.execute(host_id_statement, (sp_host,))
+                host_id_statement = """
+                SELECT `id` FROM `sp_hosts` WHERE `name` == %s"""
+                host_id = cur.fetchone()[0]
+                requests_statement = """
+                INSERT INTO %s (`host_id`, `is_approved`) VALUES (%s, true)
+                ON DUPLICATE KEY UPDATE `is_approved` = true"""
+                if in_or_out == 'in':
+                    cur.execute(requests_statement, ('in_requests', host_id))
+                    db.commit()
+                else:
+                    cur.execute(requests_statement, ('out_requests', host_id))
+                    db.commit()
+            elif splited_path[1] == 'db' and splited_path[2] == 'get_config_variables':
                 select_statement = """
                 SELECT `name`,`value` FROM `config_variables`
                 """
