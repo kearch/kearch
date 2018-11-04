@@ -3,6 +3,24 @@
     </head>
     <div class="center">
         <body>
+            <p>Set your global IP adress or hostname here</p>
+            <p>The current IP adress or hostname = {{ config['host_name'] }} </p>
+            <form action="/update_config" method="post">
+                <label for="host_name">global IP adress or hostname</label>
+                <input type="text" id="host_name" name="host_name" cols="50" />
+                <button class="button">set global IP adress or hostname</button>
+            </form>
+
+            <p>Select connection policy of this specialist search engine</p>
+            <p>The current connection policy = "{{ config['connection_policy'] }}" </p>
+            <form action"/update_config" method="post">
+                <select name="connection_policy">
+                    <option value="protected">protected</option>
+                    <option value="public">public</option>
+                </select>
+                <button class="button">set connection policy</button>
+            </form>
+
             <p>URLs to crawl separated by newlines</p>
             <form action="/init_crawl_urls" method="post">
                 URLs↓<br/>
@@ -53,9 +71,6 @@ function send_db_summary() {
 
             <p>Learn Parameter for the classifier in the crawler</p>
 
-            <script>
-
-            </script>
             <form name=learn_params_form action="/learn_params" method="post">
                 language<br/>
                 <input type="text" id="language" name="language" cols="10" />

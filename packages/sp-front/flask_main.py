@@ -1,6 +1,5 @@
 import flask
 from kearch_common.requester import KearchRequester
-from kearch_common.data_format import get_payload
 
 QUERY_PROCESSOR_HOST = 'sp-query-processor.kearch.svc.cluster.local'
 QUERY_PROCESSOR_PORT = 10080
@@ -19,8 +18,10 @@ def search():
         kr = KearchRequester(QUERY_PROCESSOR_HOST,
                              QUERY_PROCESSOR_PORT, REQUESTER_NAME)
         results = kr.request(path='/retrieve', method='GET',
-                             params={'queries': ' '.join(queries), 'max_urls': MAX_URLS})
-        return flask.render_template('result.html', results=results['data'], query=query)
+                             params={'queries': ' '.join(queries),
+                                     'max_urls': MAX_URLS})
+        return flask.render_template('result.html', results=results['data'],
+                                     query=query)
     else:
         return flask.redirect(flask.url_for('index.html'))
 

@@ -7,3 +7,5 @@ CREATE TABLE `config_variables` (
   PRIMARY KEY(`id`),
   UNIQUE KEY `index_in_config_variable_on_name` (`name`)
 ) ENGINE=InnoDB CHARACTER SET=utf8mb4;
+INSERT INTO `config_variables` (`name`, `value`) VALUES ('connection_policy', 'protected');
+INSERT INTO `config_variables` (`name`, `value`) VALUES ('host_name', '');
