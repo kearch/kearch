@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kearch
+  name: me-admin
+  labels:
+    engine: me
+    app: admin
+spec:
+  selector:
+    matchLabels:
+      engine: me
+      app: admin
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        engine: me
+        app: admin
+    spec:
+      containers:
+      - image: kearch/me-admin
+        name: me-admin
+        ports:
+        - containerPort: 10080
+        imagePullPolicy: Never
