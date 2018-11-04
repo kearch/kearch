@@ -7,6 +7,7 @@ echo "----- Show table status. -----"
 echo "----- Tables in kearch_me_dev -----"
 kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'echo "use kearch_me_dev; show tables;" | mysql -uroot -ppassword' 2>/dev/null
 tables=$(kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'echo "use kearch_me_dev; show tables;" | mysql -uroot -ppassword' 2>/dev/null)
+
 echo "----- Detailed information of tables -----"
 for t in ${tables};
 do
@@ -14,3 +15,10 @@ do
 done
 echo "---- hosts in sp_servers -----"
 kubectl exec --namespace=kearch $me_db_pod_name -- bash -c 'echo "use kearch_me_dev; select distinct host from sp_servers;" | mysql -uroot -ppassword' 2>/dev/null
+
+echo "---- Show record count in tables -----"
+for t in ${tables};
+do
+  echo "count $t:"
+  kubectl --namespace=kearch exec $me_db_pod_name -- mysql -uroot -ppassword kearch_me_dev -sN -e "SELECT COUNT(*) FROM $t" 2>/dev/null
+done
