@@ -264,8 +264,8 @@ class KearchRequester(object):
 
             elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
                     splited_path[2] == 'add_a_connection_request':
-                in_or_out = payload['data']['in_or_out']
-                me_host = payload['data']['me_host']
+                in_or_out = payload['in_or_out']
+                me_host = payload['me_host']
                 hosts_insert_statement = """
                 INSERT IGNORE INTO me_hosts (`name`) VALUES (%s)"""
                 cur.execute(hosts_insert_statement, (me_host,))
@@ -285,8 +285,8 @@ class KearchRequester(object):
                     db.commit()
             elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
                     splited_path[2] == 'add_a_connection_request':
-                in_or_out = payload['data']['in_or_out']
-                sp_host = payload['data']['sp_host']
+                in_or_out = payload['in_or_out']
+                sp_host = payload['sp_host']
                 hosts_insert_statement = """
                 INSERT IGNORE INTO sp_hosts (`name`) VALUES (%s)"""
                 cur.execute(hosts_insert_statement, (sp_host,))
@@ -306,8 +306,8 @@ class KearchRequester(object):
                     db.commit()
             elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
                     splited_path[2] == 'approve_a_connection_request':
-                in_or_out = payload['data']['in_or_out']
-                me_host = payload['data']['me_host']
+                in_or_out = payload['in_or_out']
+                me_host = payload['me_host']
                 cur.execute(host_id_statement, (me_host,))
                 host_id_statement = """
                 SELECT `id` FROM `me_hosts` WHERE `name` == %s"""
@@ -323,8 +323,8 @@ class KearchRequester(object):
                     db.commit()
             elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
                     splited_path[2] == 'approve_a_connection_request':
-                in_or_out = payload['data']['in_or_out']
-                sp_host = payload['data']['sp_host']
+                in_or_out = payload['in_or_out']
+                sp_host = payload['sp_host']
                 cur.execute(host_id_statement, (sp_host,))
                 host_id_statement = """
                 SELECT `id` FROM `sp_hosts` WHERE `name` == %s"""

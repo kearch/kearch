@@ -71,7 +71,7 @@ $(ip adress of the database server)/me/db/add_a_connection_request
 JSON for POST
 ```
 {
-    'data':{
+    {
         'in_or_out':'in',
         'sp_host':'192.168.99.100'
     }
@@ -85,7 +85,7 @@ $(ip adress of the database server)/me/db/approve_a_connection_request
 JSON for PUT
 ```
 {
-    'data':{
+    {
         'in_or_out':'in',
         'sp_host':'192.168.99.100'
     }
@@ -101,7 +101,7 @@ $(ip address of meta DB)/add_new_sp_server
 Given JSON Example
 ```
 {
-    'ip':'10.229.55.110',
+    'host':'10.229.55.110',
     'summary':{
         'google':100,
         'facebook':20,

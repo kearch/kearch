@@ -74,7 +74,7 @@ $(ip adress of the database server)/sp/db/add_a_connection_request
 JSON for POST
 ```
 {
-    'data':{
+    {
         'in_or_out':'in',
         'me_host':'192.168.99.100'
     }
@@ -88,7 +88,7 @@ $(ip adress of the database server)/sp/db/approve_a_connection_request
 JSON for PUT
 ```
 {
-    'data':{
+    {
         'in_or_out':'in',
         'me_host':'192.168.99.100'
     }
