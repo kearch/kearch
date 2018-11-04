@@ -252,9 +252,7 @@ $(ip address of meta DB)/me/db/set_config_variables
 POSTed JSON Example
 ```
 {
-    'data':{
-        'public_or_protected':'public'
-    }
+    'public_or_protected':'public'
 }
 ```
 ## Get Config Variables

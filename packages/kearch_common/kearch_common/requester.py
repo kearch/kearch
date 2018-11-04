@@ -356,7 +356,7 @@ class KearchRequester(object):
                 ON DUPLICATE KEY UPDATE `value` = %s
                 """
                 records = list()
-                for n, v in payload['data']:
+                for n, v in payload.items():
                     records.append((n, v, v))
                 cur.executemany(statement, records)
                 db.commit()
