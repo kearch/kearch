@@ -10,6 +10,13 @@ GATEWAY_PORT = 10080
 REQUESTER_NAME = 'specialist_admin'
 
 
+def get_config():
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    config = db_req.request(path='/sp/db/get_config_variables')
+    return config
+
+
 def send_db_summary(me_host, sp_host):
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')

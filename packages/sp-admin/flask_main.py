@@ -34,7 +34,8 @@ def learn_params():
 
 @app.route("/")
 def index():
-    return flask.render_template('index.html')
+    config = specialist_admin.get_config()
+    return flask.render_template('index.html', config=config)
 
 
 if __name__ == '__main__':
