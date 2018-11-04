@@ -353,11 +353,11 @@ class KearchRequester(object):
             elif splited_path[1] == 'db' and splited_path[2] == 'set_config_variables':
                 statement = """
                 INSERT INTO config_variables (`name`, `value`) VALUES (%s, %s)
-                ON DUPLICATE KEY UPDATE `value` = %s
+                ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)
                 """
                 records = list()
                 for n, v in payload.items():
-                    records.append((n, v, v))
+                    records.append((n, v))
                 cur.executemany(statement, records)
                 db.commit()
                 ret = cur.rowcount
