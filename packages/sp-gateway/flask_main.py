@@ -30,7 +30,8 @@ def send_a_dump():
 
 @app.route('/sp/gateway/get_a_dump', methods=['GET'])
 def get_a_dump():
-    result = specialist_gateway.get_a_dump()
+    me_host = flask.request.args.get('me_host')
+    result = specialist_gateway.get_a_dump(me_host)
     return jsonify(result)
 
 

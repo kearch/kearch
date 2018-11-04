@@ -70,7 +70,7 @@ Posted JSON example
 ## Get a database summary
 Access URL (GET)
 ```
-$(ip adress of the database server)/sp/gateway/get_a_dump
+$(ip adress of the database server)/sp/gateway/get_a_dump&me_host=192.168.99.100
 ```
 Return JSON
 - Count how many urls exists in the database which contain each words

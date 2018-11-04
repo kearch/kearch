@@ -15,7 +15,8 @@ def retrieve(queries, max_urls):
     kr = KearchRequester(QUERY_PROCESSOR_HOST,
                          QUERY_PROCESSOR_PORT, REQUESTER_NAME)
     results = kr.request(path='/retrieve', method='GET',
-                         params={'queries': ' '.join(queries), 'max_urls': max_urls})
+                         params={'queries': ' '.join(queries),
+                                 'max_urls': max_urls})
     return results
 
 
@@ -30,8 +31,12 @@ def send_DB_summary(sp_host, me_host, summary):
     return result
 
 
-def get_a_dump():
+def get_a_dump(me_host):
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
-    dump = db_req.request(path='/dump_database')
+    reqs = db_req.request(path='/sp/db/get_connection_requests')
+    if me_host in reqs['out'] and not reqs['out'][me_host]:
+        db_req.request(path='/sp/db/approve_a_connection_request',
+                       params={'me_host': me_host})
+        dump = db_req.request(path='/dump_database')
     return dump
