@@ -63,6 +63,9 @@ do
         echo config_variables_schema
         kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/config_variables_schema.sql'
 
+        kubectl delete pods --namespace=kearch -l engine=me,app=db
+
+
         $KEARCH_ROOT_DIR/me_db_checker.sh
         echo "----- Finish deployment of meta DB. -----"
     fi
@@ -78,6 +81,9 @@ do
         cd $KEARCH_ROOT_DIR/services/me-front
 
         kubectl --namespace=kearch apply --recursive -f .
+
+        kubectl delete pods --namespace=kearch -l engine=me,app=front
+
         echo "----- Finish deployment of meta front. -----"
     fi
 
@@ -92,6 +98,9 @@ do
         cd $KEARCH_ROOT_DIR/services/me-query-processor
 
         kubectl --namespace=kearch apply --recursive -f .
+
+        kubectl delete pods --namespace=kearch -l engine=me,app=query-processor
+
         echo "----- Finish deployment of meta query processor. -----"
     fi
 
@@ -106,10 +115,28 @@ do
         cd $KEARCH_ROOT_DIR/services/me-gateway
 
         kubectl --namespace=kearch apply --recursive -f .
+
+        kubectl delete pods --namespace=kearch -l engine=me,app=gateway
+
         echo "----- Finish deployment of meta gateway. -----"
+    fi
+
+    if [ $arg = meadmin ] || [ $arg = all ]; then
+        # sp-admin
+        echo
+        echo "----- Start deployment of meta admin. -----"
+        cd $KEARCH_ROOT_DIR
+
+        $CMD_DOCKER_BUILD -f packages/me-admin/Dockerfile -t kearch/me-admin .
+
+        cd $KEARCH_ROOT_DIR/services/me-admin
+
+        kubectl --namespace=kearch apply --recursive -f .
+
+        kubectl delete pods --namespace=kearch -l engine=me,app=admin
+
+        echo "----- Finish deployment of meta admin. -----"
     fi
 done
 
 echo
-echo "----- Delete all pods -----"
-kubectl --namespace=kearch delete pod -l engine=me
