@@ -1,6 +1,28 @@
 # Specialist Gateway
 This container should export on 10080 port of host.  
 This container have following two APIs.
+## Add a connection request
+URL (POST)
+```
+$(ip adress of sp gateway)/sp/gateway/add_a_connection_request (POST)
+```
+JSON to POST
+```
+{
+    'me_host':'192.168.99.100'
+}
+```
+## Sebd a connection request
+URL (POST)
+```
+$(ip adress of sp gateway)/sp/gateway/send_a_connection_request (POST)
+```
+JSON to POST
+```
+{
+    'me_host':'192.168.99.100'
+}
+```
 ## [DEPRECATED] Register DB Information to Meta
 The Admin container in specialist search engine register specialist DB to a meta search engine.  
 In registeration, the specialist must send the summary of DB to the meta.  
