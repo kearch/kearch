@@ -284,16 +284,18 @@ class KearchRequester(object):
                 """
                 cur.execute(host_id_statement, (me_host,))
                 host_id = cur.fetchone()[0]
-                requests_statement = """
-                INSERT INTO %s (`host_id`, `is_approved`) VALUES (%s, false)
-                ON DUPLICATE KEY UPDATE `is_approved` = false
-                """
+
                 if in_or_out == 'in':
-                    cur.execute(requests_statement, ('in_requests', host_id))
-                    db.commit()
+                    table_name = 'in_requests'
                 else:
-                    cur.execute(requests_statement, ('out_requests', host_id))
-                    db.commit()
+                    table_name = 'out_requests'
+                requests_statement = """
+                INSERT INTO {} (`host_id`, `is_approved`) VALUES (%s, false)
+                ON DUPLICATE KEY UPDATE `is_approved` = false
+                """.format(table_name)
+
+                cur.execute(requests_statement, (host_id,))
+                db.commit()
             elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
                     splited_path[2] == 'add_a_connection_request':
                 in_or_out = payload['in_or_out']
@@ -308,16 +310,18 @@ class KearchRequester(object):
                 """
                 cur.execute(host_id_statement, (sp_host,))
                 host_id = cur.fetchone()[0]
-                requests_statement = """
-                INSERT INTO %s (`host_id`, `is_approved`) VALUES (%s, false)
-                ON DUPLICATE KEY UPDATE `is_approved` = false
-                """
+
                 if in_or_out == 'in':
-                    cur.execute(requests_statement, ('in_requests', host_id))
-                    db.commit()
+                    table_name = 'in_requests'
                 else:
-                    cur.execute(requests_statement, ('out_requests', host_id))
-                    db.commit()
+                    table_name = 'out_requests'
+                requests_statement = """
+                INSERT INTO {} (`host_id`, `is_approved`) VALUES (%s, false)
+                ON DUPLICATE KEY UPDATE `is_approved` = false
+                """.format(table_name)
+
+                cur.execute(requests_statement, (host_id,))
+                db.commit()
             elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
                     splited_path[2] == 'approve_a_connection_request':
                 in_or_out = payload['in_or_out']
