@@ -275,16 +275,19 @@ class KearchRequester(object):
                 in_or_out = payload['in_or_out']
                 me_host = payload['me_host']
                 hosts_insert_statement = """
-                INSERT IGNORE INTO me_hosts (`name`) VALUES (%s)"""
+                INSERT IGNORE INTO me_hosts (`name`) VALUES (%s)
+                """
                 cur.execute(hosts_insert_statement, (me_host,))
                 db.commit()
                 host_id_statement = """
-                SELECT `id` FROM `me_hosts` WHERE `name` = %s"""
+                SELECT `id` FROM `me_hosts` WHERE `name` = %s
+                """
                 cur.execute(host_id_statement, (me_host,))
                 host_id = cur.fetchone()[0]
                 requests_statement = """
                 INSERT INTO %s (`host_id`, `is_approved`) VALUES (%s, false)
-                ON DUPLICATE KEY UPDATE `is_approved` = false"""
+                ON DUPLICATE KEY UPDATE `is_approved` = false
+                """
                 if in_or_out == 'in':
                     cur.execute(requests_statement, ('in_requests', host_id))
                     db.commit()
@@ -296,16 +299,19 @@ class KearchRequester(object):
                 in_or_out = payload['in_or_out']
                 sp_host = payload['sp_host']
                 hosts_insert_statement = """
-                INSERT IGNORE INTO sp_hosts (`name`) VALUES (%s)"""
+                INSERT IGNORE INTO sp_hosts (`name`) VALUES (%s)
+                """
                 cur.execute(hosts_insert_statement, (sp_host,))
                 db.commit()
                 host_id_statement = """
-                SELECT `id` FROM `sp_hosts` WHERE `name` = %s"""
+                SELECT `id` FROM `sp_hosts` WHERE `name` = %s
+                """
                 cur.execute(host_id_statement, (sp_host,))
                 host_id = cur.fetchone()[0]
                 requests_statement = """
                 INSERT INTO %s (`host_id`, `is_approved`) VALUES (%s, false)
-                ON DUPLICATE KEY UPDATE `is_approved` = false"""
+                ON DUPLICATE KEY UPDATE `is_approved` = false
+                """
                 if in_or_out == 'in':
                     cur.execute(requests_statement, ('in_requests', host_id))
                     db.commit()
