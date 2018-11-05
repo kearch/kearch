@@ -229,7 +229,7 @@ class KearchRequester(object):
                 ret = dict()
                 ret['in'] = dict()
                 in_statement = """
-                SELECT `me_hosts`.`name`, `is_approved` FROM `in_requests`
+                SELECT `me_hosts`.`name`, `is_approved`, `host_id` FROM `in_requests`
                 INNER JOIN `me_hosts` ON
                 `in_requests`.`host_id` = `me_hosts`.`id`
                 """
