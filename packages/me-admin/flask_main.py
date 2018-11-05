@@ -8,7 +8,9 @@ app = flask.Flask(__name__)
 @app.route("/")
 def index():
     config = me_admin.get_config()
-    return flask.render_template('index.html', config=config)
+    requests = me_admin.get_requests()
+    return flask.render_template('index.html', config=config,
+                                 requests=requests)
 
 
 @app.route("/update_config", methods=['POST'])
