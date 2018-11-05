@@ -1,23 +1,40 @@
 <html>
     <head>
+        <style type="text/css">
+<!--
+.box {
+    padding: 0.5em 1em;
+    margin: 2em 0;
+    font-weight: bold;
+    border: solid 3px #000000;
+}
+.box p {
+    margin: 0; 
+    padding: 0;
+}
+            -->
+        </style>
     </head>
-    <div class="center">
-        <body>
+    <body>
+        <div class="box">
             <p>Requests from specialist servers to this meta server</p>
             <ul>
                 {% for name,state in requests['in'].items(): %}
                 <li>sp_host = {{ name }}, is_approved = {{ state }}</li>
                 {% endfor %}
             </ul>
+        </div>
 
-
+        <div class="box">
             <p>Requests from this meta server to specialist servers</p>
             <ul>
                 {% for name,state in requests['out'].items(): %}
                 <li>sp_host = {{ name }}, is_approved = {{ state }}</li>
                 {% endfor %}
             </ul>
+        </div>
 
+        <div class="box">
             <p>Set your global IP adress or hostname here</p>
             <p>The current IP adress or hostname = {{ config['host_name'] }} </p>
             <form action="/update_config" method="post">
@@ -25,7 +42,9 @@
                 <input type="text" id="host_name" name="host_name" cols="50" />
                 <button class="button">set global IP adress or hostname</button>
             </form>
+        </div>
 
+        <div class="box">
             <p>Select connection policy of this specialist search engine</p>
             <p>The current connection policy = "{{ config['connection_policy'] }}" </p>
             <form action="/update_config" method="post">
@@ -35,6 +54,6 @@
                 </select>
                 <button class="button">set connection policy</button>
             </form>
-        </body>
-    </div>
+        </div>
+    </body>
 </html>
