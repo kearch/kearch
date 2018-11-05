@@ -57,11 +57,20 @@ do
 
         kubectl --namespace=kearch cp $(pwd)/sql/sp_servers_schema.sql $me_db_pod_name:/tmp/sp_servers_schema.sql
         kubectl --namespace=kearch cp $(pwd)/sql/config_variables_schema.sql $me_db_pod_name:/tmp/config_variables_schema.sql
+        kubectl --namespace=kearch cp $(pwd)/sql/sp_hosts_schema.sql $me_db_pod_name:/tmp/sp_hosts_schema.sql
+        kubectl --namespace=kearch cp $(pwd)/sql/in_requests_schema.sql $me_db_pod_name:/tmp/in_requests_schema.sql
+        kubectl --namespace=kearch cp $(pwd)/sql/out_requests_schema.sql $me_db_pod_name:/tmp/out_requests_schema.sql
 
         echo sp_servers_schema
         kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/sp_servers_schema.sql'
         echo config_variables_schema
         kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/config_variables_schema.sql'
+        echo sp_hosts_schema
+        kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/sp_hosts_schema.sql'
+        echo in_requests_schema 
+        kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/in_requests_schema.sql'
+        echo out_requests_schema 
+        kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/out_requests_schema.sql'
 
         kubectl delete pods --namespace=kearch -l engine=me,app=db
 
