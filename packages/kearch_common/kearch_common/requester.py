@@ -296,6 +296,7 @@ class KearchRequester(object):
 
                 cur.execute(requests_statement, (host_id,))
                 db.commit()
+                ret = {'me_host': me_host}
             elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
                     splited_path[2] == 'add_a_connection_request':
                 in_or_out = payload['in_or_out']
@@ -322,6 +323,7 @@ class KearchRequester(object):
 
                 cur.execute(requests_statement, (host_id,))
                 db.commit()
+                ret = {'sp_host': sp_host}
             elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
                     splited_path[2] == 'approve_a_connection_request':
                 in_or_out = payload['in_or_out']
