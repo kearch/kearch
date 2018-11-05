@@ -16,6 +16,16 @@ SP_ADMIN_PORT = 10080
 app = flask.Flask(__name__)
 
 
+@app.route('/sp/admin/send_a_connection_request', methods=['POST'])
+def send_a_connection_request():
+    me_host = flask.request.form['me_host']
+    gw_req = KearchRequester(
+        GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
+    ret = gw_req.request(path='/sp/gateway/send_a_connection_request',
+                         payload={'me_host': me_host}, method='POST')
+    return jsonify(ret)
+
+
 @app.route('/send_db_summary', methods=['POST'])
 def send_db_summary():
     me_host = flask.request.form['me_host']
