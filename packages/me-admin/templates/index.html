@@ -6,7 +6,7 @@
             <p>Requests from specialist servers to this meta server</p>
             <ul>
                 {% for name,state in requests['in'].items(): %}
-                <li>me_host = {{ name }}, is_approved = {{ state }}</li>
+                <li>sp_host = {{ name }}, is_approved = {{ state }}</li>
                 {% endfor %}
             </ul>
 
@@ -14,7 +14,7 @@
             <p>Requests from this meta server to specialist servers</p>
             <ul>
                 {% for name,state in requests['out'].items(): %}
-                <li>me_host = {{ name }}, is_approved = {{ state }}</li>
+                <li>sp_host = {{ name }}, is_approved = {{ state }}</li>
                 {% endfor %}
             </ul>
 
