@@ -279,7 +279,7 @@ class KearchRequester(object):
                 cur.execute(hosts_insert_statement, (me_host,))
                 db.commit()
                 host_id_statement = """
-                SELECT `id` FROM `me_hosts` WHERE `name` == %s"""
+                SELECT `id` FROM `me_hosts` WHERE `name` = %s"""
                 cur.execute(host_id_statement, (me_host,))
                 host_id = cur.fetchone()[0]
                 requests_statement = """
@@ -300,7 +300,7 @@ class KearchRequester(object):
                 cur.execute(hosts_insert_statement, (sp_host,))
                 db.commit()
                 host_id_statement = """
-                SELECT `id` FROM `sp_hosts` WHERE `name` == %s"""
+                SELECT `id` FROM `sp_hosts` WHERE `name` = %s"""
                 cur.execute(host_id_statement, (sp_host,))
                 host_id = cur.fetchone()[0]
                 requests_statement = """
@@ -318,7 +318,7 @@ class KearchRequester(object):
                 me_host = payload['me_host']
                 cur.execute(host_id_statement, (me_host,))
                 host_id_statement = """
-                SELECT `id` FROM `me_hosts` WHERE `name` == %s"""
+                SELECT `id` FROM `me_hosts` WHERE `name` = %s"""
                 host_id = cur.fetchone()[0]
                 requests_statement = """
                 INSERT INTO %s (`host_id`, `is_approved`) VALUES (%s, true)
@@ -335,7 +335,7 @@ class KearchRequester(object):
                 sp_host = payload['sp_host']
                 cur.execute(host_id_statement, (sp_host,))
                 host_id_statement = """
-                SELECT `id` FROM `sp_hosts` WHERE `name` == %s"""
+                SELECT `id` FROM `sp_hosts` WHERE `name` = %s"""
                 host_id = cur.fetchone()[0]
                 requests_statement = """
                 INSERT INTO %s (`host_id`, `is_approved`) VALUES (%s, true)
