@@ -3,6 +3,22 @@
     </head>
     <div class="center">
         <body>
+            <p>Requests from meta servers to this specialist server</p>
+            <ul>
+                {% for name,state in requests['in'].items(): %}
+                <li>me_host = {{ name }}, is_approved = {{ state }}</li>
+                {% endfor %}
+            </ul>
+
+
+            <p>Requests from this specialist server to meta servers</p>
+            <ul>
+                {% for name,state in requests['out'].items(): %}
+                <li>me_host = {{ name }}, is_approved = {{ state }}</li>
+                {% endfor %}
+            </ul>
+
+
             <p>Set your global IP adress or hostname here</p>
             <p>The current IP adress or hostname = {{ config['host_name'] }} </p>
             <form action="/update_config" method="post">

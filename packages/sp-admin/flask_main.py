@@ -32,12 +32,6 @@ def learn_params():
     return result
 
 
-@app.route("/")
-def index():
-    config = specialist_admin.get_config()
-    return flask.render_template('index.html', config=config)
-
-
 @app.route("/update_config", methods=['POST'])
 def update_config():
     update = dict()
@@ -45,8 +39,15 @@ def update_config():
         update['connection_policy'] = flask.request.form['connection_policy']
     if 'host_name' in flask.request.form:
         update['host_name'] = flask.request.form['host_name']
-    config = specialist_admin.update_config(update)
-    return flask.render_template('index.html', config=config)
+    return flask.redirect(flask.url_for("index"))
+
+
+@app.route("/")
+def index():
+    config = specialist_admin.get_config()
+    requests = specialist_admin.get_requests()
+    return flask.render_template('index.html', config=config,
+                                 requests=requests)
 
 
 if __name__ == '__main__':
