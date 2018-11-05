@@ -20,6 +20,7 @@ def update_config():
         update['connection_policy'] = flask.request.form['connection_policy']
     if 'host_name' in flask.request.form:
         update['host_name'] = flask.request.form['host_name']
+    me_admin.update_config(update)
     return flask.redirect(flask.url_for("index"))
 
 
