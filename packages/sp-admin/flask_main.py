@@ -21,9 +21,15 @@ def send_a_connection_request():
     me_host = flask.request.form['me_host']
     gw_req = KearchRequester(
         GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
-    ret = gw_req.request(path='/sp/gateway/send_a_connection_request',
-                         payload={'me_host': me_host}, method='POST')
-    return jsonify(ret)
+    gw_req.request(path='/sp/gateway/send_a_connection_request',
+                   payload={'me_host': me_host}, method='POST')
+
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    db_req.request(path='/sp/db/add_a_connection_request',
+                   payload={'me_host': me_host, 'in_or_out': 'out'},
+                   method='POST')
+    return flask.redirect(flask.url_for("index"))
 
 
 @app.route('/send_db_summary', methods=['POST'])
