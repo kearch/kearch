@@ -241,7 +241,7 @@ class KearchRequester(object):
                 out_statement = """
                 SELECT `me_hosts`.`name`, `is_approved` FROM `out_requests`
                 INNER JOIN `me_hosts` ON
-                `in_requests`.`host_id` = `me_hosts`.`id`
+                `out_requests`.`host_id` = `me_hosts`.`id`
                 """
                 cur.execute(out_statement)
                 for row in cur.fetchall():
@@ -253,7 +253,8 @@ class KearchRequester(object):
                 ret['in'] = dict()
                 in_statement = """
                 SELECT `sp_hosts`.`name`, `is_approved` FROM `in_requests`
-                INNER JOIN `sp_hosts` ON `sp_hosts`.`id` = `in_requests`.`host_id`
+                INNER JOIN `sp_hosts` ON
+                `sp_hosts`.`id` = `in_requests`.`host_id`
                 """
                 cur.execute(in_statement)
                 for row in cur.fetchall():
@@ -262,7 +263,8 @@ class KearchRequester(object):
                 ret['out'] = dict()
                 out_statement = """
                 SELECT `sp_hosts`.`name`, `is_approved` FROM `out_requests`
-                INNER JOIN `sp_hosts` ON `sp_hosts`.`id` = `in_requests`.`host_id`
+                INNER JOIN `sp_hosts` ON
+                `sp_hosts`.`id` = `out_requests`.`host_id`
                 """
                 cur.execute(out_statement)
                 for row in cur.fetchall():
