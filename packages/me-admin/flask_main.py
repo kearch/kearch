@@ -63,11 +63,10 @@ def send_a_connection_request():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
 
-    gt_req.request(path='/me/gateway/send_a_connection_request',
-                   payload={'sp_host': sp_host}, method='POST')
-
     db_req.request(path='/me/db/add_a_connection_request',
                    payload={'in_or_out': 'out', 'sp_host': sp_host})
+    gt_req.request(path='/me/gateway/send_a_connection_request',
+                   payload={'sp_host': sp_host}, method='POST')
     return flask.redirect(flask.url_for("index"))
 
 
