@@ -184,6 +184,7 @@ if __name__ == '__main__':
 
         with ThreadPoolExecutor(max_workers=NUM_THREAD) as executor:
             urls = list(urls_in_queue[:NUM_THREAD])
+            urls = filter(bool, urls)
             urls = filter(robots_checker.isCrawlable, urls)
             results = executor.map(crawl_a_page, urls)
         results = list(filter(lambda x: x != {}, results))
