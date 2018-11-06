@@ -83,6 +83,9 @@ spec:
   - metadata:
       name: storage
     spec:
+      selector:
+        matchLabels:
+          volume: sp-es-master-pv
       storageClassName: standard
       accessModes: [ ReadWriteOnce ]
       resources:
