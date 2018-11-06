@@ -12,7 +12,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
   local:
-    path: /data/sp-es-data-pv
+    path: /data/sp-es-data-pv/
   # TODO: tie this PersistentVolume to a specific node
   nodeAffinity:
     required:
