@@ -39,7 +39,7 @@ def update_config():
     return flask.redirect(flask.url_for("index"))
 
 
-@app.route('/approve_a_connection_request', methods=['PUT'])
+@app.route('/approve_a_connection_request', methods=['POST'])
 def approve_a_connection_request():
     gt_req = KearchRequester(GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
     db_req = KearchRequester(

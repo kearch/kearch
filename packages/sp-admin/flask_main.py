@@ -16,7 +16,7 @@ SP_ADMIN_PORT = 10080
 app = flask.Flask(__name__)
 
 
-@app.route('/approve_a_connection_request', methods=['PUT'])
+@app.route('/approve_a_connection_request', methods=['POST'])
 def approve_a_connection_request():
     me_host = flask.request.form['me_host']
     db_req = KearchRequester(
