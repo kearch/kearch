@@ -1,6 +1,8 @@
-# kearch kubernets services
+# kearch kubernets services setup
 
-## kubernetes single-node cluster setup
+## Step 1. kubernetes single-node cluster setup
+
+This step is not needed for minikube users.
 
 ```sh
 #! /bin/bash
@@ -58,7 +60,12 @@ kubectl taint nodes --all node-role.kubernetes.io/master- \
 kubectl apply \
   -f http://docs.projectcalico.org/v2.4/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml \
   --kubeconfig /etc/kubernetes/admin.conf
+```
 
+
+## Step 2. local storage setup
+
+```
 # On a node where you want PersistentVolumes to be hosted
 kubectl label nodes <your-node-name> storage=sp-es
 sudo mkdir /data
