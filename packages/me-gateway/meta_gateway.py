@@ -22,8 +22,6 @@ def add_new_sp_server(sp_host, summary):
                          conn_type='sql')
     result = kr.request(path='/add_new_sp_server',
                         payload={'host': sp_host, 'summary': summary})
-    kr.request('/me/db/approve_a_connection_request',
-               payload={'in_or_out': 'out', 'sp_host': sp_host})
     return result
 
 

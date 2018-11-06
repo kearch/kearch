@@ -40,14 +40,6 @@
         </div>
 
         <div class="box">
-            <form action="/me/admin/send_a_connection_request" method="post">
-                <p>Send a requests from this meta server to specialist servers</p>
-                <input type="text" id="sp_host" name="sp_host" cols="50" />
-                <button class="button">send a request to specialist search engine</button>
-            </form>
-        </div>
-
-        <div class="box">
             <p>Set your global IP adress or hostname here</p>
             <p>The current IP adress or hostname = {{ config['host_name'] }} </p>
             <form action="/update_config" method="post">
