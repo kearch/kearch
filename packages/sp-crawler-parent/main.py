@@ -19,7 +19,7 @@ ELASTIC_INDEX = 'sp'
 ELASTIC_TYPE = 'webpage'
 
 NUM_THREAD = 10
-SP_CHILD_TIMEOUT = 60
+SP_CHILD_TIMEOUT = 300
 
 REQUESTER_NAME = 'specialist_crawler_parent'
 
@@ -184,6 +184,7 @@ if __name__ == '__main__':
 
         with ThreadPoolExecutor(max_workers=NUM_THREAD) as executor:
             urls = list(urls_in_queue[:NUM_THREAD])
+            urls = filter(bool, urls)
             urls = filter(robots_checker.isCrawlable, urls)
             results = executor.map(crawl_a_page, urls)
         results = list(filter(lambda x: x != {}, results))

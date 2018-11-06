@@ -1,6 +1,8 @@
-# kearch kubernets services
+# kearch kubernets services setup
 
-## kubernetes single-node cluster setup
+## Step 1. kubernetes single-node cluster setup
+
+This step is not needed for minikube users.
 
 ```sh
 #! /bin/bash
@@ -61,74 +63,13 @@ kubectl apply \
 ```
 
 
-```sh
-# sudo iptables -I INPUT -p tcp --dport 8080 -j ACCEPT
+## Step 2. local storage setup
 
-sudo su -l kearch
-
-mkdir -p ~/dev/src/github.com/kearch
-cd ~/dev/src/github.com/kearch
-git clone https://github.com/kearch/kearch.git
-cd kearch
-git checkout dev
-
-# you need to run `docker build` here
-
-kubectl config set-context kearch-dev --namespace=kearch --cluster=kubernetes --user=kubernetes-admin
-kubectl config use-context kearch-dev
-
+```
+# On a node where you want PersistentVolumes to be hosted
+kubectl label nodes <your-node-name> storage=sp-es
 sudo mkdir /data
-
-kubectl apply -f services/kearch-namespace.yaml
-for yaml in `ls services/sp-*/*.yaml`; do
-    kubectl apply -f $yaml
-done
-
-cd services/sp-db
-sp_db_pod_name=$(kubectl get po -l engine=sp,app=db -o go-template --template '{{(index .items 0).metadata.name}}')
-kubectl exec $sp_db_pod_name -- bash -c 'echo "CREATE DATABASE kearch_sp_dev CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" | mysql -uroot -ppassword'
-kubectl cp $(pwd)/sql/webpages_schema.sql $sp_db_pod_name:/tmp/webpages_schema.sql
-kubectl cp $(pwd)/sql/url_queue_schema.sql $sp_db_pod_name:/tmp/url_queue_schema.sql
-kubectl exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/webpages_schema.sql'
-kubectl exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/url_queue_schema.sql'
-
-cd ..
-cd services/me-db
-me_db_pod_name=$(kubectl get po -l engine=me,app=db -o go-template --template '{{(index .items 0).metadata.name}}')
-kubectl exec $me_db_pod_name -- bash -c 'echo "CREATE DATABASE kearch_me_dev CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" | mysql -uroot -ppassword'
-kubectl cp $(pwd)/sql/sp_servers_schema.sql $me_db_pod_name:/tmp/sp_servers_schema.sql
-kubectl exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/sp_servers_schema.sql'
-
-mkdir -p ~/tmp && cd ~/tmp
-cat <<"EOF" > insert_initial_urls.sql
-INSERT INTO `url_queue` (`url`)
-VALUES
-("https://www.deviantart.com/shedopen"),
-("https://en.wikipedia.org/wiki/Haskell_(programming_language)");
-EOF
-kubectl cp insert_initial_urls.sql $sp_db_pod_name:/tmp/insert_initial_urls.sql
-kubectl exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/insert_initial_urls.sql'
-kubectl exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/insert_initial_urls.sql'
-
-# check number of webpages crawled
-kubectl exec $sp_db_pod_name -- mysql -uroot -ppassword kearch_sp_dev -e 'SELECT COUNT(*) FROM `webpages`;'
-```
-
-```sql
-INSERT INTO `url_queue` (`url`)
-VALUES
-("https://www.deviantart.com/shedopen"),
-("https://en.wikipedia.org/wiki/Haskell_(programming_language)");
-```
-
-```sql
-INSERT INTO `url_queue` (`url`)
-VALUES
-("https://en.wikipedia.org/wiki/World_history");
-```
-
-```sql
-INSERT INTO `url_queue` (`url`)
-VALUES
-("https://en.wikipedia.org/wiki/Kyoto");
+sudo mkdir /data/sp-es-data-00
+sudo mkdir /data/sp-es-master-00
+sudo mkdir /data/sp-es-master-01
 ```

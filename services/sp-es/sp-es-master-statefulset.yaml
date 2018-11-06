@@ -1,21 +1,30 @@
-apiVersion: apps/v1beta1
-kind: Deployment
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
-  name: sp-es-data
+  namespace: kearch
+  name: sp-es-master
   labels:
     engine: sp
     app: es
     component: elasticsearch
-    role: data
+    role: master
 spec:
+  selector:
+    matchLabels:
+      engine: sp
+      app: es
+      component: elasticsearch
+      role: master
+  serviceName: elasticsearch-master
   replicas: 2
   template:
     metadata:
+      namespace: kearch
       labels:
         engine: sp
         app: es
         component: elasticsearch
-        role: data
+        role: master
     spec:
       initContainers:
       - name: init-sysctl
@@ -27,8 +36,8 @@ spec:
         securityContext:
           privileged: true
       containers:
-      - name: es-data
-        image: quay.io/pires/docker-elasticsearch-kubernetes:6.3.2
+      - name: es-master
+        image: quay.io/pires/docker-elasticsearch-kubernetes:6.3.0
         env:
         - name: NAMESPACE
           valueFrom:
@@ -40,12 +49,16 @@ spec:
               fieldPath: metadata.name
         - name: CLUSTER_NAME
           value: myesdb
+        - name: NUMBER_OF_MASTERS
+          value: "2"
         - name: NODE_MASTER
-          value: "false"
+          value: "true"
         - name: NODE_INGEST
           value: "false"
+        - name: NODE_DATA
+          value: "false"
         - name: HTTP_ENABLE
-          value: "true"
+          value: "false"
         - name: ES_JAVA_OPTS
           value: -Xms256m -Xmx256m
         - name: PROCESSORS
@@ -58,8 +71,6 @@ spec:
           limits:
             cpu: 1
         ports:
-        - containerPort: 9200
-          name: http
         - containerPort: 9300
           name: transport
         livenessProbe:
@@ -67,16 +78,19 @@ spec:
             port: transport
           initialDelaySeconds: 20
           periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /_cluster/health
-            port: http
-          initialDelaySeconds: 20
-          timeoutSeconds: 5
         volumeMounts:
         - name: storage
           mountPath: /data
-      volumes:
-          - emptyDir:
-              medium: ""
-            name: storage
+  volumeClaimTemplates:
+  - metadata:
+      namespace: kearch
+      name: storage
+    spec:
+      selector:
+        matchLabels:
+          volume: sp-es-master
+      storageClassName: local-storage
+      accessModes: [ ReadWriteOnce ]
+      resources:
+        requests:
+          storage: 2Gi

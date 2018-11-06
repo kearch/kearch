@@ -1,6 +1,7 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
+  namespace: kearch
   name: sp-es-ingest
   labels:
     engine: sp
@@ -11,6 +12,7 @@ spec:
   replicas: 2
   template:
     metadata:
+      namespace: kearch
       labels:
         engine: sp
         app: es
