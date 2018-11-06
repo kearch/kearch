@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: es-master
+  name: sp-es-master
   labels:
     engine: sp
     app: es
@@ -10,6 +10,8 @@ metadata:
 spec:
   selector:
     matchLabels:
+      engine: sp
+      app: es
       component: elasticsearch
       role: master
   serviceName: elasticsearch-master
