@@ -14,11 +14,12 @@ spec:
   local:
     path: /data/sp-es-data-pv
   # TODO: tie this PersistentVolume to a specific node
-  # nodeAffinity:
-  #   required:
-  #     nodeSelectorTerms:
-  #     - matchExpressions:
-  #       - key: kubernetes.io/hostname
-  #         operator: In
-  #         values:
-  #         - my-node
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: storage
+          operator: In
+          values:
+          - sp-es
+          - sp-es-data
