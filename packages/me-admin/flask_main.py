@@ -56,6 +56,21 @@ def approve_a_connection_request():
     return jsonify(dump)
 
 
+@app.route('/me/admin/send_a_connection_request', methods=['POST'])
+def send_a_connection_request():
+    sp_host = flask.request.form['sp_host']
+    gt_req = KearchRequester(GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+
+    gt_req.request(path='/me/gateway/send_a_connection_request',
+                   payload={'sp_host': sp_host}, method='POST')
+
+    db_req.request(path='/me/db/add_a_connection_request',
+                   payload={'in_or_out': 'out', 'sp_host': sp_host})
+    return flask.redirect(flask.url_for("index"))
+
+
 if __name__ == '__main__':
     app.debug = True
     app.run(host='0.0.0.0', port=SP_ADMIN_PORT)  # どこからでもアクセス可能に
