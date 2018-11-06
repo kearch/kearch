@@ -62,4 +62,6 @@ kubectl apply \
 # On a node where you want PersistentVolumes to be hosted
 kubectl label nodes <your-node-name> storage=sp-es
 sudo mkdir /data
+sudo mkdir /data/sp-es-data-pv
+sudo mkdir /data/sp-es-master-pv
 ```
