@@ -89,7 +89,7 @@ spec:
     spec:
       selector:
         matchLabels:
-          volume: sp-es-data-pv
+          volume: sp-es-data
       storageClassName: local-storage
       accessModes: [ ReadWriteOnce ]
       resources:

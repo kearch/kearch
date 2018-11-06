@@ -1,9 +1,10 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: sp-es-master
+  namespace: kearch
+  name: sp-es-master-00
   labels:
-    volume: sp-es-master-pv
+    volume: sp-es-master
 spec:
   capacity:
     storage: 2Gi
@@ -12,7 +13,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
   local:
-    path: /data/sp-es-master-pv/
+    path: /data/sp-es-master-00
   # TODO: tie this PersistentVolume to a specific node
   nodeAffinity:
     required:
@@ -23,3 +24,32 @@ spec:
           values:
           - sp-es
           - sp-es-master
+          - sp-es-master-00
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: kearch
+  name: sp-es-master-01
+  labels:
+    volume: sp-es-master
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /data/sp-es-master-01
+  # TODO: tie this PersistentVolume to a specific node
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: storage
+          operator: In
+          values:
+          - sp-es
+          - sp-es-master
+          - sp-es-master-01
