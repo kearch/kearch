@@ -22,7 +22,7 @@
                 {% for name,state in requests['in'].items(): %}
                 <li>me_host = {{ name }}, is_approved = {{ state }}</li>
                 {% if state == 0 %}
-                <form action="/approve_a_connection_request" method="post">
+                <form action="/approve_a_connection_request" method="put">
                     <button type="submit" name="me_host" value="{{ name }}">Approve</button>
                 </form>
                 {% endif %}
