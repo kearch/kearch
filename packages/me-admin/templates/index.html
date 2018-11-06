@@ -22,7 +22,7 @@
                 {% for name,state in requests['in'].items(): %}
                 <li>sp_host = {{ name }}, is_approved = {{ state }}</li>
                 {% if state == 0 %}
-                <form action="/approve_a_connection_request" method="post">
+                <form action="/approve_a_connection_request" method="put">
                     <button type="submit" name="sp_host" value="{{ name }}">Approve</button>
                 </form>
                 {% endif %}
@@ -37,6 +37,14 @@
                 <li>sp_host = {{ name }}, is_approved = {{ state }}</li>
                 {% endfor %}
             </ul>
+        </div>
+
+        <div class="box">
+            <form action="/me/admin/send_a_connection_request" method="post">
+                <p>Send a requests from this meta server to specialist servers</p>
+                <input type="text" id="sp_host" name="sp_host" cols="50" />
+                <button class="button">send a request to specialist search engine</button>
+            </form>
         </div>
 
         <div class="box">

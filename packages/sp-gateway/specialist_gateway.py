@@ -56,7 +56,7 @@ def add_a_connection_request(me_host):
         res = send_a_dump(sp_host, me_host, dump)
         return res
     else:
-        res = db.request(path='/sp/gateway/add_a_connection_request',
+        res = db.request(path='/sp/db/add_a_connection_request',
                          payload={'in_or_out': 'in', 'me_host': me_host})
         return res
 

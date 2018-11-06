@@ -16,6 +16,26 @@ SP_ADMIN_PORT = 10080
 app = flask.Flask(__name__)
 
 
+@app.route('/approve_a_connection_request', methods=['PUT'])
+def approve_a_connection_request():
+    me_host = flask.request.form['me_host']
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+
+    summary = db_req.request(path='/dump_database')
+    config = db_req.request(path='/sp/db/get_config_variables')
+    pld = {'sp_host': config['host_name'],
+           'me_host': me_host, 'summary': summary}
+
+    gw_req = KearchRequester(
+        GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
+    gw_req.request(path='/send_DB_summary', payload=pld, method='POST')
+
+    db_req.request('/sp/db/approve_a_connection_request',
+                   payload={'in_or_out': 'in', 'me_host': me_host})
+    return flask.redirect(flask.url_for("index"))
+
+
 @app.route('/sp/admin/send_a_connection_request', methods=['POST'])
 def send_a_connection_request():
     me_host = flask.request.form['me_host']
