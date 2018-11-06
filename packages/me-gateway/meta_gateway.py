@@ -26,8 +26,14 @@ def add_new_sp_server(sp_host, summary):
 
 
 def fetch_a_dump(sp_host):
-    kr = KearchRequester(sp_host, SPECIALIST_GATEWAY_PORT, REQUESTER_NAME)
-    results = kr.request(path='/sp/gateway/get_a_dump', method='GET')
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    config = db_req.request(path='/me/db/get_config_variables')
+    me_host = config['host_name']
+
+    gt_req = KearchRequester(sp_host, SPECIALIST_GATEWAY_PORT, REQUESTER_NAME)
+    results = gt_req.request(path='/sp/gateway/get_a_dump',
+                             params={'me_host': me_host}, method='GET')
     return results
 
 
