@@ -26,8 +26,14 @@ def add_new_sp_server(sp_host, summary):
 
 
 def fetch_a_dump(sp_host):
-    kr = KearchRequester(sp_host, SPECIALIST_GATEWAY_PORT, REQUESTER_NAME)
-    results = kr.request(path='/sp/gateway/get_a_dump', method='GET')
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    config = db_req.request(path='/me/db/get_config_variables')
+    me_host = config['host_name']
+
+    gt_req = KearchRequester(sp_host, SPECIALIST_GATEWAY_PORT, REQUESTER_NAME)
+    results = gt_req.request(path='/sp/gateway/get_a_dump',
+                             params={'me_host': me_host}, method='GET')
     return results
 
 
@@ -39,13 +45,19 @@ def add_a_connection_request(sp_host):
         sp = KearchRequester(sp_host, SPECIALIST_GATEWAY_PORT, REQUESTER_NAME)
         dump = sp.request(path='/sp/gateway/get_a_dump',
                           params={'me_host': config[CONFIG_HOST_NAME]})
-        res = db.request(path='/add_new_sp_server',
-                         payload={'host': sp_host, 'summary': dump})
-        return res
+        db.request(path='/me/db/add_a_connection_request',
+                   payload={'in_or_out': 'in', 'sp_host': sp_host})
+        db.request(path='/add_new_sp_server',
+                   payload={'host': sp_host, 'summary': dump})
+        db.request(path='/me/db/approve_a_connection_request',
+                   payload={'in_or_out': 'in', 'sp_host': sp_host},
+                   method='POST')
+
+        return {'sp_host': sp_host}
     else:
-        res = db.request(path='/me/gateway/add_a_connection_request',
-                         payload={'in_or_out': 'in', 'sp_host': sp_host})
-        return res
+        db.request(path='/me/db/add_a_connection_request',
+                   payload={'in_or_out': 'in', 'sp_host': sp_host})
+        return {'sp_host': sp_host}
 
 
 def send_a_connection_request(sp_host):

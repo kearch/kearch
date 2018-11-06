@@ -66,7 +66,9 @@ def get_a_dump(me_host):
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
     reqs = db_req.request(path='/sp/db/get_connection_requests')
     if me_host in reqs['out'] and not reqs['out'][me_host]:
-        db_req.request(path='/sp/db/approve_a_connection_request',
-                       params={'me_host': me_host})
         dump = db_req.request(path='/dump_database')
-    return dump
+        db_req.request(path='/sp/db/approve_a_connection_request',
+                       payload={'me_host': me_host, 'in_or_out': 'out'})
+        return dump
+    else:
+        return {}
