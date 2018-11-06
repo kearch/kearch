@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  namespace: kearch
   name: sp-es-master
   labels:
     engine: sp
@@ -18,6 +19,7 @@ spec:
   replicas: 2
   template:
     metadata:
+      namespace: kearch
       labels:
         engine: sp
         app: es
@@ -81,6 +83,7 @@ spec:
           mountPath: /data
   volumeClaimTemplates:
   - metadata:
+      namespace: kearch
       name: storage
     spec:
       selector:

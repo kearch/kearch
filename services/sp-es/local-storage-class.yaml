@@ -1,6 +1,7 @@
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
+  namespace: kearch
   name: local-storage
 provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: WaitForFirstConsumer

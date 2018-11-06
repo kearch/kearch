@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: kearch
   name: elasticsearch-data
   labels:
     engine: sp
