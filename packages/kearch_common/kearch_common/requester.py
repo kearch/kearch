@@ -388,6 +388,49 @@ class KearchRequester(object):
                 cur.executemany(statement, records)
                 db.commit()
                 ret = cur.rowcount
+            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'push_binary_file':
+                name = params['name']
+                body = params['body']
+                statement = """
+                INSERT INTO `binary_files`
+                (`name`, `body`)
+                VALUES (%s, %s)
+                ON DUPLICATE KEY UPDATE `body` = VALUES(`body`)
+                """
+
+                cur.execute(statement, (name, body))
+                db.commit()
+                ret = {'name': name}
+            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'pull_binary_file':
+                name = params['name']
+                statement = """
+                SELECT `body`, `updated_at` FROM `binary_files`
+                WHERE `name` = %s
+                """
+
+                cur.execute(statement, (name,))
+                row = cur.fetchone()
+                ret = {
+                    'name': name,
+                    'body': row[0],
+                    'updated_at': row[1],
+                }
+            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'check_binary_file_timestamp':
+                name = params['name']
+                statement = """
+                SELECT `updated_at` FROM `binary_files`
+                WHERE `name` = %s
+                """
+
+                cur.execute(statement, (name,))
+                row = cur.fetchone()
+                ret = {
+                    'name': name,
+                    'updated_at': row[0],
+                }
             elif parsed_path == '/push_webpage_to_database':
                 for webpage in payload['data']:
                     post_webpage_to_db(db, cur, webpage)
