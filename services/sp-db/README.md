@@ -223,9 +223,9 @@ Params
 This API is used to pull configure data of crawlers.
 Path
 ```
-[GET] /pull_binary_file?filename=hogefile
+[GET] /sp/db/pull_binary_file?filename=hogefile
 ```
-Expected return JSON
+Expected return object
 ```
 {
     'name': 'hogefile',
