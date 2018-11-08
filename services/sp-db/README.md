@@ -205,44 +205,48 @@ JSON
 ]}
 ```
 
-## [TODO] Push binary file to the database
+## Push binary file to the database
 This API is used to push configure data of crawlers.
 Path
 ```
-[POST] /push_binary_file
+[POST] /sp/db/push_binary_file
 ```
-JSON
+Params
 ```
-{'data':{
-    'filename': 'hogefile',
-    'contents': "binary contents"}
+{
+    'name': 'hogefile',
+    'body': <binary data>
 }
 ```
 
-## [TODO] Check the timestamp of binary file
-Path
-```
-[GET] /chec_binary_file_timestamp?filename=hogename
-```
-JSON
-```
-{
-    'timestamp': "UNIX time when the file is uploaded"
-}
-```
-## [TODO] Pull binary file from the database
+## Pull binary file from the database
 This API is used to pull configure data of crawlers.
 Path
 ```
-[GET] /pull_binary_file?filename=hgoefile
+[GET] /sp/db/pull_binary_file?filename=hogefile
 ```
-JSON
+Expected return object
 ```
 {
-    'timestamp': "UNIX time when the file is uploaded",
-    'contents': "binary contents"
+    'name': 'hogefile',
+    'body': <binary data>,
+    'updated_at': datetime.datetime(2018, 11, 7, 19, 2, 2)
 }
 ```
+
+## Check the timestamp of binary file
+Path
+```
+[GET] /sp/db/check_binary_file_timestamp?filename=hogefile
+```
+Expected return JSON
+```
+{
+    'name': 'hogefile',
+    'updated_at': datetime.datetime(2018, 11, 7, 19, 2, 2)
+}
+```
+
 ## Set Config Variables
 This API could be used to set public/protected status.
 Access URL (POST)

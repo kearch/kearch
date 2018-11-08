@@ -70,6 +70,7 @@ do
         kubectl --namespace=kearch cp $(pwd)/sql/me_hosts_schema.sql $sp_db_pod_name:/tmp/me_hosts_schema.sql
         kubectl --namespace=kearch cp $(pwd)/sql/in_requests_schema.sql $sp_db_pod_name:/tmp/in_requests_schema.sql
         kubectl --namespace=kearch cp $(pwd)/sql/out_requests_schema.sql $sp_db_pod_name:/tmp/out_requests_schema.sql
+        kubectl --namespace=kearch cp $(pwd)/sql/binary_files_schema.sql $sp_db_pod_name:/tmp/binary_files_schema.sql
 
         echo url_queue_schema
         kubectl --namespace=kearch exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/url_queue_schema.sql'
@@ -87,10 +88,12 @@ do
         kubectl --namespace=kearch exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/config_variables_schema.sql'
         echo me_hosts_schema
         kubectl --namespace=kearch exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/me_hosts_schema.sql'
-        echo in_requests_schema 
+        echo in_requests_schema
         kubectl --namespace=kearch exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/in_requests_schema.sql'
-        echo out_requests_schema 
+        echo out_requests_schema
         kubectl --namespace=kearch exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/out_requests_schema.sql'
+        echo binary_files_schema
+        kubectl --namespace=kearch exec $sp_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_sp_dev < /tmp/binary_files_schema.sql'
 
         $KEARCH_ROOT_DIR/sp_db_checker.sh
 
