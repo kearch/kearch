@@ -12,6 +12,7 @@ import os
 import pickle
 import urllib3
 import janome.tokenizer
+import sys
 
 CACHE_DIR = './webpage_cache/'
 BAN_EXTENTION = [
@@ -123,8 +124,9 @@ class Webpage(object):
         if len(url) > 200:
             raise WebpageError('URL is too long.')
         try:
+            print('webpage.py start downloading ' + url, file=sys.stderr)
             content = requests.get(self.url, timeout=5).content
-
+            print('webpage.py finish downloading ' + url, file=sys.stderr)
         except requests.exceptions.RequestException:
             raise WebpageError('Cannot get content.')
         except (UnicodeError, urllib3.exceptions.LocationValueError):
@@ -132,7 +134,9 @@ class Webpage(object):
         except AttributeError:
             raise WebpageError('AttributeError in download.')
 
+        print('webpage.py start BeautifulSoup ' + url, file=sys.stderr)
         soup = BeautifulSoup(content, "lxml")
+        print('webpage.py finish BeautifulSoup ' + url, file=sys.stderr)
         for script in soup(["script", "style"]):
             script.extract()    # rip javascript out
 
@@ -148,21 +152,33 @@ class Webpage(object):
             raise WebpageError('Cannot get title or text')
 
         try:
+            print('webpage.py start detecting language ' + url,
+                  file=sys.stderr)
             self.language = langdetect.detect(self.text)
+            print('webpage.py finish detecting language ' + url,
+                  file=sys.stderr)
             if not self.language == language:
                 raise WebpageError("Language doesn't match.")
         except langdetect.lang_detect_exception.LangDetectException:
             raise WebpageError('Cannot detect language.')
 
+        print('webpage.py start text_to_words for title ' + url,
+              file=sys.stderr)
         self.title_words = self.text_to_words(
             self.title, language=self.language)
+        print('webpage.py finish text_to_words for title ' + url,
+              file=sys.stderr)
         # convert all white space to sigle space
         # self.text = ' '.join(
         # filter(lambda x: not x == '', re.split('\s', self.text)))
 
         # This version do not respond to mutibyte characters
         self.summary = self.text[:500]
+        print('webpage.py start text_to_words for text ' + url,
+              file=sys.stderr)
         self.words = self.text_to_words(self.text, language=self.language)
+        print('webpage.py finish text_to_words for text ' + url,
+              file=sys.stderr)
 
 
 if __name__ == '__main__':
