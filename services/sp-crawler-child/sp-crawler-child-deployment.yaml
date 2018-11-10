@@ -25,3 +25,8 @@ spec:
         ports:
         - containerPort: 10080
         imagePullPolicy: Never
+        resources:
+          limits:
+            memory: 2Gi
+          requests:
+            memory: 128Mi
