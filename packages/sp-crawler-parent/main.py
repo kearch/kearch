@@ -3,6 +3,7 @@ import time
 import urllib.parse
 import urllib.robotparser
 import ssl
+import requests
 from concurrent.futures import ThreadPoolExecutor
 
 from kearch_common.requester import KearchRequester, RequesterError
@@ -42,9 +43,10 @@ class RobotsChecker:
             if roboturl in self.rpcache:
                 return self.rpcache[roboturl].can_fetch('*', url)
             else:
+                f = urllib.request.urlopen(url, timeout=5)
                 rp = urllib.robotparser.RobotFileParser()
-                rp.set_url(roboturl)
-                rp.read()
+                raw = f.read()
+                rp.parse(raw.decode("utf-8").splitlines())
                 self.rpcache[roboturl] = rp
                 return rp.can_fetch('*', url)
         except urllib.error.URLError:
