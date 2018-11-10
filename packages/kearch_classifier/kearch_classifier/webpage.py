@@ -16,7 +16,8 @@ import janome.tokenizer
 CACHE_DIR = './webpage_cache/'
 BAN_EXTENTION = [
         "pdf", "PDF", "jpg", "JPG", "png", "PNG",
-        "gif", "GIF", "ogv", "webm", "mp4", "avi"]
+        "gif", "GIF", "ogv", "webm", "mp4", "avi",
+        "mp3"]
 BAN_DOMAIN = ["twitter.com", "2ch.sc", "tumblr.com"]
 
 
