@@ -55,6 +55,8 @@ class RobotsChecker:
             return False
         except UnicodeDecodeError:
             return False
+        except:
+            return False
 
 
 def crawl_a_page(url):
