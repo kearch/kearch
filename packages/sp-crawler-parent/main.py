@@ -55,11 +55,11 @@ class RobotsChecker:
             return False
         except UnicodeDecodeError:
             return False
+        except:
+            return False
 
 
 def crawl_a_page(url):
-    print('crawling {} ...'.format(url))
-
     if DEBUG_UNIT_TEST:
         ret = {
             'url': 'www.google.com',
@@ -73,8 +73,10 @@ def crawl_a_page(url):
         crawler_requester = KearchRequester(
             CRAWLER_CHILD_HOST, CRAWLER_CHILD_PORT, REQUESTER_NAME)
         try:
+            print('requesting   /crawl_a_page?url={} ...'.format(url))
             ret = crawler_requester.request(
                 path='/crawl_a_page', params={'url': url}, timeout=SP_CHILD_TIMEOUT)
+            print('get response /crawl_a_page?url={}'.format(url))
         except RequesterError as e:
             print(e, file=sys.stderr)
             ret = {}
@@ -184,8 +186,10 @@ if __name__ == '__main__':
 
         with ThreadPoolExecutor(max_workers=NUM_THREAD) as executor:
             urls = list(urls_in_queue[:NUM_THREAD])
-            urls = filter(bool, urls)
-            urls = filter(robots_checker.isCrawlable, urls)
+            urls = list(filter(bool, urls))
+            print('after filter bool', urls, file=sys.stderr)
+            urls = list(filter(robots_checker.isCrawlable, urls))
+            print('after filter isCrawlable', urls, file=sys.stderr)
             results = executor.map(crawl_a_page, urls)
         results = list(filter(lambda x: x != {}, results))
         for r in results:
