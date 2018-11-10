@@ -96,6 +96,7 @@ def learn_params():
 
     cls = kearch_classifier.classifier.Classifier()
     cls.learn_params(topic_urls, random_urls, language)
+    cls.dump_params(kearch_classifier.PARAMS_FILE)
 
     return "OK"
 
