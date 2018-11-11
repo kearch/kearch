@@ -26,6 +26,10 @@ p { margin: 0; }
     cursor: pointer;
 }
 
+.sp-host {
+    margin-left: 170px;
+}
+
 .entry{
     margin-left: 170px;
     margin-bottom: 30px;
@@ -62,6 +66,7 @@ p { margin: 0; }
 
 .nomark{
     list-style:none;
+    padding-left: 0px;
 }
 
 .more{
@@ -92,6 +97,9 @@ p { margin: 0; }
                 {% endfor %}
             </select>
         </form>
+        <div class="sp-host">
+          <p>Showing results from {{ sp_host }}</p>
+        </div>
         <ul id="list" class="nomark">
             {% for w in results %}
             <li>

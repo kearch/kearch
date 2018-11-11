@@ -36,18 +36,18 @@ def get_sp_host_from_database(queries):
 
 
 def get_result_from_sp(sp_host, queries, max_urls):
+    ret = dict()
     if DEBUG_UNIT_TEST:
-        ret = dict()
         ret['data'] = [{'url': 'www.google.com', 'title_words': [
             'google', 'usa'], 'title': 'google_in_usa', 'summary':'google is strong', 'score':11.0}]
-        return ret
     else:
         sp_requester = KearchRequester(
             GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
         ret = sp_requester.request(
             path='/retrieve',
             params={'sp_host': sp_host, 'queries': ' '.join(queries), 'max_urls': max_urls})
-        return ret
+    ret['sp_host'] = sp_host
+    return ret
 
 
 def retrieve(queries, max_urls, sp=None):
@@ -63,7 +63,8 @@ def retrieve(queries, max_urls, sp=None):
         if len(host_to_score) == 0:
             sys.stderr.write("No specialist server in this meta database.\n")
             return {
-                'data': []
+                'data': [],
+                'sp_host': ''
             }
 
         host_to_score_list = list(host_to_score.items())
