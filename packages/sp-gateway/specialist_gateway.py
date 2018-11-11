@@ -14,6 +14,17 @@ CONFIG_CONNECTION_POLICY = 'connection_policy'
 CONFIG_HOST_NAME = 'host_name'
 
 
+def is_connected(me_host):
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    reqs = db_req.request(path='/sp/db/get_connection_requests')
+    if (me_host in reqs['out'] and reqs['out'][me_host]) or \
+            (me_host in reqs['in'] and reqs['in'][me_host]):
+        # already approved
+        return True
+    return False
+
+
 def send_a_connection_request(me_host):
     db = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
                          conn_type='sql')
@@ -50,7 +61,7 @@ def add_a_connection_request(me_host):
     db = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
                          conn_type='sql')
     config = db.request(path='/sp/db/get_config_variables', method='GET')
-    if config[CONFIG_CONNECTION_POLICY] == 'public':
+    if config[CONFIG_CONNECTION_POLICY] == 'public' or is_connected(me_host):
         sp_host = config[CONFIG_HOST_NAME]
         dump = db.request(path='/dump_database', method='GET')
         res = send_a_dump(sp_host, me_host, dump)
