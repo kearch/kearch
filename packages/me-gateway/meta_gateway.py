@@ -10,6 +10,14 @@ CONFIG_CONNECTION_POLICY = 'connection_policy'
 CONFIG_HOST_NAME = 'host_name'
 
 
+def get_me_host():
+    db = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
+                         conn_type='sql')
+    config = db.request(path='/me/db/get_config_variables')
+    me_host = config[CONFIG_HOST_NAME]
+    return me_host
+
+
 def retrieve(sp_host, queries, max_urls):
     kr = KearchRequester(sp_host, SPECIALIST_GATEWAY_PORT, REQUESTER_NAME)
     results = kr.request(path='/retrieve', method='GET',
@@ -28,10 +36,7 @@ def add_new_sp_server(sp_host, summary):
 
 
 def fetch_a_dump(sp_host):
-    db_req = KearchRequester(
-        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
-    config = db_req.request(path='/me/db/get_config_variables')
-    me_host = config['host_name']
+    me_host = get_me_host()
 
     gt_req = KearchRequester(sp_host, SPECIALIST_GATEWAY_PORT, REQUESTER_NAME)
     results = gt_req.request(path='/sp/gateway/get_a_dump',
@@ -63,12 +68,24 @@ def add_a_connection_request(sp_host):
 
 
 def send_a_connection_request(sp_host):
-    db = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
-                         conn_type='sql')
-    config = db.request(path='/me/db/get_config_variables', method='GET')
-    me_host = config[CONFIG_HOST_NAME]
+    me_host = get_me_host()
 
     kr = KearchRequester(sp_host, SPECIALIST_GATEWAY_PORT, REQUESTER_NAME)
     res = kr.request(path='/sp/gateway/add_a_connection_request',
                      method='POST', payload={'me_host': me_host})
+    return res
+
+
+def update_sp_servers():
+    me_host = get_me_host()
+
+    db = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
+                         conn_type='sql')
+    sp_servers = db.request(path='/list_up_sp_servers')
+
+    res = {}
+    for sp_host in sp_servers.keys():
+        kr = KearchRequester(sp_host, SPECIALIST_GATEWAY_PORT, REQUESTER_NAME)
+        res[sp_host] = kr.request(path='/sp/gateway/add_a_connection_request',
+                                  method='POST', payload={'me_host': me_host})
     return res
