@@ -84,7 +84,11 @@ p { margin: 0; }
             <select name="sp">
                 <option value="">select automatically</option>
                 {% for h,d in sp_servers.items() %}
+                {% if selected_sp == h %}
+                <option value="{{ h }}" selected>{{ d }}</option>
+                {% else %}
                 <option value="{{ h }}">{{ d }}</option>
+                {% endif %}
                 {% endfor %}
             </select>
         </form>
