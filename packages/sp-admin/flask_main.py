@@ -1,7 +1,9 @@
 import flask
+import base64
 from flask import jsonify
 from kearch_common.requester import KearchRequester
 import kearch_classifier.classifier
+import kearch_classifier.average_document as ave
 
 DATABASE_HOST = 'sp-db.kearch.svc.cluster.local'
 DATABASE_PORT = 3306
@@ -86,6 +88,9 @@ def init_crawl_urls():
 
 @app.route('/learn_params', methods=['POST'])
 def learn_params():
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+
     form_input_topic = flask.request.form['topic_urls']
     form_input_random = flask.request.form['random_urls']
     language = flask.request.form['language']
@@ -96,8 +101,21 @@ def learn_params():
 
     cls = kearch_classifier.classifier.Classifier()
     cls.learn_params(topic_urls, random_urls, language)
+    cls.dump_params(kearch_classifier.classifier.PARAMS_FILE)
 
-    return "OK"
+    bparam = open(kearch_classifier.classifier.PARAMS_FILE, 'rb').read()
+    tparam = base64.b64encode(bparam).decode('utf-8')
+    params = {'name': kearch_classifier.classifier.PARAMS_FILE,
+              'body': tparam}
+    db_req.request(path='/sp/db/push_binary_file', params=params)
+
+    ave.make_average_document_cache(ave.CACHE_FILE, language)
+    bparam = open(ave.CACHE_FILE, 'rb').read()
+    tparam = base64.b64encode(bparam).decode('utf-8')
+    params = {'name': ave.CACHE_FILE, 'body': tparam}
+    db_req.request(path='/sp/db/push_binary_file', params=params)
+
+    return flask.redirect(flask.url_for("index"))
 
 
 @app.route("/update_config", methods=['POST'])
