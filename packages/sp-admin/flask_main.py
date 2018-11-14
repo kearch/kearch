@@ -1,4 +1,5 @@
 import flask
+import base64
 from flask import jsonify
 from kearch_common.requester import KearchRequester
 import kearch_classifier.classifier
@@ -96,9 +97,18 @@ def learn_params():
 
     cls = kearch_classifier.classifier.Classifier()
     cls.learn_params(topic_urls, random_urls, language)
-    cls.dump_params(kearch_classifier.PARAMS_FILE)
+    cls.dump_params(kearch_classifier.classifier.PARAMS_FILE)
 
-    return "OK"
+    bparam = open(kearch_classifier.classifier.PARAMS_FILE, 'rt').read()
+    tparam = base64.b64encode(bparam)
+    payload = {'name': kearch_classifier.classifier.PARAMS_FILE,
+               'body': tparam}
+
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    ret = db_req.request(path='/sp/db/push_binary_file', payload=payload)
+
+    return ret
 
 
 @app.route("/update_config", methods=['POST'])
