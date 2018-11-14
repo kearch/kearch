@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from kearch_classifier._version import __version__
-
 import sys
 from gensim import corpora
 import kearch_classifier.webpage
+from kearch_classifier.webpage import create_webpage_with_cache
 import argparse
 import multiprocessing as mult
 import random
@@ -54,7 +53,7 @@ class Classifier(AbsClassifier):
 
     def url_to_words(self, url):
         try:
-            w = kearch_classifier.webpage.create_webpage_with_cache(url, self.language)
+            w = create_webpage_with_cache(url, self.language)
             return w.words
         except kearch_classifier.webpage.WebpageError as e:
             print(e.message, file=sys.stderr)
@@ -62,7 +61,7 @@ class Classifier(AbsClassifier):
 
     def url_to_title_words(self, url):
         try:
-            w = kearch_classifier.webpage.create_webpage_with_cache(url, self.language)
+            w = create_webpage_with_cache(url, self.language)
             return w.title_words
         except kearch_classifier.webpage.WebpageError as e:
             print(e.message, file=sys.stderr)
@@ -83,7 +82,8 @@ class Classifier(AbsClassifier):
         print('classifer.py -- Dictionary size = ' +
               str(len(self.dictionary_body)) + '', file=sys.stderr)
 
-        print('classifer.py -- Making Classifier for main text start', file=sys.stderr)
+        print('classifer.py -- Making Classifier for main text start',
+              file=sys.stderr)
         sc_samples = list()
         sc_labels = list()
         p = mult.Pool(mult.cpu_count() * 3)
@@ -107,7 +107,8 @@ class Classifier(AbsClassifier):
 
         self.clf_body = BernoulliNB()
         self.clf_body.fit(sc_samples, sc_labels)
-        print('classifer.py -- Making Classifier for main text finish', file=sys.stderr)
+        print('classifer.py -- Making Classifier for main text finish',
+              file=sys.stderr)
 
     def learn_params_title(self, topic_urls, random_urls, language):
         print('classifer.py -- Downloading start', file=sys.stderr)
@@ -124,7 +125,8 @@ class Classifier(AbsClassifier):
         sc_samples = list()
         sc_labels = list()
 
-        print('classifer.py -- Making Classifier for title start', file=sys.stderr)
+        print('classifer.py -- Making Classifier for title start',
+              file=sys.stderr)
         p = mult.Pool(mult.cpu_count() * 3)
         texts = p.map(
             self.url_to_title_words, topic_urls[:n_urls])
@@ -146,7 +148,8 @@ class Classifier(AbsClassifier):
 
         self.clf_title = BernoulliNB()
         self.clf_title.fit(sc_samples, sc_labels)
-        print('classifer.py -- Making Classifier for title end', file=sys.stderr)
+        print('classifer.py -- Making Classifier for title end',
+              file=sys.stderr)
 
     def learn_params(self, topic_urls, random_urls, language):
         self.language = language
@@ -173,36 +176,37 @@ class Classifier(AbsClassifier):
         return res[0]
 
     def dump_params(self, filename):
-        with tempfile.TemporaryDirectory() as temp_path:
+        with tempfile.TemporaryDirectory() as tmpd:
             self.dictionary_body.save(os.path.join(
-                temp_path, 'gensim_dictionary_body.pickle'))
+                tmpd, 'gensim_dictionary_body.pickle'))
             self.dictionary_title.save(os.path.join(
-                temp_path, 'gensim_dictionary_title.pickle'))
-            with open(os.path.join(temp_path, 'nb_clf_body.pickle'), 'wb') as f:
+                tmpd, 'gensim_dictionary_title.pickle'))
+            with open(os.path.join(tmpd, 'nb_clf_body.pickle'), 'wb') as f:
                 pickle.dump(self.clf_body, f)
-            with open(os.path.join(temp_path, 'nb_clf_title.pickle'), 'wb') as f:
+            with open(os.path.join(tmpd, 'nb_clf_title.pickle'), 'wb') as f:
                 pickle.dump(self.clf_title, f)
             with zipfile.ZipFile(filename, 'w') as f:
-                f.write(os.path.join(temp_path, 'gensim_dictionary_body.pickle'),
+                f.write(os.path.join(tmpd, 'gensim_dictionary_body.pickle'),
                         arcname='gensim_dictionary_body.pickle')
-                f.write(os.path.join(temp_path, 'gensim_dictionary_title.pickle'),
+                f.write(os.path.join(tmpd, 'gensim_dictionary_title.pickle'),
                         arcname='gensim_dictionary_title.pickle')
-                f.write(os.path.join(temp_path, 'nb_clf_body.pickle'),
+                f.write(os.path.join(tmpd, 'nb_clf_body.pickle'),
                         arcname='nb_clf_body.pickle')
-                f.write(os.path.join(temp_path, 'nb_clf_title.pickle'),
+                f.write(os.path.join(tmpd, 'nb_clf_title.pickle'),
                         arcname='nb_clf_title.pickle')
 
     def load_params(self, filename):
-        with tempfile.TemporaryDirectory() as temp_path:
+        with tempfile.TemporaryDirectory() as tmpd:
             with zipfile.ZipFile(filename) as z:
-                z.extractall(temp_path)
+                z.extractall(tmpd)
                 self.dictionary_body = corpora.Dictionary.load(
-                    os.path.join(temp_path, 'gensim_dictionary_body.pickle'))
+                    os.path.join(tmpd, 'gensim_dictionary_body.pickle'))
                 self.dictionary_title = corpora.Dictionary.load(
-                    os.path.join(temp_path, 'gensim_dictionary_title.pickle'))
-                with open(os.path.join(temp_path, 'nb_clf_body.pickle'), 'rb') as f:
+                    os.path.join(tmpd, 'gensim_dictionary_title.pickle'))
+                with open(os.path.join(tmpd, 'nb_clf_body.pickle'), 'rb') as f:
                     self.clf_body = pickle.load(f)
-                with open(os.path.join(temp_path, 'nb_clf_title.pickle'), 'rb') as f:
+                with open(os.path.join(tmpd, 'nb_clf_title.pickle'), 'rb') \
+                        as f:
                     self.clf_title = pickle.load(f)
 
 
@@ -215,7 +219,8 @@ if __name__ == '__main__':
     parser.add_argument(
         "language", help="select the language (en/ja)")
     parser.add_argument(
-        '--show-test', help='test for independent dataset', action='store_true')
+        '--show-test', help='test for independent dataset',
+        action='store_true')
     args = parser.parse_args()
 
     with open(args.topic_url_list, 'r') as f:
@@ -244,14 +249,14 @@ if __name__ == '__main__':
         false_positive = 0
         false_negative = 0
         for u in topic_urls1[n_urls:n_urls + n_tests]:
-            w = kearch_classifier.webpage.create_webpage_with_cache(u, cls.language)
+            w = create_webpage_with_cache(u, cls.language)
             print(u, cls.classify_log_probability_body(w.words))
             if cls.classify(w) == IN_TOPIC:
                 true_positive += 1
             else:
                 true_negative += 1
         for u in random_urls1[n_urls:n_urls + n_tests]:
-            w = kearch_classifier.webpage.create_webpage_with_cache(u, cls.language)
+            w = create_webpage_with_cache(u, cls.language)
             print(u, cls.classify_log_probability_body(w.words))
             if cls.classify(w) == OUT_OF_TOPIC:
                 false_negative += 1
@@ -263,4 +268,5 @@ if __name__ == '__main__':
         fmeasure = 2 * precision * recall / (precision + recall + 1)
         print('classifier.py -- TP=', true_positive, 'TN=', true_negative,
               'FP=', false_positive, 'FN=', false_negative,
-              'precision=', precision, 'recall=', recall, 'fmeasure=', fmeasure)
+              'precision=', precision, 'recall=', recall,
+              'fmeasure=', fmeasure)
