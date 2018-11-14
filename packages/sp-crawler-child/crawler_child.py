@@ -2,11 +2,19 @@
 
 import math
 import sys
+import os
+import base64
+import datetime
 from collections import Counter
 
-import kearch_classifier.average_document
+import kearch_classifier.average_document as ave
 import kearch_classifier.classifier
 import kearch_classifier.webpage
+from kearch_common.requester import KearchRequester, RequesterError
+
+DATABASE_HOST = 'sp-db.kearch.svc.cluster.local'
+DATABASE_PORT = 3306
+REQUESTER_NAME = 'sp-crawler-child'
 
 confidence_threshold = -1.0e-10
 n_outer_derives = 100
@@ -20,7 +28,7 @@ def web_to_tfidf(web):
         sum_count += c
 
     tfidf = dict()
-    average_document_dict = kearch_classifier.average_document.average_document_dict()
+    average_document_dict = ave.average_document_dict()
     size_of_average_document = len(average_document_dict)
 
     for w, c in counter:
@@ -53,7 +61,31 @@ def url_to_webpage(url):
         None
 
 
+def update_param_file(filename):
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    try:
+        ret = db_req.request(path='/sp/db/check_binary_file_timestamp',
+                             params={'name': filename})
+        dt = ret['updated_at']
+        nt = datetime.datetime.fromtimestamp(os.stat(filename).st_mtime)
+        print('db:', dt, 'file:', nt, file=sys.stderr)
+        if nt < dt:
+            ret = db_req.request(path='/sp/db/pull_binary_file',
+                                 params={'name': filename})
+            body = base64.b64decode(ret['body'].encode())
+            with open(filename, 'wb') as f:
+                f.write(body)
+    except RequesterError:
+        return
+
+
 def url_to_json(url):
+    print('Start checking parameter files.', file=sys.stderr)
+    update_param_file(kearch_classifier.classifier.PARAMS_FILE)
+    update_param_file(ave.CACHE_FILE)
+    print('End checking parameter files.', file=sys.stderr)
+
     print('Start download ', url, file=sys.stderr)
     web = url_to_webpage(url)
     print('End download ', url, file=sys.stderr)
