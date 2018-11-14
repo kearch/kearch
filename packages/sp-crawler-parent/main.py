@@ -2,7 +2,6 @@ import sys
 import time
 import urllib.parse
 import urllib.robotparser
-import traceback
 from concurrent.futures import ThreadPoolExecutor
 
 from kearch_common.requester import KearchRequester, RequesterError
@@ -49,7 +48,7 @@ class RobotsChecker:
                 self.rpcache[roboturl] = rp
                 return rp.can_fetch('*', url)
         except Exception as e:
-            print(traceback.format_exc(), file=sys.stderr)
+            print('isCrawlable: ', e, file=sys.stderr)
             return False
 
 
