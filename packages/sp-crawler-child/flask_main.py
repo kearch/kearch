@@ -13,8 +13,7 @@ app = flask.Flask(__name__)
 @app.route('/crawl_a_page', methods=['GET'])
 def crawl_a_page():
     url = flask.request.args.get('url')
-    print(url)
-    sys.stderr.write(url + '\n')
+    print(url, file=sys.stderr)
     result = crawler_child.url_to_json(url)
     return jsonify(result)
 
