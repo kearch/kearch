@@ -109,7 +109,7 @@ def learn_params():
               'body': tparam}
     db_req.request(path='/sp/db/push_binary_file', params=params)
 
-    ave.make_average_document_cache(ave.CACHE_FILE, language)
+    ave.make_average_document_cache(random_urls, language)
     bparam = open(ave.CACHE_FILE, 'rb').read()
     tparam = base64.b64encode(bparam).decode('utf-8')
     params = {'name': ave.CACHE_FILE, 'body': tparam}
