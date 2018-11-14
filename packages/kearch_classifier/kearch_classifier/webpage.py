@@ -307,7 +307,6 @@ class Webpage(object):
 
         filename = link.split("/")[-1]
         ext = os.path.splitext(filename)[1]
-        print("extention = ", ext, file=sys.stderr)
         # last condition is excluding web archives
         if link is None or link[:4] != 'http' or ":" not in link or \
                 ext in BAN_EXTENTION or '://' in link[7:]:
