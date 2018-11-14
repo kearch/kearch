@@ -49,12 +49,6 @@ def send_a_connection_request():
     return jsonify(res)
 
 
-@app.route('/me/gateway/update_sp_servers', methods=['POST'])
-def update_sp_servers():
-    res = meta_gateway.update_sp_servers()
-    return jsonify(res)
-
-
 @app.route('/retrieve', methods=['GET'])
 def retrieve():
     queries = flask.request.args.get('queries')

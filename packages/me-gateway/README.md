@@ -24,11 +24,6 @@ JSON to POST
     'sp_host':'192.168.99.100'
 }
 ```
-## Update sp summaries
-URL (POST)
-```
-$(ip adress of meta gateway)/me/gateway/update_sp_servers (POST)
-```
 ## Featch a dump from sp
 URL (GET)
 ```

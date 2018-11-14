@@ -74,18 +74,3 @@ def send_a_connection_request(sp_host):
     res = kr.request(path='/sp/gateway/add_a_connection_request',
                      method='POST', payload={'me_host': me_host})
     return res
-
-
-def update_sp_servers():
-    me_host = get_me_host()
-
-    db = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
-                         conn_type='sql')
-    sp_servers = db.request(path='/list_up_sp_servers')
-
-    res = {}
-    for sp_host in sp_servers.keys():
-        kr = KearchRequester(sp_host, SPECIALIST_GATEWAY_PORT, REQUESTER_NAME)
-        res[sp_host] = kr.request(path='/sp/gateway/add_a_connection_request',
-                                  method='POST', payload={'me_host': me_host})
-    return res
