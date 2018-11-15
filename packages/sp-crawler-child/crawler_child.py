@@ -20,6 +20,8 @@ confidence_threshold = -1.0e-10
 n_outer_derives = 100
 n_inner_derives = 20
 
+timestamp = dict()
+
 
 def web_to_tfidf(web):
     counter = list(Counter(web.words).most_common())
@@ -47,6 +49,11 @@ def web_to_tfidf(web):
 
 
 def url_to_webpage(url):
+    print('Start checking parameter files.', file=sys.stderr)
+    update_param_file(kearch_classifier.classifier.PARAMS_FILE)
+    update_param_file(ave.CACHE_FILE)
+    print('End checking parameter files.', file=sys.stderr)
+
     try:
         w = kearch_classifier.webpage.Webpage(url)
     except kearch_classifier.webpage.WebpageError:
@@ -68,9 +75,9 @@ def update_param_file(filename):
         ret = db_req.request(path='/sp/db/check_binary_file_timestamp',
                              params={'name': filename})
         dt = ret['updated_at']
-        nt = datetime.datetime.fromtimestamp(os.stat(filename).st_mtime)
-        print('db:', dt, 'file:', nt, file=sys.stderr)
-        if nt < dt:
+        print('db:', dt, file=sys.stderr)
+        if filename not in timestamp or timestamp[filename] < dt:
+            timestamp[filename] = dt
             ret = db_req.request(path='/sp/db/pull_binary_file',
                                  params={'name': filename})
             body = base64.b64decode(ret['body'].encode())
@@ -81,11 +88,6 @@ def update_param_file(filename):
 
 
 def url_to_json(url):
-    print('Start checking parameter files.', file=sys.stderr)
-    update_param_file(kearch_classifier.classifier.PARAMS_FILE)
-    update_param_file(ave.CACHE_FILE)
-    print('End checking parameter files.', file=sys.stderr)
-
     print('Start download ', url, file=sys.stderr)
     web = url_to_webpage(url)
     print('End download ', url, file=sys.stderr)
