@@ -4,6 +4,9 @@ ARG KEARCH_COMMON_BRANCH="dev"
 COPY packages/kearch_classifier /kearch/packages/kearch_classifier
 RUN cd /kearch/packages/kearch_classifier && pip install -e .
 
+COPY packages/kearch_common /kearch/packages/kearch_common
+RUN cd /kearch/packages/kearch_common && pip install -e .
+
 COPY packages/sp-crawler-child /kearch/packages/sp-crawler-child
 WORKDIR /kearch/packages/sp-crawler-child
 

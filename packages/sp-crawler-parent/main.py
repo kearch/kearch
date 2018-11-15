@@ -2,8 +2,6 @@ import sys
 import time
 import urllib.parse
 import urllib.robotparser
-import ssl
-import requests
 from concurrent.futures import ThreadPoolExecutor
 
 from kearch_common.requester import KearchRequester, RequesterError
@@ -49,15 +47,8 @@ class RobotsChecker:
                 rp.parse(raw.decode("utf-8").splitlines())
                 self.rpcache[roboturl] = rp
                 return rp.can_fetch('*', url)
-        except urllib.error.URLError:
-            return False
-        except ssl.CertificateError:
-            return False
-        except ConnectionResetError:
-            return False
-        except UnicodeDecodeError:
-            return False
-        except:
+        except Exception as e:
+            print('isCrawlable: ', e, file=sys.stderr)
             return False
 
 
@@ -77,7 +68,8 @@ def crawl_a_page(url):
         try:
             print('requesting   /crawl_a_page?url={} ...'.format(url))
             ret = crawler_requester.request(
-                path='/crawl_a_page', params={'url': url}, timeout=SP_CHILD_TIMEOUT)
+                path='/crawl_a_page', params={'url': url},
+                timeout=SP_CHILD_TIMEOUT)
             print('get response /crawl_a_page?url={}'.format(url))
         except RequesterError as e:
             print(e, file=sys.stderr)
@@ -170,9 +162,9 @@ if __name__ == '__main__':
                 print('pushing {} webpages ...'.format(len(data_to_push)))
                 for d in data_to_push:
                     try:
+                        path = '/' + ELASTIC_INDEX + '/' + ELASTIC_TYPE + '/'
                         resp = elastic_requester.request(
-                            path='/' + ELASTIC_INDEX + '/' + ELASTIC_TYPE + '/',
-                            method='POST', payload=d)
+                            path=path, method='POST', payload=d)
                         print('resp = ', resp)
                     except RequesterError as e:
                         print(e, file=sys.stderr)
