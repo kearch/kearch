@@ -548,10 +548,9 @@ class KearchRequester(object):
                 sp_server_records = [(word, sp_host, frequency)
                                      for word, frequency in summary.items()
                                      if len(word) <= MAX_WORD_LEN]
-
                 statement = """
                 REPLACE INTO `sp_servers` (`word`, `host`, `frequency`)
-                VALUES (%s, %s, %s);
+                VALUES (%s, %s, %s)
                 """
 
                 cur.executemany(statement, sp_server_records)
