@@ -20,8 +20,10 @@ def update_sp_servers():
     res = {}
     for sp_host in sp_servers.keys():
         kr = KearchRequester(sp_host, SPECIALIST_GATEWAY_PORT, REQUESTER_NAME)
-        res[sp_host] = kr.request(path='/sp/gateway/add_a_connection_request',
-                                  method='POST', payload={'me_host': me_host})
+        dump = kr.request(path='/sp/gateway/get_a_dump',
+                          params={'me_host': me_host})
+        db.request(path='/add_new_sp_server',
+                   payload={'host': sp_host, 'summary': dump})
     return res
 
 

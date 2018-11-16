@@ -61,7 +61,7 @@ def add_a_connection_request(me_host):
     db = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
                          conn_type='sql')
     config = db.request(path='/sp/db/get_config_variables', method='GET')
-    if config[CONFIG_CONNECTION_POLICY] == 'public' or is_connected(me_host):
+    if config[CONFIG_CONNECTION_POLICY] == 'public':
         sp_host = config[CONFIG_HOST_NAME]
         dump = db.request(path='/dump_database', method='GET')
         res = send_a_dump(sp_host, me_host, dump)
@@ -76,10 +76,12 @@ def get_a_dump(me_host):
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
     reqs = db_req.request(path='/sp/db/get_connection_requests')
-    if me_host in reqs['out'] and not reqs['out'][me_host]:
+    should_approve = me_host in reqs['out'] and not reqs['out'][me_host]
+
+    dump = {}
+    if should_approve or is_connected(me_host):
         dump = db_req.request(path='/dump_database')
+    if should_approve:
         db_req.request(path='/sp/db/approve_a_connection_request',
                        payload={'me_host': me_host, 'in_or_out': 'out'})
-        return dump
-    else:
-        return {}
+    return dump
