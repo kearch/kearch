@@ -1,0 +1,25 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  namespace: kearch
+  name: me-summary-updater
+  labels:
+    engine: me
+    app: summary-updater
+spec:
+  schedule: "*/2 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          namespace: kearch
+          name: me-summary-updater
+          labels:
+            engine: me
+            app: summary-updater
+        spec:
+          containers:
+          - name: me-summary-updater
+            image: kearch/me-summary-updater
+            imagePullPolicy: Never
+          restartPolicy: OnFailure

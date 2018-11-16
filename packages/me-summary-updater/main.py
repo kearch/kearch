@@ -26,7 +26,8 @@ def update_sp_servers():
 
 
 def main():
-    update_sp_servers()
+    result = update_sp_servers()
+    print(result)
 
 
 if __name__ == '__main__':
