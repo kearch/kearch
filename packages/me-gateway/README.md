@@ -13,7 +13,7 @@ JSON to POST
     'sp_host':'192.168.99.100'
 }
 ```
-## Sebd a connection request
+## Send a connection request
 URL (POST)
 ```
 $(ip adress of meta gateway)/me/gateway/send_a_connection_request (POST)

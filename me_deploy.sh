@@ -11,6 +11,8 @@ if [ $# -lt 1 ]; then
     echo "\"mefront\": Deploy me-front."
     echo "\"meqproc\": Deploy me-query-processor."
     echo "\"megate\": Deploy me-gateway."
+    echo "\"meadmin\": Deploy me-admin."
+    echo "\"mesup\": Deploy me-summary-updater."
     exit 1
 fi
 
@@ -131,7 +133,7 @@ do
     fi
 
     if [ $arg = meadmin ] || [ $arg = all ]; then
-        # sp-admin
+        # me-admin
         echo
         echo "----- Start deployment of meta admin. -----"
         cd $KEARCH_ROOT_DIR
@@ -145,6 +147,23 @@ do
         kubectl delete pods --namespace=kearch -l engine=me,app=admin
 
         echo "----- Finish deployment of meta admin. -----"
+    fi
+
+    if [ $arg = mesup ] || [ $arg = all ]; then
+        # me-summary-updater
+        echo
+        echo "----- Start deployment of meta summary updater. -----"
+        cd $KEARCH_ROOT_DIR
+
+        $CMD_DOCKER_BUILD -f packages/me-summary-updater/Dockerfile -t kearch/me-summary-updater .
+
+        cd $KEARCH_ROOT_DIR/services/me-summary-updater
+
+        kubectl --namespace=kearch apply --recursive -f .
+
+        kubectl delete pods --namespace=kearch -l engine=me,app=summary-updater
+
+        echo "----- Finish deployment of meta summary updater. -----"
     fi
 done
 
