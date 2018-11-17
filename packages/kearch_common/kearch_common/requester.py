@@ -556,10 +556,20 @@ class KearchRequester(object):
                     ret[word][host] = freq
             elif parsed_path == '/add_new_sp_server':
                 sp_host = payload['host']
+                engine_name = payload['summary']['engine_name']
                 summary = payload['summary']['dump']
                 sp_server_records = [(word, sp_host, frequency)
                                      for word, frequency in summary.items()
                                      if len(word) <= MAX_WORD_LEN]
+
+                sp_host_statement = """
+                INSERT INTO `sp_hosts` (`name`, `engine_name`)
+                VALUES (%s, %s)
+                ON DUPLICATE KEY UPDATE `engine_name` = VALUES(`engine_name`)
+                """
+                cur.executemany(sp_host_statement, (sp_host, engine_name))
+                db.commit()
+
                 statement = """
                 REPLACE INTO `sp_servers` (`word`, `host`, `frequency`)
                 VALUES (%s, %s, %s)
@@ -569,6 +579,7 @@ class KearchRequester(object):
                 db.commit()
                 ret = {
                     'host': sp_host,
+                    'engine_name': engine_name,
                 }
             elif parsed_path == '/list_up_sp_servers':
                 statement = """SELECT DISTINCT `host` FROM `sp_servers`"""
