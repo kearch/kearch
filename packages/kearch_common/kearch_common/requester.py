@@ -86,7 +86,7 @@ def post_webpage_to_db(db, cur, webpage):
     db.commit()
 
 
-def dump_summary_form_sp_db(cur):
+def dump_summary_from_sp_db(cur):
     page_size = 1000
     statement = """
     SELECT `id`, `word`, `frequency`
@@ -108,7 +108,19 @@ def dump_summary_form_sp_db(cur):
             cnt = row[2]
             sp_summary[word] = cnt
         prev_rowcount = cur.rowcount
-    return sp_summary
+
+    statement = """
+    SELECT `name`, `value`
+    FROM `config_variables`
+    WHERE `name` = 'engine_name'
+    """
+    cur.execute(statement)
+    engine_name = cur.fetchone()[0]
+
+    return {
+        'engine_name': engine_name,
+        'dump': sp_summary
+    }
 
 
 class KearchRequester(object):
@@ -511,7 +523,7 @@ class KearchRequester(object):
                     'data': result_webpages
                 }
             elif parsed_path == '/dump_database':
-                ret = dump_summary_form_sp_db(cur)
+                ret = dump_summary_from_sp_db(cur)
             elif parsed_path == '/update_dump':
                 summary_records = [(word, freq)
                                    for word, freq in payload['data'].items()]
@@ -544,7 +556,7 @@ class KearchRequester(object):
                     ret[word][host] = freq
             elif parsed_path == '/add_new_sp_server':
                 sp_host = payload['host']
-                summary = payload['summary']
+                summary = payload['summary']['dump']
                 sp_server_records = [(word, sp_host, frequency)
                                      for word, frequency in summary.items()
                                      if len(word) <= MAX_WORD_LEN]
