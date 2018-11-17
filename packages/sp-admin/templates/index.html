@@ -17,6 +17,14 @@
     </head>
     <body>
         <div class="box">
+            <form action="/update_config" method="post">
+                <label for="engine-name">Engine name: </label>
+                <input id="engine-name" type="text" name="engine_name" value="{{ config['engine_name'] }}">
+                <button class="button" type="submit">update</button>
+            </form>
+        </div>
+
+        <div class="box">
             <p>Requests from meta servers to this specialist server</p>
             <ul>
                 {% for name,state in requests['in'].items(): %}
