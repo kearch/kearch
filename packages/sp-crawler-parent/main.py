@@ -1,5 +1,6 @@
 import sys
 import time
+import collections
 import urllib.parse
 import urllib.robotparser
 from concurrent.futures import ThreadPoolExecutor
@@ -50,6 +51,35 @@ class RobotsChecker:
         except Exception as e:
             print('isCrawlable: ', e, file=sys.stderr)
             return False
+
+
+class URLQueue:
+    def __init__(self):
+        self.url_dict = {}
+
+    def __len__(self):
+        return len(self.url_dict)
+
+    def push(self, urls):
+        for u in urls:
+            parsed = urllib.parse.urlparse(u)
+            if parsed.netloc not in self.url_dict:
+                self.url_dict[parsed.netloc] = collections.deque()
+            self.url_dict[parsed.netloc].append(u)
+
+    def pop(self, limit):
+        al = list()
+        for l in self.url_dict.keys():
+            al.append((l, len(self.url_dict[l])))
+        al.sort(key=lambda x: x[1], reverse=True)
+
+        ret = list()
+        for i in range(0, min(limit, len(al))):
+            u = al[i][0]
+            ret.append(self.url_dict[u].popleft())
+            if len(self.url_dict[u]) == 0:
+                self.url_dict.pop(u)
+        return ret
 
 
 def crawl_a_page(url):
@@ -109,7 +139,8 @@ if __name__ == '__main__':
     else:
         resp = database_requester.request(
             path='/get_next_urls', params={'max_urls': MAX_URLS})
-    urls_in_queue = resp['urls']
+    url_queue = URLQueue()
+    url_queue.push(resp['urls'])
     urls_to_push = list()
     data_to_push = list()
     dump_to_push = dict()
@@ -117,14 +148,14 @@ if __name__ == '__main__':
     while True:
         if DEBUG_UNIT_TEST:
             sys.stderr.write('length of queue = ' +
-                             str(len(urls_in_queue)) + '\n')
+                             str(len(url_queue)) + '\n')
 
-        if len(urls_in_queue) == 0:
+        if len(url_queue) == 0:
             if DEBUG_UNIT_TEST:
                 # DEBUG CODE: Following lines are for debug.
                 # They are codes for unit test.
                 resp = get_next_urls_dummy(MAX_URLS)
-                urls_in_queue = resp['urls']
+                url_queue.push(resp['urls'])
             else:
                 urls_to_push = list(
                     filter(lambda x: len(x) < 200, urls_to_push))
@@ -174,12 +205,12 @@ if __name__ == '__main__':
                     # fetch urls from database
                     resp = database_requester.request(
                         path='/get_next_urls', params={'max_urls': MAX_URLS})
-                    urls_in_queue = resp['urls']
+                    url_queue.push(resp['urls'])
                 except RequesterError as e:
                     print(e, file=sys.stderr)
 
         with ThreadPoolExecutor(max_workers=NUM_THREAD) as executor:
-            urls = list(urls_in_queue[:NUM_THREAD])
+            urls = url_queue.pop(NUM_THREAD)
             urls = list(filter(bool, urls))
             print('after filter bool', urls, file=sys.stderr)
             urls = list(filter(robots_checker.isCrawlable, urls))
@@ -202,5 +233,4 @@ if __name__ == '__main__':
                 else:
                     dump_to_push[t[0]] = 1
 
-        urls_in_queue = urls_in_queue[NUM_THREAD:]
         time.sleep(2)
