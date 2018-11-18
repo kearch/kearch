@@ -6,7 +6,7 @@ import pickle
 import sys
 import traceback
 
-import kearch_classifier.webpage
+from kearch_classifier.webpage import create_webpage_with_cache, WebpageError
 
 CACHE_FILE = 'average_document.pickle'
 
@@ -21,9 +21,9 @@ def get_words(link_and_language):
     language = link_and_language[1]
     ws = list()
     try:
-        web = kearch_classifier.webpage.create_webpage_with_cache(link, language)
+        web = create_webpage_with_cache(link, language)
         ws = list(set(web.words))
-    except kearch_classifier.webpage.WebpageError:
+    except WebpageError:
         traceback.print_exc()
     return ws
 
