@@ -67,7 +67,7 @@ class Classifier(AbsClassifier):
             print(e.message, file=sys.stderr)
             return []
 
-    def learn_params_body(self, topic_urls, random_urls, language):
+    def learn_params_body_from_url(self, topic_urls, random_urls, language):
         n_gensim_urls = int(min(len(topic_urls), len(random_urls)) / 2)
 
         print('classifer.py -- Downloading start', file=sys.stderr)
@@ -110,7 +110,7 @@ class Classifier(AbsClassifier):
         print('classifer.py -- Making Classifier for main text finish',
               file=sys.stderr)
 
-    def learn_params_title(self, topic_urls, random_urls, language):
+    def learn_params_title_from_url(self, topic_urls, random_urls, language):
         print('classifer.py -- Downloading start', file=sys.stderr)
         p = mult.Pool(mult.cpu_count() * 3)
         texts = p.map(self.url_to_title_words,
@@ -153,8 +153,29 @@ class Classifier(AbsClassifier):
 
     def learn_params_from_url(self, topic_urls, random_urls, language):
         self.language = language
-        self.learn_params_body(topic_urls, random_urls, language)
-        self.learn_params_title(topic_urls, random_urls, language)
+        self.learn_params_body_from_url(topic_urls, random_urls, language)
+        self.learn_params_title_from_url(topic_urls, random_urls, language)
+
+    def learn_params_from_dict(self, topic_dict, random_dict, language):
+        print('classifer.py -- Making Classifier start', file=sys.stderr)
+        self.language = language
+
+        texts = [topic_dict.keys() + random_dict.keys()]
+        self.dictionary_title = corpora.Dictionary(texts)
+        self.dictionary_body = corpora.Dictionary(texts)
+
+        topic_bow = [(self.dictionary_body.token2id[w], f)
+                     for w, f in topic_dict.items()]
+        random_bow = [(self.dictionary_body.token2id[w], f)
+                      for w, f in topic_dict.items()]
+        samples = [topic_bow, random_bow]
+        labels = [IN_TOPIC, OUT_OF_TOPIC]
+
+        self.clf_title = BernoulliNB()
+        self.clf_title.fit(samples, labels)
+        self.clf_body = BernoulliNB()
+        self.clf_body.fit(samples, labels)
+        print('classifer.py -- Making Classifier end', file=sys.stderr)
 
     def classify(self, webpage):
         bow_body = self.dictionary_body.doc2bow(webpage.words)
