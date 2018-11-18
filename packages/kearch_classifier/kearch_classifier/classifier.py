@@ -24,7 +24,7 @@ PARAMS_FILE = 'classifier_cache_params.zip'
 
 class AbsClassifier(metaclass=abc.ABCMeta):
     @abc.abstractclassmethod
-    def learn_params(self, topic_url_list, random_url_list, language):
+    def learn_params_from_url(self, topic_url_list, random_url_list, language):
         pass
 
     # This function dump all parameters to one json.
@@ -151,7 +151,7 @@ class Classifier(AbsClassifier):
         print('classifer.py -- Making Classifier for title end',
               file=sys.stderr)
 
-    def learn_params(self, topic_urls, random_urls, language):
+    def learn_params_from_url(self, topic_urls, random_urls, language):
         self.language = language
         self.learn_params_body(topic_urls, random_urls, language)
         self.learn_params_title(topic_urls, random_urls, language)
@@ -238,7 +238,7 @@ if __name__ == '__main__':
     random_urls = random_urls1[:n_urls]
 
     cls = Classifier()
-    cls.learn_params(topic_urls, random_urls, args.language)
+    cls.learn_params_from_url(topic_urls, random_urls, args.language)
 
     cls.dump_params(PARAMS_FILE)
 
