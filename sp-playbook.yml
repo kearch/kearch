@@ -1,0 +1,61 @@
+- hosts: all
+  become: yes
+  tasks:
+     - name: add apt key
+       apt_key: 
+           url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+           state: present
+     
+     - name: add rep
+       apt_repository:
+           repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+           state: present
+
+     - name: install packages
+       apt: name={{item}}
+       with_items:
+           - curl
+           - gnupg
+           - dstat
+           - htop
+           - tmux
+           - vim
+           - wget
+           - zsh
+           - apt-transport-https 
+           - docker.io
+           - kubelet
+           - kubeadm
+
+     - name: Make user kearch
+       user:
+          name: kearch
+          groups: docker,sudo
+
+     - name: Make kearch home directory
+       file:
+          path: /home/kearch/.kube
+          state: directory
+          owner: kearch
+          group: kearch
+          recurse: true
+
+     - name: cp /etc/kubernetes/admin.conf /home/kearch/.kube/config
+       command: cp /etc/kubernetes/admin.conf /home/kearch/.kube/config
+
+     - name: kubelet
+       copy:
+           content: 'KUBELET_EXTRA_ARGS=--fail-swap-on=false --read-only-port=10255'
+           dest: /etc/default/kubelet
+
+     - name: systemctl enable docker.service
+       command: systemctl enable docker.service
+
+     - name: systemctl daemon-reload
+       command: systemctl daemon-reload
+
+     - name: systemctl restart kubelet
+       command: systemctl restart kubelet
+
+     - name: kubeadm init --ignore-preflight-errors Swap --pod-network-cidr=192.168.0.0/16
+       command: kubeadm init --ignore-preflight-errors Swap --pod-network-cidr=192.168.0.0/16
