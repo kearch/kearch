@@ -86,7 +86,7 @@ def post_webpage_to_db(db, cur, webpage):
     db.commit()
 
 
-def dump_summary_form_sp_db(cur):
+def dump_summary_from_sp_db(cur):
     page_size = 1000
     statement = """
     SELECT `id`, `word`, `frequency`
@@ -108,7 +108,19 @@ def dump_summary_form_sp_db(cur):
             cnt = row[2]
             sp_summary[word] = cnt
         prev_rowcount = cur.rowcount
-    return sp_summary
+
+    statement = """
+    SELECT `name`, `value`
+    FROM `config_variables`
+    WHERE `name` = 'engine_name'
+    """
+    cur.execute(statement)
+    engine_name = cur.fetchone()[1]
+
+    return {
+        'engine_name': engine_name,
+        'dump': sp_summary
+    }
 
 
 class KearchRequester(object):
@@ -511,7 +523,7 @@ class KearchRequester(object):
                     'data': result_webpages
                 }
             elif parsed_path == '/dump_database':
-                ret = dump_summary_form_sp_db(cur)
+                ret = dump_summary_from_sp_db(cur)
             elif parsed_path == '/update_dump':
                 summary_records = [(word, freq)
                                    for word, freq in payload['data'].items()]
@@ -544,10 +556,20 @@ class KearchRequester(object):
                     ret[word][host] = freq
             elif parsed_path == '/add_new_sp_server':
                 sp_host = payload['host']
-                summary = payload['summary']
+                engine_name = payload['summary']['engine_name']
+                summary = payload['summary']['dump']
                 sp_server_records = [(word, sp_host, frequency)
                                      for word, frequency in summary.items()
                                      if len(word) <= MAX_WORD_LEN]
+
+                sp_host_statement = """
+                INSERT INTO `sp_hosts` (`name`, `engine_name`)
+                VALUES (%s, %s)
+                ON DUPLICATE KEY UPDATE `engine_name` = VALUES(`engine_name`)
+                """
+                cur.execute(sp_host_statement, (sp_host, engine_name))
+                db.commit()
+
                 statement = """
                 REPLACE INTO `sp_servers` (`word`, `host`, `frequency`)
                 VALUES (%s, %s, %s)
@@ -557,13 +579,21 @@ class KearchRequester(object):
                 db.commit()
                 ret = {
                     'host': sp_host,
+                    'engine_name': engine_name,
                 }
             elif parsed_path == '/list_up_sp_servers':
-                statement = """SELECT DISTINCT `host` FROM `sp_servers`"""
+                statement = """
+                SELECT DISTINCT `host`, `engine_name` FROM `sp_servers`
+                INNER JOIN `sp_hosts` ON
+                `sp_servers`.`host` = `sp_hosts`.`name`
+                """
                 cur.execute(statement)
                 ret = {}
                 for row in cur.fetchall():
-                    ret[row[0]] = row[0]
+                    ret[row[0]] = {
+                        'name': row[0],
+                        'engine_name': row[1],
+                    }
             else:
                 raise ValueError('Invalid path: {}'.format(path))
         except Exception as e:

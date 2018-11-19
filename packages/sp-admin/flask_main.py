@@ -125,6 +125,9 @@ def update_config():
         update['connection_policy'] = flask.request.form['connection_policy']
     if 'host_name' in flask.request.form:
         update['host_name'] = flask.request.form['host_name']
+    if 'engine_name' in flask.request.form:
+        update['engine_name'] = flask.request.form['engine_name']
+
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
     db_req.request(path='/sp/db/set_config_variables',
