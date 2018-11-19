@@ -582,11 +582,18 @@ class KearchRequester(object):
                     'engine_name': engine_name,
                 }
             elif parsed_path == '/list_up_sp_servers':
-                statement = """SELECT DISTINCT `host` FROM `sp_servers`"""
+                statement = """
+                SELECT DISTINCT `host`, `engine_name` FROM `sp_servers`
+                INNER JOIN `sp_hosts` ON
+                `sp_servers`.`host` = `sp_hosts`.`name`
+                """
                 cur.execute(statement)
                 ret = {}
                 for row in cur.fetchall():
-                    ret[row[0]] = row[0]
+                    ret[row[0]] = {
+                        'name': row[0],
+                        'engine_name': row[1],
+                    }
             else:
                 raise ValueError('Invalid path: {}'.format(path))
         except Exception as e:
