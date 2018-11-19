@@ -115,7 +115,7 @@ def dump_summary_from_sp_db(cur):
     WHERE `name` = 'engine_name'
     """
     cur.execute(statement)
-    engine_name = cur.fetchone()[0]
+    engine_name = cur.fetchone()[1]
 
     return {
         'engine_name': engine_name,
@@ -567,7 +567,7 @@ class KearchRequester(object):
                 VALUES (%s, %s)
                 ON DUPLICATE KEY UPDATE `engine_name` = VALUES(`engine_name`)
                 """
-                cur.executemany(sp_host_statement, (sp_host, engine_name))
+                cur.execute(sp_host_statement, (sp_host, engine_name))
                 db.commit()
 
                 statement = """
