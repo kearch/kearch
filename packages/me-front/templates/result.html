@@ -90,15 +90,15 @@ p { margin: 0; }
                 <option value="">select automatically</option>
                 {% for h,d in sp_servers.items() %}
                 {% if selected_sp == h %}
-                <option value="{{ h }}" selected>{{ d }}</option>
+                <option value="{{ h }}" selected>{{ d['engine_name'] }} ({{ d['name'] }})</option>
                 {% else %}
-                <option value="{{ h }}">{{ d }}</option>
+                <option value="{{ h }}">{{ d['engine_name'] }} ({{ d['name'] }})</option>
                 {% endif %}
                 {% endfor %}
             </select>
         </form>
         <div class="sp-host">
-          <p>Showing results from {{ sp_host }}</p>
+          <p>Showing results from {{ sp_servers[sp_host]['engine_name'] }} (( sp_host ))</p>
         </div>
         <ul id="list" class="nomark">
             {% for w in results %}

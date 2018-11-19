@@ -47,7 +47,7 @@ input[type=window] {
                 <select name="sp">
                     <option value="">select automatically</option>
                     {% for h,d in sp_servers.items() %}
-                        <option value="{{ h }}">{{ d }}</option>
+                    <option value="{{ h }}">{{ d['engine_name'] }} ({{ d['name'] }})</option>
                     {% endfor %}
                 </select>
             </form>
