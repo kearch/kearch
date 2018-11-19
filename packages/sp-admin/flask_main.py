@@ -100,7 +100,7 @@ def learn_params():
     random_urls = list(map(lambda x: x.rstrip(), random_urls))
 
     cls = kearch_classifier.classifier.Classifier()
-    cls.learn_params(topic_urls, random_urls, language)
+    cls.learn_params_from_url(topic_urls, random_urls, language)
     cls.dump_params(kearch_classifier.classifier.PARAMS_FILE)
 
     bparam = open(kearch_classifier.classifier.PARAMS_FILE, 'rb').read()
