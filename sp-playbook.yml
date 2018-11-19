@@ -1,31 +1,20 @@
 - hosts: all
+  # become root
   become: yes
   tasks:
-     - name: add apt key
+     - name: add apt key https://packages.cloud.google.com/apt/doc/apt-key.gpg
        apt_key: 
            url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
            state: present
      
-     - name: add rep
+     - name: add repository deb http://apt.kubernetes.io/ kubernetes-xenial main
        apt_repository:
            repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
            state: present
 
      - name: install packages
-       apt: name={{item}}
-       with_items:
-           - curl
-           - gnupg
-           - dstat
-           - htop
-           - tmux
-           - vim
-           - wget
-           - zsh
-           - apt-transport-https 
-           - docker.io
-           - kubelet
-           - kubeadm
+       apt:
+           name: ['curl', 'gnupg', 'dstat', 'htop', 'tmux', 'vim', 'wget',  'zsh', 'apt-transport-https', 'docker.io', 'kubelet', 'kubeadm']
 
      - name: Make user kearch
        user:
@@ -40,22 +29,85 @@
           group: kearch
           recurse: true
 
-     - name: cp /etc/kubernetes/admin.conf /home/kearch/.kube/config
-       command: cp /etc/kubernetes/admin.conf /home/kearch/.kube/config
-
      - name: kubelet
        copy:
            content: 'KUBELET_EXTRA_ARGS=--fail-swap-on=false --read-only-port=10255'
            dest: /etc/default/kubelet
 
      - name: systemctl enable docker.service
-       command: systemctl enable docker.service
-
-     - name: systemctl daemon-reload
-       command: systemctl daemon-reload
+       systemd:
+           name: docker.service
+           enabled: yes
+           daemon_reload: yes
 
      - name: systemctl restart kubelet
-       command: systemctl restart kubelet
+       systemd:
+           name: kubelet
+           state: restarted
 
      - name: kubeadm init --ignore-preflight-errors Swap --pod-network-cidr=192.168.0.0/16
        command: kubeadm init --ignore-preflight-errors Swap --pod-network-cidr=192.168.0.0/16
+
+     - name: cp /etc/kubernetes/admin.conf /home/kearch/.kube/config
+       command: cp /etc/kubernetes/admin.conf /home/kearch/.kube/config
+
+     - file:
+          path: /home/kearch/.kube/config
+          owner: kearch
+          group: kearch
+
+     - file:
+          path: /etc/kubernetes/admin.conf
+          mode: 0644
+
+     - command: kubectl taint nodes --all node-role.kubernetes.io/master- --kubeconfig /etc/kubernetes/admin.conf
+       become_user: kearch
+
+     - command: kubectl apply -f https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml --kubeconfig /etc/kubernetes/admin.conf
+       become_user: kearch
+
+     - command: kubectl apply -f https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml --kubeconfig /etc/kubernetes/admin.conf
+       become_user: kearch
+
+     - name: Make es directory
+       file:
+          path: /data
+          state: directory
+
+     - name: Make es directory
+       file:
+          path: /data/sp-es-data-00
+          state: directory
+
+     - name: Make es directory
+       file:
+          path: /data/sp-es-master-00
+          state: directory
+
+     - name: Make es directory
+       file:
+          path: /data/sp-es-master-01
+          state: directory
+
+     - name: clone kearch
+       become_user: kearch
+       shell: cd /home/kearch && git clone https://github.com/kearch/kearch.git
+
+     - name: clone kearch
+       become_user: kearch
+       shell: cd /home/kearch/kearch && git checkout dev
+
+     - name: context 
+       command: kubectl config set-context kearch-dev --namespace=kearch --cluster=kubernetes --user=kubernetes-admin
+       become_user: kearch
+
+     - name: context
+       command: kubectl config use-context kearch-dev
+       become_user: kearch
+
+     - name: label
+       command: kubectl label nodes testlabel storage=sp-es
+       become_user: kearch
+
+     # - name: deploy
+       # command: cd kearch && ./sp_deploy.sh spdb spes all
