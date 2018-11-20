@@ -2,6 +2,10 @@
   # become root
   become: yes
   tasks:
+     - name: install packages
+       apt:
+           name: ['curl', 'gnupg', 'dstat', 'htop', 'tmux', 'vim', 'wget',  'zsh', 'apt-transport-https']
+
      - name: add apt key https://packages.cloud.google.com/apt/doc/apt-key.gpg
        apt_key: 
            url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
@@ -14,7 +18,7 @@
 
      - name: install packages
        apt:
-           name: ['curl', 'gnupg', 'dstat', 'htop', 'tmux', 'vim', 'wget',  'zsh', 'apt-transport-https', 'docker.io', 'kubelet', 'kubeadm']
+           name: ['docker.io', 'kubelet', 'kubeadm']
 
      - name: Make user kearch
        user:
@@ -91,17 +95,21 @@
 
      - name: clone kearch
        become_user: kearch
-       command: chdir=/home/kearch/ git clone https://github.com/kearch/kearch.git
+       command: git clone https://github.com/kearch/kearch.git
+       args:
+          chdir: /home/kearch/ 
 
      - name: checkout dev branch
        become_user: kearch
-       command: chdir=/home/kearch/kearch/ git checkout dev
+       command: git checkout dev
+       args:
+          chdir: /home/kearch/kearch/ 
 
-     - name: context 
+     - name: set context 
        command: kubectl config set-context kearch-dev --namespace=kearch --cluster=kubernetes --user=kubernetes-admin
        become_user: kearch
 
-     - name: context
+     - name: use context
        command: kubectl config use-context kearch-dev
        become_user: kearch
 
@@ -110,10 +118,12 @@
        register: nodename
        become_user: kearch
 
-     - name: label
+     - name: set label
        command: kubectl label nodes {{ nodename.stdout }} storage=sp-es
        become_user: kearch
 
-     - name: deploy
-       command: chdir=/home/kearch/kearch ./sp_deploy.sh spdb spes all
+     - name: kearch deploy script
        become_user: kearch
+       shell: yes | ./sp_deploy.sh spdb spes all
+       args:
+           chdir: /home/kearch/kearch/
