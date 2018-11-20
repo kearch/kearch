@@ -115,5 +115,5 @@
        become_user: kearch
 
      - name: deploy
-       command: chdir=kearch ./sp_deploy.sh spdb spes all
+       command: chdir=/home/kearch/kearch ./sp_deploy.sh spdb spes all
        become_user: kearch
