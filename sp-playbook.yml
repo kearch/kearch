@@ -91,11 +91,11 @@
 
      - name: clone kearch
        become_user: kearch
-       shell: cd /home/kearch && git clone https://github.com/kearch/kearch.git
+       command: chdir=/home/kearch/ git clone https://github.com/kearch/kearch.git
 
-     - name: clone kearch
+     - name: checkout dev branch
        become_user: kearch
-       shell: cd /home/kearch/kearch && git checkout dev
+       command: chdir=/home/kearch/kearch/ git checkout dev
 
      - name: context 
        command: kubectl config set-context kearch-dev --namespace=kearch --cluster=kubernetes --user=kubernetes-admin
@@ -105,9 +105,15 @@
        command: kubectl config use-context kearch-dev
        become_user: kearch
 
-     - name: label
-       command: kubectl label nodes testlabel storage=sp-es
+     - name: get nodename
+       command: kubectl get nodes -o go-template --template {{ "'{{" }}(index .items 0).metadata.name {{ "}}'" }}
+       register: nodename
        become_user: kearch
 
-     # - name: deploy
-       # command: cd kearch && ./sp_deploy.sh spdb spes all
+     - name: label
+       command: kubectl label nodes {{ nodename.stdout }} storage=sp-es
+       become_user: kearch
+
+     - name: deploy
+       command: chdir=kearch ./sp_deploy.sh spdb spes all
+       become_user: kearch
