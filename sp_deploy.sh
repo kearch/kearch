@@ -54,7 +54,7 @@ do
         kubectl --namespace=kearch apply --recursive -f .
 
         # Wait until the pod is ready
-        sleep 5
+        kubectl rollout status deployment sp-db
 
         cd $KEARCH_ROOT_DIR/services/sp-db
 
