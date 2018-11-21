@@ -59,7 +59,7 @@ do
         do
             sleep 1
         done
-        sleep 10
+        sleep 30
         
 
         cd $KEARCH_ROOT_DIR/services/sp-db
