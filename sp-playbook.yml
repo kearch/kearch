@@ -1,0 +1,129 @@
+- hosts: all
+  # become root
+  become: yes
+  tasks:
+     - name: install packages
+       apt:
+           name: ['curl', 'gnupg', 'dstat', 'htop', 'tmux', 'vim', 'wget',  'zsh', 'apt-transport-https']
+
+     - name: add apt key https://packages.cloud.google.com/apt/doc/apt-key.gpg
+       apt_key: 
+           url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+           state: present
+     
+     - name: add repository deb http://apt.kubernetes.io/ kubernetes-xenial main
+       apt_repository:
+           repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+           state: present
+
+     - name: install packages
+       apt:
+           name: ['docker.io', 'kubelet', 'kubeadm']
+
+     - name: Make user kearch
+       user:
+          name: kearch
+          groups: docker,sudo
+
+     - name: Make kearch home directory
+       file:
+          path: /home/kearch/.kube
+          state: directory
+          owner: kearch
+          group: kearch
+          recurse: true
+
+     - name: kubelet
+       copy:
+           content: 'KUBELET_EXTRA_ARGS=--fail-swap-on=false --read-only-port=10255'
+           dest: /etc/default/kubelet
+
+     - name: systemctl enable docker.service
+       systemd:
+           name: docker.service
+           enabled: yes
+           daemon_reload: yes
+
+     - name: systemctl restart kubelet
+       systemd:
+           name: kubelet
+           state: restarted
+
+     - name: kubeadm init --ignore-preflight-errors Swap --pod-network-cidr=192.168.0.0/16
+       command: kubeadm init --ignore-preflight-errors Swap --pod-network-cidr=192.168.0.0/16
+
+     - name: cp /etc/kubernetes/admin.conf /home/kearch/.kube/config
+       command: cp /etc/kubernetes/admin.conf /home/kearch/.kube/config
+
+     - file:
+          path: /home/kearch/.kube/config
+          owner: kearch
+          group: kearch
+
+     - file:
+          path: /etc/kubernetes/admin.conf
+          mode: 0644
+
+     - command: kubectl taint nodes --all node-role.kubernetes.io/master- --kubeconfig /etc/kubernetes/admin.conf
+       become_user: kearch
+
+     - command: kubectl apply -f https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml --kubeconfig /etc/kubernetes/admin.conf
+       become_user: kearch
+
+     - command: kubectl apply -f https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml --kubeconfig /etc/kubernetes/admin.conf
+       become_user: kearch
+
+     - name: Make es directory
+       file:
+          path: /data
+          state: directory
+
+     - name: Make es directory
+       file:
+          path: /data/sp-es-data-00
+          state: directory
+
+     - name: Make es directory
+       file:
+          path: /data/sp-es-master-00
+          state: directory
+
+     - name: Make es directory
+       file:
+          path: /data/sp-es-master-01
+          state: directory
+
+     - name: clone kearch
+       become_user: kearch
+       command: git clone https://github.com/kearch/kearch.git
+       args:
+          chdir: /home/kearch/ 
+
+     - name: checkout dev branch
+       become_user: kearch
+       command: git checkout dev
+       args:
+          chdir: /home/kearch/kearch/ 
+
+     - name: set context 
+       command: kubectl config set-context kearch-dev --namespace=kearch --cluster=kubernetes --user=kubernetes-admin
+       become_user: kearch
+
+     - name: use context
+       command: kubectl config use-context kearch-dev
+       become_user: kearch
+
+     - name: get nodename
+       command: kubectl get nodes -o go-template --template {{ "'{{" }}(index .items 0).metadata.name {{ "}}'" }}
+       register: nodename
+       become_user: kearch
+
+     - name: set label
+       command: kubectl label nodes {{ nodename.stdout }} storage=sp-es
+       become_user: kearch
+
+     - name: kearch deploy script
+       become_user: kearch
+       shell: yes | ./sp_deploy.sh spdb spes all
+       args:
+           chdir: /home/kearch/kearch/

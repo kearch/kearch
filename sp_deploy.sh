@@ -53,6 +53,9 @@ do
 
         kubectl --namespace=kearch apply --recursive -f .
 
+        # Wait until the pod is ready
+        kubectl rollout status deployment sp-db
+
         cd $KEARCH_ROOT_DIR/services/sp-db
 
         sp_db_pod_name=$(kubectl --namespace=kearch get po -l engine=sp,app=db -o go-template --template '{{(index .items 0).metadata.name}}')
