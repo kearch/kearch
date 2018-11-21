@@ -52,7 +52,6 @@ do
         cd $KEARCH_ROOT_DIR/services/sp-db
 
         kubectl --namespace=kearch apply --recursive -f .
-        kubectl delete pods --namespace=kearch -l engine=sp,app=db
 
         # Wait until the pod is ready
         while ! kubectl rollout status deployment sp-db
