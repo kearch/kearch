@@ -7,6 +7,7 @@ spec:
   type: NodePort
   ports:
   - port: 10080
+    nodePort: 32700
   selector:
     engine: sp
     app: admin
