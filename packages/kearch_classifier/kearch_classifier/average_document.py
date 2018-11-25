@@ -28,7 +28,7 @@ def get_words(link_and_language):
     return ws
 
 
-def make_average_document_cache(links, language):
+def make_average_document_from_urls(links, language):
     word_count = dict()
 
     sys.stderr.write('Start download\n')
@@ -50,6 +50,12 @@ def make_average_document_cache(links, language):
     return word_count
 
 
+def make_average_document_from_dict(d, language):
+    with open(CACHE_FILE, 'wb') as f:
+        pickle.dump(d, f)
+    return d
+
+
 def average_document_dict():
     if os.path.exists(CACHE_FILE):
         with open(CACHE_FILE, 'rb') as f:
@@ -67,4 +73,4 @@ if __name__ == '__main__':
 
     with open(args.document_list_file, 'r') as f:
         link = list(map(lambda x: x.replace('\n', ''), f.readlines()))
-        make_average_document_cache(link, args.language)
+        make_average_document_from_urls(link, args.language)

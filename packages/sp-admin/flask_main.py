@@ -86,8 +86,8 @@ def init_crawl_urls():
     return jsonify(ret)
 
 
-@app.route('/learn_params', methods=['POST'])
-def learn_params():
+@app.route('/learn_params_from_url', methods=['POST'])
+def learn_params_from_url():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
 
@@ -109,7 +109,51 @@ def learn_params():
               'body': tparam}
     db_req.request(path='/sp/db/push_binary_file', params=params)
 
-    ave.make_average_document_cache(random_urls, language)
+    ave.make_average_document_from_urls(random_urls, language)
+    bparam = open(ave.CACHE_FILE, 'rb').read()
+    tparam = base64.b64encode(bparam).decode('utf-8')
+    params = {'name': ave.CACHE_FILE, 'body': tparam}
+    db_req.request(path='/sp/db/push_binary_file', params=params)
+
+    return flask.redirect(flask.url_for("index"))
+
+
+@app.route('/learn_params_from_dict', methods=['POST'])
+def learn_params_from_dict():
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    form_input_topic = flask.request.form['topic_dict']
+    form_input_random = flask.request.form['random_dict']
+    language = flask.request.form['language']
+    topic_lines = form_input_topic.split('\n')
+    random_lines = form_input_random.split('\n')
+
+    topic_dict = dict()
+    random_dict = dict()
+    for l in topic_lines:
+        ws = l.split(None)
+        if ws[0] not in topic_dict:
+            topic_dict[ws[0]] = int(ws[1])
+        else:
+            topic_dict[ws[0]] += int(ws[1])
+    for l in random_lines:
+        ws = l.split(None)
+        if ws[0] not in random_dict:
+            random_dict[ws[0]] = int(ws[1])
+        else:
+            random_dict[ws[0]] += int(ws[1])
+
+    cls = kearch_classifier.classifier.Classifier()
+    cls.learn_params_from_dict(topic_dict, random_dict, language)
+    cls.dump_params(kearch_classifier.classifier.PARAMS_FILE)
+
+    bparam = open(kearch_classifier.classifier.PARAMS_FILE, 'rb').read()
+    tparam = base64.b64encode(bparam).decode('utf-8')
+    params = {'name': kearch_classifier.classifier.PARAMS_FILE,
+              'body': tparam}
+    db_req.request(path='/sp/db/push_binary_file', params=params)
+
+    ave.make_average_document_from_dict(random_dict, language)
     bparam = open(ave.CACHE_FILE, 'rb').read()
     tparam = base64.b64encode(bparam).decode('utf-8')
     params = {'name': ave.CACHE_FILE, 'body': tparam}

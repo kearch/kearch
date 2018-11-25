@@ -27,6 +27,10 @@ class AbsClassifier(metaclass=abc.ABCMeta):
     def learn_params_from_url(self, topic_url_list, random_url_list, language):
         pass
 
+    @abc.abstractclassmethod
+    def learn_params_from_dict(self, topic_dict, random_dict, language):
+        pass
+
     # This function dump all parameters to one json.
     @abc.abstractclassmethod
     def dump_params(self):
@@ -160,7 +164,7 @@ class Classifier(AbsClassifier):
         print('classifer.py -- Making Classifier start', file=sys.stderr)
         self.language = language
 
-        texts = [topic_dict.keys() + random_dict.keys()]
+        texts = [list(topic_dict.keys()) + list(random_dict.keys())]
         self.dictionary_title = corpora.Dictionary(texts)
         self.dictionary_body = corpora.Dictionary(texts)
 
@@ -168,7 +172,8 @@ class Classifier(AbsClassifier):
                      for w, f in topic_dict.items()]
         random_bow = [(self.dictionary_body.token2id[w], f)
                       for w, f in topic_dict.items()]
-        samples = [topic_bow, random_bow]
+        samples = [self.alist_to_vector(topic_bow, self.dictionary_body),
+                   self.alist_to_vector(random_bow, self.dictionary_body)]
         labels = [IN_TOPIC, OUT_OF_TOPIC]
 
         self.clf_title = BernoulliNB()
