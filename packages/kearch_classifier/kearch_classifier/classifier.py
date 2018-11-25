@@ -164,7 +164,7 @@ class Classifier(AbsClassifier):
         print('classifer.py -- Making Classifier start', file=sys.stderr)
         self.language = language
 
-        texts = [topic_dict.keys() + random_dict.keys()]
+        texts = [list(topic_dict.keys()) + list(random_dict.keys())]
         self.dictionary_title = corpora.Dictionary(texts)
         self.dictionary_body = corpora.Dictionary(texts)
 
@@ -172,7 +172,7 @@ class Classifier(AbsClassifier):
                      for w, f in topic_dict.items()]
         random_bow = [(self.dictionary_body.token2id[w], f)
                       for w, f in topic_dict.items()]
-        samples = [topic_bow, random_bow]
+        samples = [[topic_bow], [random_bow]]
         labels = [IN_TOPIC, OUT_OF_TOPIC]
 
         self.clf_title = BernoulliNB()
