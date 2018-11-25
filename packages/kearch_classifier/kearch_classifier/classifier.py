@@ -172,7 +172,8 @@ class Classifier(AbsClassifier):
                      for w, f in topic_dict.items()]
         random_bow = [(self.dictionary_body.token2id[w], f)
                       for w, f in topic_dict.items()]
-        samples = [[topic_bow], [random_bow]]
+        samples = [self.alist_to_vector(topic_bow, self.dictionary_body),
+                   self.alist_to_vecto(random_bow, self.dictionary_body)]
         labels = [IN_TOPIC, OUT_OF_TOPIC]
 
         self.clf_title = BernoulliNB()
