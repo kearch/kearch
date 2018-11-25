@@ -27,6 +27,10 @@ class AbsClassifier(metaclass=abc.ABCMeta):
     def learn_params_from_url(self, topic_url_list, random_url_list, language):
         pass
 
+    @abc.abstractclassmethod
+    def learn_params_from_dict(self, topic_dict, random_dict, language):
+        pass
+
     # This function dump all parameters to one json.
     @abc.abstractclassmethod
     def dump_params(self):

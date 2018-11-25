@@ -129,8 +129,8 @@ function send_db_summary() {
         </div>
 
         <div class="box">
-            <p>Learn Parameter for the classifier in the crawler</p>
-            <form name=learn_params_form action="/learn_params" method="post">
+            <p>Learn Parameter for the classifier in the crawler using url lists</p>
+            <form name=learn_params_from_url_form action="/learn_params_from_url" method="post">
                 language<br/>
                 <input type="text" id="language" name="language" cols="10" />
                 <br/>
@@ -139,6 +139,22 @@ function send_db_summary() {
                 <br/>
                 URLs in random topic↓<br/>
                 <textarea name="random_urls" cols="50" rows="5"></textarea>
+                <br/>
+                <button type="submit">learn crawler parameters</button>
+            </form>
+        </div>
+
+        <div class="box">
+            <p>Learn Parameter for the classifier in the crawler using word frequency</p>
+            <form name=learn_params_from_dict_form action="/learn_params_from_dict" method="post">
+                language<br/>
+                <input type="text" id="language" name="language" cols="10" />
+                <br/>
+                Word frequencies in your crawling topic↓<br/>
+                <textarea name="topic_dict" cols="50" rows="5"></textarea>
+                <br/>
+                Word frequencies in random topic↓<br/>
+                <textarea name="random_dict" cols="50" rows="5"></textarea>
                 <br/>
                 <button type="submit">learn crawler parameters</button>
             </form>
