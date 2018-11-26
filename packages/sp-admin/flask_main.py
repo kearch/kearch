@@ -14,6 +14,8 @@ GATEWAY_PORT = 10080
 REQUESTER_NAME = 'specialist_admin'
 SP_ADMIN_PORT = 10080
 
+DEFAULT_DICT_EN_FILE = 'en_default_dict.txt'
+
 
 app = flask.Flask(__name__)
 
@@ -123,8 +125,18 @@ def learn_params_from_dict():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
     form_input_topic = flask.request.form['topic_dict']
-    form_input_random = flask.request.form['random_dict']
     language = flask.request.form['language']
+
+    if 'use_default_dict' in flask.request.form:
+        if language == 'en':
+            with open(DEFAULT_DICT_EN_FILE, 'r') as f:
+                form_input_random = f.read()
+        else:
+            r = {'message': language + ' default dictionary is not available.'}
+            flask.abort(500, r)
+    else:
+        form_input_random = flask.request.form['random_dict']
+
     topic_lines = form_input_topic.split('\n')
     random_lines = form_input_random.split('\n')
 
@@ -138,7 +150,9 @@ def learn_params_from_dict():
             topic_dict[ws[0]] += int(ws[1])
     for l in random_lines:
         ws = l.split(None)
-        if ws[0] not in random_dict:
+        if len(ws) < 2:
+            continue
+        elif ws[0] not in random_dict:
             random_dict[ws[0]] = int(ws[1])
         else:
             random_dict[ws[0]] += int(ws[1])

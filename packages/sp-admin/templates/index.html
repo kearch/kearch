@@ -167,8 +167,8 @@ function disableForm( textid, ischecked ) {
                 <textarea name="topic_dict" cols="50" rows="5"></textarea>
                 <br/>
                 Word frequencies in random topic↓<br/>
-                <label><input type="checkbox" name="use_default_dict" value="on" onclick="disableForm('random_dict',this.checked);">use default dict</label>
-                <textarea name="random_dict" cols="50" rows="5"></textarea>
+                <label><input type="checkbox" name="use_default_dict" value="on" onclick="disableForm('random_dict_textbox',this.checked);">use default dict</label><br/>
+                <textarea name="random_dict" id="random_dict_textbox" cols="50" rows="5"></textarea>
                 <br/>
                 <button type="submit">learn crawler parameters</button>
             </form>
