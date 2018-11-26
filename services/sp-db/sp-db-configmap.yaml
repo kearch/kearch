@@ -12,6 +12,7 @@ data:
 
     [mysql]
     default-character-set = utf8mb4
+    max_allowed_packet = 10G
 
     [mysqld]
     character-set-client-handshake = FALSE
