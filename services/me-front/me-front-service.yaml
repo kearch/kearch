@@ -7,10 +7,7 @@ spec:
   type: NodePort
   ports:
   - port: 2222
-    targetPort: 2222
-    protocol: TCP
+    targetPort: 32800
   selector:
     engine: me
     app: front
-  externalIPs:
-  # - <set your external global ip here>
