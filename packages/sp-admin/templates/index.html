@@ -144,6 +144,19 @@ function send_db_summary() {
             </form>
         </div>
 
+            <script>
+<!--
+function disableForm( textid, ischecked ) {
+   if( ischecked == true ) {
+      document.getElementById(textid).disabled = true;
+   }
+   else {
+      document.getElementById(textid).disabled = false;
+   }
+}
+// -->
+            </script>
+
         <div class="box">
             <p>Learn Parameter for the classifier in the crawler using word frequency</p>
             <form name=learn_params_from_dict_form action="/learn_params_from_dict" method="post">
@@ -154,7 +167,8 @@ function send_db_summary() {
                 <textarea name="topic_dict" cols="50" rows="5"></textarea>
                 <br/>
                 Word frequencies in random topic↓<br/>
-                <textarea name="random_dict" cols="50" rows="5"></textarea>
+                <label><input type="checkbox" name="use_default_dict" value="on" onclick="disableForm('random_dict_textbox',this.checked);">use default dict</label><br/>
+                <textarea name="random_dict" id="random_dict_textbox" cols="50" rows="5"></textarea>
                 <br/>
                 <button type="submit">learn crawler parameters</button>
             </form>
