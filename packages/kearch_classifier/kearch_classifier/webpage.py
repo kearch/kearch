@@ -178,6 +178,7 @@ BAN_EXTENTION = [
     ".pptm",
     ".pptx",
     ".psd",
+    ".pkg",
     ".pya",
     ".pyc",
     ".pyo",
