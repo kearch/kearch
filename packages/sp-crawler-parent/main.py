@@ -1,5 +1,6 @@
 import sys
 import time
+import random
 import collections
 import urllib.parse
 import urllib.robotparser
@@ -183,6 +184,7 @@ if __name__ == '__main__':
                 crawled_url = list()
                 for d in data_to_push:
                     crawled_url.append({'url': d['url']})
+                random.shuffle(crawled_url)
                 try:
                     resp = database_requester.request(
                         path='/push_crawled_urls', method='POST',
