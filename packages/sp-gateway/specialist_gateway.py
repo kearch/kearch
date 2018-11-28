@@ -12,6 +12,7 @@ REQUESTER_NAME = 'specialist_gateway'
 
 CONFIG_CONNECTION_POLICY = 'connection_policy'
 CONFIG_HOST_NAME = 'host_name'
+CONFIG_ENGINE_NAME = 'engine_name'
 
 
 def is_connected(me_host):
@@ -30,10 +31,15 @@ def send_a_connection_request(me_host):
                          conn_type='sql')
     config = db.request(path='/sp/db/get_config_variables', method='GET')
     sp_host = config[CONFIG_HOST_NAME]
+    if CONFIG_ENGINE_NAME in config:
+        engine_name = config[CONFIG_ENGINE_NAME]
+    else:
+        engine_name = ''
 
     kr = KearchRequester(me_host, META_GATEWAY_PORT, REQUESTER_NAME)
     res = kr.request(path='/me/gateway/add_a_connection_request',
-                     method='POST', payload={'sp_host': sp_host})
+                     method='POST',
+                     payload={'sp_host': sp_host, 'engine_name': engine_name})
     return res
 
 
