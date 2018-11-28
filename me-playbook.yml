@@ -1,5 +1,4 @@
 - hosts: all
-  # become root
   become: yes
   tasks:
      - name: install packages
@@ -78,21 +77,6 @@
           path: /data
           state: directory
 
-     - name: Make es directory
-       file:
-          path: /data/sp-es-data-00
-          state: directory
-
-     - name: Make es directory
-       file:
-          path: /data/sp-es-master-00
-          state: directory
-
-     - name: Make es directory
-       file:
-          path: /data/sp-es-master-01
-          state: directory
-
      - name: clone kearch
        become_user: kearch
        command: git clone https://github.com/kearch/kearch.git
@@ -124,6 +108,6 @@
 
      - name: kearch deploy script
        become_user: kearch
-       shell: yes | ./sp_deploy.sh spdb spes all
+       shell: yes | ./me_deploy.sh medb all
        args:
            chdir: /home/kearch/kearch/

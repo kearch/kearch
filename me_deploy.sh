@@ -50,6 +50,13 @@ do
 
         kubectl --namespace=kearch apply --recursive -f .
 
+        # Wait until the pod is ready
+        while ! kubectl rollout status deployment me-db
+        do
+            sleep 1
+        done
+        sleep 30
+
         cd $KEARCH_ROOT_DIR/services/me-db
 
         me_db_pod_name=$(kubectl --namespace=kearch get po -l engine=me,app=db -o go-template --template '{{(index .items 0).metadata.name}}')
