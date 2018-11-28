@@ -98,7 +98,7 @@ p { margin: 0; }
             </select>
         </form>
         <div class="sp-host">
-          <p>Showing results from {{ sp_servers[sp_host]['engine_name'] }} (( sp_host ))</p>
+          <p>Showing results from {{ sp_servers.get(sp_host, {}).get('engine_name', '') }} ({{ sp_host }})</p>
         </div>
         <ul id="list" class="nomark">
             {% for w in results %}
