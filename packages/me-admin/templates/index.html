@@ -20,7 +20,7 @@
             <p>Requests from specialist servers to this meta server</p>
             <ul>
                 {% for name,state in requests['in'].items(): %}
-                <li>sp_host = {{ sp_servers[name]['engine_name'] }} ({{ name }}), is_approved = {{ state }}</li>
+                <li>sp_host = {{ sp_servers.get(name, {}).get('engine_name', {}) }} ({{ name }}), is_approved = {{ state }}</li>
                 {% if state == 0 %}
                 <form action="/approve_a_connection_request" method="post">
                     <button type="submit" name="sp_host" value="{{ name }}">Approve</button>
@@ -34,7 +34,7 @@
             <p>Requests from this meta server to specialist servers</p>
             <ul>
                 {% for name,state in requests['out'].items(): %}
-                <li>sp_host = {{ sp_servers[name]['engine_name'] }} ({{ name }}), is_approved = {{ state }}</li>
+                <li>sp_host = {{ sp_servers.get(name, {}).get('engine_name', {}) }} ({{ name }}), is_approved = {{ state }}</li>
                 {% endfor %}
             </ul>
         </div>
