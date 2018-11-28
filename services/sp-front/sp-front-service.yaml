@@ -7,7 +7,7 @@ spec:
   type: NodePort
   ports:
   - port: 2222
-    targetPort: 32900
+    nodePort: 32900
   selector:
     engine: sp
     app: front
