@@ -431,7 +431,8 @@ class KearchRequester(object):
                 cur.executemany(statement, records)
                 db.commit()
                 ret = cur.rowcount
-            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+            elif (splited_path[0] == 'sp' or splited_path[0] == 'me') and \
+                    splited_path[1] == 'db' and \
                     splited_path[2] == 'push_binary_file':
                 name = params['name']
                 body = params['body']
@@ -445,7 +446,8 @@ class KearchRequester(object):
                 cur.execute(statement, (name, body))
                 db.commit()
                 ret = {'name': name}
-            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+            elif (splited_path[0] == 'sp' or splited_path[0] == 'me') and \
+                    splited_path[1] == 'db' and \
                     splited_path[2] == 'pull_binary_file':
                 name = params['name']
                 statement = """
@@ -460,7 +462,8 @@ class KearchRequester(object):
                     'body': row[0],
                     'updated_at': row[1],
                 }
-            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+            elif (splited_path[0] == 'sp' or splited_path[0] == 'me') and \
+                    splited_path[1] == 'db' and \
                     splited_path[2] == 'check_binary_file_timestamp':
                 name = params['name']
                 statement = """

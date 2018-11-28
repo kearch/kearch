@@ -69,6 +69,7 @@ do
         kubectl --namespace=kearch cp $(pwd)/sql/sp_hosts_schema.sql $me_db_pod_name:/tmp/sp_hosts_schema.sql
         kubectl --namespace=kearch cp $(pwd)/sql/in_requests_schema.sql $me_db_pod_name:/tmp/in_requests_schema.sql
         kubectl --namespace=kearch cp $(pwd)/sql/out_requests_schema.sql $me_db_pod_name:/tmp/out_requests_schema.sql
+        kubectl --namespace=kearch cp $(pwd)/sql/binary_files_schema.sql $me_db_pod_name:/tmp/binary_files_schema.sql
 
         echo sp_servers_schema
         kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/sp_servers_schema.sql'
@@ -80,6 +81,8 @@ do
         kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/in_requests_schema.sql'
         echo out_requests_schema 
         kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/out_requests_schema.sql'
+        echo binary_files_schema.sql
+        kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/binary_files_schema.sql'
 
         kubectl delete pods --namespace=kearch -l engine=me,app=db
 
