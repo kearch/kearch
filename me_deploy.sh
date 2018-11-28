@@ -51,7 +51,7 @@ do
         kubectl --namespace=kearch apply --recursive -f .
 
         # Wait until the pod is ready
-        while ! kubectl rollout status deployment sp-db
+        while ! kubectl rollout status deployment me-db
         do
             sleep 1
         done
