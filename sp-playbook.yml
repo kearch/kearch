@@ -73,7 +73,7 @@
      - command: kubectl apply -f https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml --kubeconfig /etc/kubernetes/admin.conf
        become_user: kearch
 
-     - name: Make es directory
+     - name: Make data directory for db
        file:
           path: /data
           state: directory
