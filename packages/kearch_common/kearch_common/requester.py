@@ -316,10 +316,12 @@ class KearchRequester(object):
                     splited_path[2] == 'add_a_connection_request':
                 in_or_out = payload['in_or_out']
                 sp_host = payload['sp_host']
+                engine_name = payload['engine_name']
                 hosts_insert_statement = """
-                INSERT IGNORE INTO sp_hosts (`name`) VALUES (%s)
+                INSERT IGNORE INTO sp_hosts (`name`, `engine_name`)
+                VALUES (%s, %s)
                 """
-                cur.execute(hosts_insert_statement, (sp_host,))
+                cur.execute(hosts_insert_statement, (sp_host, engine_name))
                 db.commit()
                 host_id_statement = """
                 SELECT `id` FROM `sp_hosts` WHERE `name` = %s

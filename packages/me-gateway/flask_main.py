@@ -37,7 +37,8 @@ def fetch_a_dump():
 def add_a_connection_request():
     data = unwrap_json(flask.request.get_json())
     sp_host = data['sp_host']
-    result = meta_gateway.add_a_connection_request(sp_host)
+    engine_name = data['engine_name']
+    result = meta_gateway.add_a_connection_request(sp_host, engine_name)
     return jsonify(result)
 
 
