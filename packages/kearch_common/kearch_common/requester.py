@@ -123,6 +123,35 @@ def dump_summary_from_sp_db(cur):
     }
 
 
+def dump_summaries_from_me_db(cur):
+    page_size = 1000
+    statement = """
+    SELECT `id`, `host`, `word`, `frequency`
+    FROM `sp_servers`
+    WHERE `id` > %s
+    LIMIT %s
+    """
+
+    summaries = {}
+    prev_rowcount = -1
+    last_word_id = 0
+    while prev_rowcount != 0:
+        print('Dumping words word_id >', last_word_id, '...',
+              file=sys.stderr, flush=True)
+        cur.execute(statement, (last_word_id, page_size))
+        for row in cur.fetchall():
+            last_word_id = row[0]
+            host = row[1]
+            word = row[2]
+            cnt = row[3]
+            if host not in summaries:
+                summaries[host] = dict()
+            summaries[host][word] = cnt
+        prev_rowcount = cur.rowcount
+
+    return summaries
+
+
 class KearchRequester(object):
     """Interface for communicating between containers or servers."""
 
@@ -445,6 +474,9 @@ class KearchRequester(object):
                     'name': name,
                     'updated_at': row[0],
                 }
+            elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'get_sp_summaries':
+                ret = dump_summaries_from_me_db(cur)
             elif parsed_path == '/push_webpage_to_database':
                 for webpage in payload['data']:
                     post_webpage_to_db(db, cur, webpage)
