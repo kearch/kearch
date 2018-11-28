@@ -1,5 +1,4 @@
 - hosts: all
-  # become root
   become: yes
   tasks:
      - name: install packages
@@ -72,26 +71,6 @@
 
      - command: kubectl apply -f https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml --kubeconfig /etc/kubernetes/admin.conf
        become_user: kearch
-
-     - name: Make es directory
-       file:
-          path: /data
-          state: directory
-
-     - name: Make es directory
-       file:
-          path: /data/sp-es-data-00
-          state: directory
-
-     - name: Make es directory
-       file:
-          path: /data/sp-es-master-00
-          state: directory
-
-     - name: Make es directory
-       file:
-          path: /data/sp-es-master-01
-          state: directory
 
      - name: clone kearch
        become_user: kearch
