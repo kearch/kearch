@@ -51,7 +51,7 @@ do
         echo "----- Start to deploy specialist DB. -----"
         cd $KEARCH_ROOT_DIR/services/sp-db
 
-        kubectl --namespace=kearch apply --recursive -f .
+        kubectl --namespace=kearch apply --prune -l engie=sp,app=db --recursive -f .
 
         # Wait until the pod is ready
         while ! kubectl rollout status deployment sp-db --namespace=kearch
@@ -59,7 +59,7 @@ do
             sleep 1
         done
         sleep 30
-        
+
 
         cd $KEARCH_ROOT_DIR/services/sp-db
 
@@ -121,7 +121,7 @@ do
         echo "----- Start to deploy specialist elasticsearch. -----"
         cd $KEARCH_ROOT_DIR/services/sp-es
 
-        kubectl --namespace=kearch apply --recursive -f .
+        kubectl --namespace=kearch apply --prune -l engine=sp,app=es --recursive -f .
 
         kubectl delete pods --namespace=kearch -l engine=sp,app=es
 
@@ -138,7 +138,7 @@ do
 
         cd $KEARCH_ROOT_DIR/services/sp-front
 
-        kubectl --namespace=kearch apply --recursive -f .
+        kubectl --namespace=kearch apply --prune -l engine=sp,app=front --recursive -f .
 
         kubectl delete pods --namespace=kearch -l engine=sp,app=front
 
@@ -154,7 +154,7 @@ do
 
         cd $KEARCH_ROOT_DIR/services/sp-crawler-parent
 
-        kubectl --namespace=kearch apply --recursive -f .
+        kubectl --namespace=kearch apply --prune -l engine=sp,app=crawler-parent --recursive -f .
 
         kubectl delete pods --namespace=kearch -l engine=sp,app=crawler-parent
 
@@ -176,7 +176,7 @@ do
 
         cd $KEARCH_ROOT_DIR/services/sp-crawler-child
 
-        kubectl --namespace=kearch apply --recursive -f .
+        kubectl --namespace=kearch apply --prune -l engine=sp,app=crawler-child --recursive -f .
 
         kubectl delete pods --namespace=kearch -l engine=sp,app=crawler-child
 
@@ -193,7 +193,7 @@ do
 
         cd $KEARCH_ROOT_DIR/services/sp-admin
 
-        kubectl --namespace=kearch apply --recursive -f .
+        kubectl --namespace=kearch apply --prune -l engine=sp,app=admin --recursive -f .
 
         kubectl delete pods --namespace=kearch -l engine=sp,app=admin
 
@@ -210,7 +210,7 @@ do
 
 
         cd $KEARCH_ROOT_DIR/services/sp-query-processor
-        kubectl --namespace=kearch apply --recursive -f .
+        kubectl --namespace=kearch apply --prune -l engine=sp,app=query-processor --recursive -f .
 
         kubectl delete pods --namespace=kearch -l engine=sp,app=query-processor
 
@@ -227,7 +227,7 @@ do
 
 
         cd $KEARCH_ROOT_DIR/services/sp-gateway
-        kubectl --namespace=kearch apply --recursive -f .
+        kubectl --namespace=kearch apply --prune -l engine=sp,app=gateway --recursive -f .
 
         kubectl delete pods --namespace=kearch -l engine=sp,app=gateway
 
