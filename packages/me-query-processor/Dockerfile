@@ -5,12 +5,12 @@ ARG KEARCH_COMMON_BRANCH="dev"
 RUN git clone https://github.com/kearch/kearch
 RUN cd /kearch/packages/kearch_common && git checkout $KEARCH_COMMON_BRANCH && pip install -e .
 
-COPY . /kearch/packages/meta_query_processor
-WORKDIR /kearch/packages/meta_query_processor
+COPY . /kearch/packages/me-query-processor
+WORKDIR /kearch/packages/me-query-processor
 
 # These lines are for debug. Use when you want local files.
 # COPY ./flask_main.py ./flask_main.py
-# COPY ./meta_query_processor.py ./meta_query_processor.py
+# COPY ./me-query-processor.py ./me-query-processor.py
 # COPY ./requirements.txt ./requirements.txt
 # COPY ./templates ./templates
 
