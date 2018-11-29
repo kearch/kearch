@@ -142,6 +142,23 @@ do
         echo "----- Finish deployment of meta gateway. -----"
     fi
 
+    if [ $arg = meeval] || [ $arg = all ]; then
+        # me-admin
+        echo
+        echo "----- Start deployment of meta evaluater. -----"
+        cd $KEARCH_ROOT_DIR
+
+        $CMD_DOCKER_BUILD -f packages/me-evaluater/Dockerfile -t kearch/me-evaluater .
+
+        cd $KEARCH_ROOT_DIR/services/me-evaluater
+
+        kubectl --namespace=kearch apply --recursive -f .
+
+        kubectl delete pods --namespace=kearch -l engine=me,app=evaluater
+
+        echo "----- Finish deployment of meta evaluater. -----"
+    fi
+
     if [ $arg = meadmin ] || [ $arg = all ]; then
         # me-admin
         echo
