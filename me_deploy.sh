@@ -13,6 +13,7 @@ if [ $# -lt 1 ]; then
     echo "\"megate\": Deploy me-gateway."
     echo "\"meadmin\": Deploy me-admin."
     echo "\"mesup\": Deploy me-summary-updater."
+    echo "\"meeval\": Deploy me-evaluater."
     exit 1
 fi
 
@@ -142,8 +143,8 @@ do
         echo "----- Finish deployment of meta gateway. -----"
     fi
 
-    if [ $arg = meeval] || [ $arg = all ]; then
-        # me-admin
+    if [ $arg = meeval ] || [ $arg = all ]; then
+        # me-eval
         echo
         echo "----- Start deployment of meta evaluater. -----"
         cd $KEARCH_ROOT_DIR
