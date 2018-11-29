@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kearch
+  name: me-evaluater
+  labels:
+    engine: me
+    app: evaluater
+spec:
+  selector:
+    matchLabels:
+      engine: me
+      app: evaluater
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        engine: me
+        app: evaluater
+    spec:
+      containers:
+      - image: kearch/me-evaluater
+        name: me-evaluater
+        ports:
+        - containerPort: 10080
+        imagePullPolicy: Never

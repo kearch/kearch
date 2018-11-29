@@ -13,6 +13,7 @@ if [ $# -lt 1 ]; then
     echo "\"megate\": Deploy me-gateway."
     echo "\"meadmin\": Deploy me-admin."
     echo "\"mesup\": Deploy me-summary-updater."
+    echo "\"meeval\": Deploy me-evaluater."
     exit 1
 fi
 
@@ -51,7 +52,7 @@ do
         kubectl --namespace=kearch apply --recursive -f .
 
         # Wait until the pod is ready
-        while ! kubectl rollout status deployment me-db
+        while ! kubectl rollout status deployment me-db --namespace=kearch
         do
             sleep 1
         done
@@ -69,6 +70,7 @@ do
         kubectl --namespace=kearch cp $(pwd)/sql/sp_hosts_schema.sql $me_db_pod_name:/tmp/sp_hosts_schema.sql
         kubectl --namespace=kearch cp $(pwd)/sql/in_requests_schema.sql $me_db_pod_name:/tmp/in_requests_schema.sql
         kubectl --namespace=kearch cp $(pwd)/sql/out_requests_schema.sql $me_db_pod_name:/tmp/out_requests_schema.sql
+        kubectl --namespace=kearch cp $(pwd)/sql/binary_files_schema.sql $me_db_pod_name:/tmp/binary_files_schema.sql
 
         echo sp_servers_schema
         kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/sp_servers_schema.sql'
@@ -80,6 +82,8 @@ do
         kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/in_requests_schema.sql'
         echo out_requests_schema 
         kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/out_requests_schema.sql'
+        echo binary_files_schema.sql
+        kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/binary_files_schema.sql'
 
         kubectl delete pods --namespace=kearch -l engine=me,app=db
 
@@ -137,6 +141,23 @@ do
         kubectl delete pods --namespace=kearch -l engine=me,app=gateway
 
         echo "----- Finish deployment of meta gateway. -----"
+    fi
+
+    if [ $arg = meeval ] || [ $arg = all ]; then
+        # me-eval
+        echo
+        echo "----- Start deployment of meta evaluater. -----"
+        cd $KEARCH_ROOT_DIR
+
+        $CMD_DOCKER_BUILD -f packages/me-evaluater/Dockerfile -t kearch/me-evaluater .
+
+        cd $KEARCH_ROOT_DIR/services/me-evaluater
+
+        kubectl --namespace=kearch apply --recursive -f .
+
+        kubectl delete pods --namespace=kearch -l engine=me,app=evaluater
+
+        echo "----- Finish deployment of meta evaluater. -----"
     fi
 
     if [ $arg = meadmin ] || [ $arg = all ]; then

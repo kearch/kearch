@@ -47,6 +47,23 @@ kubectl exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev <
 
 
 # APIs of Meta DB
+## Get summaries
+Access URL (GET)
+```
+$(ip adress of the database server)/me/db/get_sp_summaries
+```
+Return JSON
+```
+{
+    '192.168.99.100':{
+        'google': 10,
+        'facebook': 20
+    },
+    '192.168.99.101':{
+        'lisp':10
+    }
+}
+```
 ## Get connection requests
 Access URL (GET)
 ```
