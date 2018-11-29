@@ -2,9 +2,7 @@
 
 import math
 import sys
-import os
 import base64
-import datetime
 from collections import Counter
 
 import kearch_classifier.average_document as ave
