@@ -17,6 +17,7 @@ data:
     character-set-client-handshake = FALSE
     character-set-server = utf8mb4
     collation-server = utf8mb4_unicode_ci
+    max_allowed_packet = 10G
     slow_query_log=ON
     long_query_time=0
     slow_query_log_file=/var/log/mysql/slow.log
