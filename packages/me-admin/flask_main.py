@@ -22,9 +22,9 @@ def learn_params_for_evaluater():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
     summaries = db_req.request(path='/me/db/get_sp_summaries')
-    e = kearch_evaluater.kearch_evaluater.Evaluater()
+    e = kearch_evaluater.evaluater.Evaluater()
     e.learn_params(summaries)
-    e.dump_params(kearch_evaluater.evaluater.PRAMS_FILE)
+    e.dump_params(kearch_evaluater.evaluater.PARAMS_FILE)
 
     bparam = open(kearch_evaluater.evaluater.PARAMS_FILE, 'rb').read()
     tparam = base64.b64encode(bparam).decode('utf-8')
