@@ -27,7 +27,7 @@ def search():
         database_requester = KearchRequester(
             DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type="sql")
 
-        params = {'query': ' '.join(query), 'max_urls': MAX_URLS}
+        params = {'query': query, 'max_urls': MAX_URLS}
         if sp != "":
             params['sp'] = sp
 
