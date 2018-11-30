@@ -9,43 +9,27 @@ GATEWAY_HOST = 'me-gateway.kearch.svc.cluster.local'
 GATEWAY_PORT = 10080
 
 
-# When you change DEBUG_UNIT_TEST true, this program run unit test.
-DEBUG_UNIT_TEST = False
-
-
 class MeQueryProcessorException(Exception):
     def __init__(self, e):
         Exception.__init__(self, e)
 
 
 def get_sp_host_from_database(queries):
-    if DEBUG_UNIT_TEST:
-        ret = dict()
-        for q in queries:
-            d = dict()
-            d['10.229.55.117'] = 167
-            d['14.229.55.117'] = 127
-            ret[q] = d
-        return ret
-    else:
-        database_requester = KearchRequester(
-            DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type="sql")
-        ret = database_requester.request(
-            path='/retrieve_sp_servers', params={'queries': queries})
-        return ret
+    database_requester = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type="sql")
+    ret = database_requester.request(
+        path='/retrieve_sp_servers', params={'queries': queries})
+    return ret
 
 
 def get_result_from_sp(sp_host, queries, max_urls):
     ret = dict()
-    if DEBUG_UNIT_TEST:
-        ret['data'] = [{'url': 'www.google.com', 'title_words': [
-            'google', 'usa'], 'title': 'google_in_usa', 'summary':'google is strong', 'score':11.0}]
-    else:
-        sp_requester = KearchRequester(
-            GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
-        ret = sp_requester.request(
-            path='/retrieve',
-            params={'sp_host': sp_host, 'queries': ' '.join(queries), 'max_urls': max_urls})
+    sp_requester = KearchRequester(
+        GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
+    ret = sp_requester.request(
+        path='/retrieve',
+        params={'sp_host': sp_host, 'queries': ' '.join(queries),
+                'max_urls': max_urls})
     ret['sp_host'] = sp_host
     return ret
 
