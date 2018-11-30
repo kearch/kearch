@@ -1,5 +1,5 @@
 # Example for api is
-# http://localhost:10080/retrieve?queries=facebook+google&max_urls=100
+# http://localhost:10080/retrieve?query=facebook+google&max_urls=100
 
 import flask
 from flask import jsonify
@@ -11,14 +11,13 @@ app = flask.Flask(__name__)
 
 @app.route('/retrieve', methods=['GET'])
 def post():
-    queries = flask.request.args.get('queries')
-    queries = queries.split(' ')
-    max_urls = flask.request.args.get('max_urls')
+    query = flask.request.args.get('query')
+    max_urls = int(flask.request.args.get('max_urls'))
     if 'sp' in flask.request.args:
         sp = flask.request.args.get('sp')
-        result = meta_query_processor.retrieve(queries, max_urls, sp=sp)
+        result = meta_query_processor.retrieve(query, max_urls, sp=sp)
     else:
-        result = meta_query_processor.retrieve(queries, max_urls)
+        result = meta_query_processor.retrieve(query, max_urls)
     return jsonify(result)
 
 

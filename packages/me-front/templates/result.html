@@ -97,12 +97,12 @@ p { margin: 0; }
                 {% endfor %}
             </select>
         </form>
-        <div class="sp-host">
-          <p>Showing results from {{ sp_servers.get(sp_host, {}).get('engine_name', '') }} ({{ sp_host }})</p>
-        </div>
         <ul id="list" class="nomark">
             {% for w in results %}
             <li>
+                <div class="sp-host">
+                    <p>Showing results from {{ sp_servers.get(w['sp_host'], {}).get('engine_name', '') }} ({{ w['sp_host'] }})</p>
+                </div>
                 <div class="entry">
                     <div class="title"><a href="{{ w['url'] }}">{{ w['title'] }}</a></div>
                     <div class="url"><p>{{ w['url'] }}</p></div>

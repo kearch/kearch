@@ -29,7 +29,7 @@ def update_param_file(filename):
             f.write(body)
 
 
-@app.route('/evaluate', methods=['GET'])
+@app.route('/me/evaluater/evaluate', methods=['GET'])
 def post():
     print('Start checking parameter files.', file=sys.stderr)
     update_param_file(kearch_evaluater.evaluater.PARAMS_FILE)

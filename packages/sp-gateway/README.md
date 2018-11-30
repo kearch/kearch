@@ -118,9 +118,9 @@ URL (GET)
 {'data':[
     {
         'url':'www.google.com',
-            'title_words':['google','usa'],
-            'summary':'google is strong',
-            'score':11.0
+        'title_words':['google','usa'],
+        'summary':'google is strong',
+        'score':11.0
     },...
 ]}
 ```
