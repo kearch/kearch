@@ -1,7 +1,7 @@
 # Meta Evaluater
 URL
 ```
-(IP address of meta evaluater)/evaluate?query=haskell+ocaml
+(IP address of meta evaluater)/me/evaluater/evaluate?query=haskell+ocaml
 ```
 Returned JSON
 ```
