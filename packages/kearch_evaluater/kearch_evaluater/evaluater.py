@@ -72,7 +72,7 @@ class Evaluater(AbsEvaluater):
         p = self.clf.predict_proba([self.alist2vec(v, self.dictionary)])
 
         res = dict()
-        for i in range(0, len(p[0])):
+        for i in range(0, len(self.label2host.keys())):
             res[self.label2host[i]] = p[0][i]
         return res
 
