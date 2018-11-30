@@ -19,7 +19,7 @@ class AbsEvaluater(metaclass=abc.ABCMeta):
 
     # This function dump all parameters to one json.
     @abc.abstractclassmethod
-    def dump_params(self):
+    def dump_params(self, filename):
         pass
 
     @abc.abstractclassmethod
