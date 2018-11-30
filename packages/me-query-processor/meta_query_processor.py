@@ -32,12 +32,13 @@ def retrieve(query, max_urls, sp=None):
         e_req = KearchRequester(EVALUATER_HOST, EVALUATER_PORT, REQUESTER_NAME)
         sp_hosts = e_req.request(path='/me/evaluater/evaluate',
                                  params={'query': query})
-        a = list(sp_hosts.items()).sort(key=lambda x: x[1], reverse=True)
+        a = list(sp_hosts.items())
+        a.sort(key=lambda x: x[1], reverse=True)
         n = min(len(SP_HOST_RATIO), len(a))
         res = list()
         for i in range(0, n):
-            m = max_urls*SP_HOST_RATIO[i]/sum(SP_HOST_RATIO[:n])
-            res.append(get_result_from_sp(a[i][0], query, m))
+            m = max_urls * SP_HOST_RATIO[i] / sum(SP_HOST_RATIO[:n])
+            res.extend(get_result_from_sp(a[i][0], query, m))
         return {'data': res}
     else:
         res = get_result_from_sp(sp, query, max_urls)

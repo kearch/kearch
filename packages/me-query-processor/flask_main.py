@@ -12,7 +12,7 @@ app = flask.Flask(__name__)
 @app.route('/retrieve', methods=['GET'])
 def post():
     query = flask.request.args.get('query')
-    max_urls = flask.request.args.get('max_urls')
+    max_urls = int(flask.request.args.get('max_urls'))
     if 'sp' in flask.request.args:
         sp = flask.request.args.get('sp')
         result = meta_query_processor.retrieve(query, max_urls, sp=sp)

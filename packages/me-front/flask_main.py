@@ -1,4 +1,5 @@
 import flask
+import sys
 
 from kearch_common.requester import KearchRequester
 
@@ -19,7 +20,6 @@ app = flask.Flask(__name__)
 def search():
     if flask.request.method == 'GET':
         query = flask.request.args['query']
-        queries = query.split()
         sp = flask.request.args['sp']
 
         query_processor_requester = KearchRequester(
@@ -27,7 +27,7 @@ def search():
         database_requester = KearchRequester(
             DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type="sql")
 
-        params = {'queries': ' '.join(queries), 'max_urls': MAX_URLS}
+        params = {'query': ' '.join(query), 'max_urls': MAX_URLS}
         if sp != "":
             params['sp'] = sp
 
@@ -36,11 +36,11 @@ def search():
         sp_servers = database_requester.request(
             path='/list_up_sp_servers', method='GET')
 
-        print('results', results)
+        print('results = ', results, file=sys.stderr)
 
         return flask.render_template(
             'result.html', results=results['data'], selected_sp=sp,
-            sp_host=results['sp_host'], sp_servers=sp_servers, query=query)
+            sp_servers=sp_servers, query=query)
     else:
         return flask.redirect(flask.url_for('index.html'))
 
