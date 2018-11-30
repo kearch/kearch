@@ -1,5 +1,7 @@
 import flask
 from flask import jsonify
+import base64
+import kearch_evaluater.evaluater
 from kearch_common.requester import KearchRequester
 
 DATABASE_HOST = 'me-db.kearch.svc.cluster.local'
@@ -13,6 +15,23 @@ REQUESTER_NAME = 'me_admin'
 SP_ADMIN_PORT = 10080
 
 app = flask.Flask(__name__)
+
+
+@app.route('/learn_params_for_evaluater')
+def learn_params_for_evaluater():
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    summaries = db_req.request(path='/me/db/get_sp_summaries')
+    e = kearch_evaluater.kearch_evaluater.Evaluater()
+    e.learn_params(summaries)
+    e.dump_params(kearch_evaluater.evaluater.PRAMS_FILE)
+
+    bparam = open(kearch_evaluater.evaluater.PARAMS_FILE, 'rb').read()
+    tparam = base64.b64encode(bparam).decode('utf-8')
+    params = {'name': kearch_evaluater.evaluater.PARAMS_FILE,
+              'body': tparam}
+    res = db_req.request(path='/me/db/push_binary_file', params=params)
+    return jsonify(res)
 
 
 @app.route("/")
