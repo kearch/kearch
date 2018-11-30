@@ -35,11 +35,11 @@ def post():
     update_param_file(kearch_evaluater.evaluater.PARAMS_FILE)
     print('End checking parameter files.', file=sys.stderr)
 
-    queries = flask.request.args.get('queries')
+    queries = flask.request.args.get('query')
     queries = queries.split(' ')
 
-    e = kearch_evaluater.kearch_evaluater.Evaluater()
-    e.load_params(kearch_evaluater.kearch_evaluater.PARAMS_FILE)
+    e = kearch_evaluater.evaluater.Evaluater()
+    e.load_params(kearch_evaluater.evaluater.PARAMS_FILE)
 
     return jsonify(e.evaluate(queries))
 
