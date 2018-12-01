@@ -7,7 +7,8 @@ metadata:
     engine: sp
     app: crawler-child
 spec:
-  schedule: "* * * * *"
+  schedule: "0 * * * *"
+  concurrencyPolicy: Replace
   jobTemplate:
     spec:
       template:
@@ -17,7 +18,6 @@ spec:
             engine: sp
             app: crawler-child
         spec:
-          concurrencyPolicy: Restart
           restartPolicy: OnFailure
           containers:
           - image: kearch/sp-crawler-child
