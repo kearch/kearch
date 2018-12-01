@@ -11,6 +11,7 @@ REQUESTER_NAME = 'me-evaluater'
 
 timestamp = dict()
 app = flask.Flask(__name__)
+evaluater = kearch_evaluater.evaluater.Evaluater()
 
 
 def update_param_file(filename):
@@ -27,6 +28,7 @@ def update_param_file(filename):
         body = base64.b64decode(ret['body'].encode())
         with open(filename, 'wb') as f:
             f.write(body)
+        evaluater.load_params(kearch_evaluater.evaluater.PARAMS_FILE)
 
 
 @app.route('/me/evaluater/evaluate', methods=['GET'])
@@ -38,10 +40,7 @@ def post():
     queries = flask.request.args.get('query')
     queries = queries.split(' ')
 
-    e = kearch_evaluater.evaluater.Evaluater()
-    e.load_params(kearch_evaluater.evaluater.PARAMS_FILE)
-
-    return jsonify(e.evaluate(queries))
+    return jsonify(evaluater.evaluate(queries))
 
 
 if __name__ == '__main__':
