@@ -49,7 +49,7 @@ do
         echo "----- Start to deploy meta DB. -----"
         cd $KEARCH_ROOT_DIR/services/me-db
 
-        kubectl --namespace=kearch apply --recursive -f .
+        kubectl --namespace=kearch apply --prune -l engine=me,app=db --recursive -f .
 
         # Wait until the pod is ready
         while ! kubectl rollout status deployment me-db --namespace=kearch
@@ -102,7 +102,7 @@ do
 
         cd $KEARCH_ROOT_DIR/services/me-front
 
-        kubectl --namespace=kearch apply --recursive -f .
+        kubectl --namespace=kearch apply --prune -l engine=me,app=front --recursive -f .
 
         kubectl delete pods --namespace=kearch -l engine=me,app=front
 
@@ -119,7 +119,7 @@ do
 
         cd $KEARCH_ROOT_DIR/services/me-query-processor
 
-        kubectl --namespace=kearch apply --recursive -f .
+        kubectl --namespace=kearch apply --prune -l engine=me,app=query-processor --recursive -f .
 
         kubectl delete pods --namespace=kearch -l engine=me,app=query-processor
 
@@ -136,7 +136,7 @@ do
 
         cd $KEARCH_ROOT_DIR/services/me-gateway
 
-        kubectl --namespace=kearch apply --recursive -f .
+        kubectl --namespace=kearch apply --prune -l engine=me,app=gateway --recursive -f .
 
         kubectl delete pods --namespace=kearch -l engine=me,app=gateway
 
@@ -170,7 +170,7 @@ do
 
         cd $KEARCH_ROOT_DIR/services/me-admin
 
-        kubectl --namespace=kearch apply --recursive -f .
+        kubectl --namespace=kearch apply --prune -l engine=me,app=admin --recursive -f .
 
         kubectl delete pods --namespace=kearch -l engine=me,app=admin
 
@@ -187,7 +187,7 @@ do
 
         cd $KEARCH_ROOT_DIR/services/me-summary-updater
 
-        kubectl --namespace=kearch apply --recursive -f .
+        kubectl --namespace=kearch apply --prune -l engine=me,app=summary-updater --recursive -f .
 
         kubectl delete pods --namespace=kearch -l engine=me,app=summary-updater
 

@@ -1,0 +1,32 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  namespace: kearch
+  name: sp-crawler-child
+  labels:
+    engine: sp
+    app: crawler-child
+spec:
+  schedule: "0 * * * *"
+  concurrencyPolicy: Replace
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          namespace: kearch
+          labels:
+            engine: sp
+            app: crawler-child
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - image: kearch/sp-crawler-child
+            name: sp-crawler-child
+            ports:
+            - containerPort: 10080
+            imagePullPolicy: Never
+            resources:
+              limits:
+                memory: 1Gi
+              requests:
+                memory: 128Mi
