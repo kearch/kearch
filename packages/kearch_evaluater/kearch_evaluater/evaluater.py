@@ -3,7 +3,7 @@
 import sys
 from gensim import corpora
 import pickle
-from sklearn.naive_bayes import BernoulliNB
+from sklearn.naive_bayes import MultinomialNB
 import abc
 import tempfile
 import zipfile
@@ -62,7 +62,7 @@ class Evaluater(AbsEvaluater):
             sc_samples.append(self.alist2vec(v, self.dictionary))
             sc_labels.append(host2label[h])
 
-        self.clf = BernoulliNB()
+        self.clf = MultinomialNB()
         self.clf.fit(sc_samples, sc_labels)
         print('evaluater.py -- Making Classifier finish',
               file=sys.stderr)

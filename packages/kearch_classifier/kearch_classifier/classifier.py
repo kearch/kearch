@@ -8,7 +8,7 @@ import argparse
 import multiprocessing as mult
 import random
 import pickle
-from sklearn.naive_bayes import BernoulliNB
+from sklearn.naive_bayes import MultinomialNB
 import abc
 import tempfile
 import zipfile
@@ -109,7 +109,7 @@ class Classifier(AbsClassifier):
             sc_samples.append(self.alist_to_vector(bow, self.dictionary_body))
             sc_labels.append(OUT_OF_TOPIC)
 
-        self.clf_body = BernoulliNB()
+        self.clf_body = MultinomialNB()
         self.clf_body.fit(sc_samples, sc_labels)
         print('classifer.py -- Making Classifier for main text finish',
               file=sys.stderr)
@@ -150,7 +150,7 @@ class Classifier(AbsClassifier):
             sc_samples.append(self.alist_to_vector(bow, self.dictionary_title))
             sc_labels.append(OUT_OF_TOPIC)
 
-        self.clf_title = BernoulliNB()
+        self.clf_title = MultinomialNB()
         self.clf_title.fit(sc_samples, sc_labels)
         print('classifer.py -- Making Classifier for title end',
               file=sys.stderr)
@@ -176,9 +176,9 @@ class Classifier(AbsClassifier):
                    self.alist_to_vector(random_bow, self.dictionary_body)]
         labels = [IN_TOPIC, OUT_OF_TOPIC]
 
-        self.clf_title = BernoulliNB()
+        self.clf_title = MultinomialNB()
         self.clf_title.fit(samples, labels)
-        self.clf_body = BernoulliNB()
+        self.clf_body = MultinomialNB()
         self.clf_body.fit(samples, labels)
         print('classifer.py -- Making Classifier end', file=sys.stderr)
 
