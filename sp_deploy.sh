@@ -51,7 +51,7 @@ do
         echo "----- Start to deploy specialist DB. -----"
         cd $KEARCH_ROOT_DIR/services/sp-db
 
-        kubectl --namespace=kearch apply --prune -l engie=sp,app=db --recursive -f .
+        kubectl --namespace=kearch apply --prune -l engine=sp,app=db --recursive -f .
 
         # Wait until the pod is ready
         while ! kubectl rollout status deployment sp-db --namespace=kearch
