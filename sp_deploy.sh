@@ -35,7 +35,7 @@ echo "CMD_DOCKER_BUILD = "$CMD_DOCKER_BUILD
 
 echo "----- Start to make namespace and configure context. -----"
 cd $KEARCH_ROOT_DIR/services
-kubectl --namespace=kearch apply -f kearch-namespace.yaml
+kubectl apply -f kearch-namespace.yaml
 kubectl --namespace=kearch apply -f local-storage-class.yaml
 kubectl --namespace=kearch apply -f manual-storage-class.yaml
 echo "----- Finish making namespace and configuring context. -----"
