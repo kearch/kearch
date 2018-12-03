@@ -3,6 +3,9 @@ kind: Service
 metadata:
   namespace: kearch
   name: sp-admin
+  labels:
+    engine: sp
+    app: admin
 spec:
   type: NodePort
   ports:

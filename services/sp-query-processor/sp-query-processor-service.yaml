@@ -3,6 +3,9 @@ kind: Service
 metadata:
   namespace: kearch
   name: sp-query-processor
+  labels:
+    engine: sp
+    app: query-processor
 spec:
   type: NodePort
   ports:

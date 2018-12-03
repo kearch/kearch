@@ -3,6 +3,9 @@ kind: Service
 metadata:
   namespace: kearch
   name: me-query-processor
+  labels:
+    engine: me
+    app: query-processor
 spec:
   type: NodePort
   ports:

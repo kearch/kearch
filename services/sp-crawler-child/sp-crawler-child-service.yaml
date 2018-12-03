@@ -3,6 +3,9 @@ kind: Service
 metadata:
   namespace: kearch
   name: sp-crawler-child
+  labels:
+    engine: sp
+    app: crawler-child
 spec:
   type: NodePort
   ports:

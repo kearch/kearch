@@ -3,6 +3,9 @@ kind: Service
 metadata:
   namespace: kearch
   name: me-evaluater
+  labels:
+    engine: me
+    app: evaluater
 spec:
   type: NodePort
   ports:
