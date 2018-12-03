@@ -4,6 +4,8 @@ metadata:
   namespace: kearch
   name: me-db-pv
   labels:
+    engine: me
+    app: dp
     volume: me-db-pv
 spec:
   storageClassName: manual

@@ -3,6 +3,9 @@ kind: Service
 metadata:
   namespace: kearch
   name: sp-db
+  labels:
+    engine: sp
+    app: dp
 spec:
   ports:
   - port: 3306

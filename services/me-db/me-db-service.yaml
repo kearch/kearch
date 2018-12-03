@@ -3,6 +3,9 @@ kind: Service
 metadata:
   namespace: kearch
   name: me-db
+  labels:
+    engine: me
+    app: db
 spec:
   ports:
   - port: 3306

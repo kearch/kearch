@@ -3,6 +3,9 @@ apiVersion: v1
 metadata:
   namespace: kearch
   name: me-mysql-pvc
+  labels:
+    engine: me
+    app: db
 spec:
   storageClassName: manual
   accessModes:

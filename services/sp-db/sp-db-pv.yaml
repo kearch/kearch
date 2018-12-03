@@ -4,6 +4,8 @@ metadata:
   namespace: kearch
   name: sp-db-pv
   labels:
+    engine: sp
+    app: dp
     volume: sp-db-pv
 spec:
   storageClassName: manual
