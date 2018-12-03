@@ -34,6 +34,8 @@ echo "CMD_DOCKER_BUILD = "$CMD_DOCKER_BUILD
 echo "----- Start to make namespace and configure context. -----"
 cd $KEARCH_ROOT_DIR/services
 kubectl apply -f kearch-namespace.yaml
+kubectl apply -f local-storage-class.yaml
+kubectl apply -f manual-storage-class.yaml
 echo "----- Finish making namespace and configuring context. -----"
 
 for arg in "$@"
@@ -49,6 +51,9 @@ do
         echo "----- Start to deploy meta DB. -----"
         cd $KEARCH_ROOT_DIR/services/me-db
 
+        kubectl delete --recursive -f . || :
+        kubectl apply -f me-db-pv.yaml
+        kubectl apply -f me-db-configmap.yaml
         kubectl --namespace=kearch apply --prune -l engine=me,app=db --recursive -f .
 
         # Wait until the pod is ready

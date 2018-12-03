@@ -6,10 +6,10 @@
            name: ['curl', 'gnupg', 'dstat', 'htop', 'tmux', 'vim', 'wget',  'zsh', 'apt-transport-https']
 
      - name: add apt key https://packages.cloud.google.com/apt/doc/apt-key.gpg
-       apt_key: 
+       apt_key:
            url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
            state: present
-     
+
      - name: add repository deb http://apt.kubernetes.io/ kubernetes-xenial main
        apt_repository:
            repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
@@ -81,29 +81,20 @@
        become_user: kearch
        command: git clone https://github.com/kearch/kearch.git
        args:
-          chdir: /home/kearch/ 
+          chdir: /home/kearch/
 
      - name: checkout dev branch
        become_user: kearch
        command: git checkout dev
        args:
-          chdir: /home/kearch/kearch/ 
+          chdir: /home/kearch/kearch/
 
-     - name: set context 
+     - name: set context
        command: kubectl config set-context kearch-dev --namespace=kearch --cluster=kubernetes --user=kubernetes-admin
        become_user: kearch
 
      - name: use context
        command: kubectl config use-context kearch-dev
-       become_user: kearch
-
-     - name: get nodename
-       command: kubectl get nodes -o go-template --template {{ "'{{" }}(index .items 0).metadata.name {{ "}}'" }}
-       register: nodename
-       become_user: kearch
-
-     - name: set label
-       command: kubectl label nodes {{ nodename.stdout }} storage=sp-es
        become_user: kearch
 
      - name: kearch deploy script

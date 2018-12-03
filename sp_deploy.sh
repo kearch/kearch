@@ -35,7 +35,9 @@ echo "CMD_DOCKER_BUILD = "$CMD_DOCKER_BUILD
 
 echo "----- Start to make namespace and configure context. -----"
 cd $KEARCH_ROOT_DIR/services
-kubectl apply -f kearch-namespace.yaml
+kubectl --namespace=kearch apply -f kearch-namespace.yaml
+kubectl --namespace=kearch apply -f local-storage-class.yaml
+kubectl --namespace=kearch apply -f manual-storage-class.yaml
 echo "----- Finish making namespace and configuring context. -----"
 
 for arg in "$@"
@@ -51,6 +53,9 @@ do
         echo "----- Start to deploy specialist DB. -----"
         cd $KEARCH_ROOT_DIR/services/sp-db
 
+        kubectl --namespace=kearch delete all -l engine=sp,app=db
+        kubectl --namespace=kearch apply -f sp-db-pv.yaml
+        kubectl --namespace=kearch apply -f sp-db-configmap.yaml
         kubectl --namespace=kearch apply --prune -l engine=sp,app=db --recursive -f .
 
         # Wait until the pod is ready
@@ -121,6 +126,9 @@ do
         echo "----- Start to deploy specialist elasticsearch. -----"
         cd $KEARCH_ROOT_DIR/services/sp-es
 
+        kubectl --namespace=kearch delete all -l engine=sp,app=es
+        kubectl --namespace=kearch apply -f sp-es-data-pv.yaml
+        kubectl --namespace=kearch apply -f sp-es-master-pv.yaml
         kubectl --namespace=kearch apply --prune -l engine=sp,app=es --recursive -f .
 
         kubectl delete pods --namespace=kearch -l engine=sp,app=es
