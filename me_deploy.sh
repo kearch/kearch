@@ -51,9 +51,7 @@ do
         echo "----- Start to deploy meta DB. -----"
         cd $KEARCH_ROOT_DIR/services/me-db
 
-        kubectl --namespace=kearch delete --recursive -f . || :
-        kubectl --namespace=kearch apply -f me-db-pv.yaml
-        kubectl --namespace=kearch apply -f me-db-configmap.yaml
+        kubectl --namespace=kearch delete all -l engine=me,app=db
         kubectl --namespace=kearch apply --prune -l engine=me,app=db --recursive -f .
 
         # Wait until the pod is ready

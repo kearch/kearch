@@ -54,8 +54,6 @@ do
         cd $KEARCH_ROOT_DIR/services/sp-db
 
         kubectl --namespace=kearch delete all -l engine=sp,app=db
-        kubectl --namespace=kearch apply -f sp-db-pv.yaml
-        kubectl --namespace=kearch apply -f sp-db-configmap.yaml
         kubectl --namespace=kearch apply --prune -l engine=sp,app=db --recursive -f .
 
         # Wait until the pod is ready

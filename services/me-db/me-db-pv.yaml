@@ -5,7 +5,7 @@ metadata:
   name: me-db-pv
   labels:
     engine: me
-    app: dp
+    app: db
     volume: me-db-pv
 spec:
   storageClassName: manual
