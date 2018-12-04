@@ -33,7 +33,9 @@ echo "CMD_DOCKER_BUILD = "$CMD_DOCKER_BUILD
 
 echo "----- Start to make namespace and configure context. -----"
 cd $KEARCH_ROOT_DIR/services
-kubectl apply -f kearch-namespace.yaml
+kubectl --namespace=kearch apply -f kearch-namespace.yaml
+kubectl --namespace=kearch apply -f local-storage-class.yaml
+kubectl --namespace=kearch apply -f manual-storage-class.yaml
 echo "----- Finish making namespace and configuring context. -----"
 
 for arg in "$@"
@@ -49,6 +51,7 @@ do
         echo "----- Start to deploy meta DB. -----"
         cd $KEARCH_ROOT_DIR/services/me-db
 
+        kubectl --namespace=kearch delete all -l engine=me,app=db
         kubectl --namespace=kearch apply --prune -l engine=me,app=db --recursive -f .
 
         # Wait until the pod is ready
@@ -78,9 +81,9 @@ do
         kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/config_variables_schema.sql'
         echo sp_hosts_schema
         kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/sp_hosts_schema.sql'
-        echo in_requests_schema 
+        echo in_requests_schema
         kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/in_requests_schema.sql'
-        echo out_requests_schema 
+        echo out_requests_schema
         kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/out_requests_schema.sql'
         echo binary_files_schema.sql
         kubectl --namespace=kearch exec $me_db_pod_name -- bash -c 'mysql -uroot -ppassword kearch_me_dev < /tmp/binary_files_schema.sql'

@@ -5,7 +5,7 @@ metadata:
   name: sp-db-pv
   labels:
     engine: sp
-    app: dp
+    app: db
     volume: sp-db-pv
 spec:
   storageClassName: manual

@@ -3,6 +3,9 @@ kind: Service
 metadata:
   namespace: kearch
   name: me-gateway
+  labels:
+    engine: me
+    app: gateway
 spec:
   type: NodePort
   ports:

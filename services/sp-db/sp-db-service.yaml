@@ -5,7 +5,7 @@ metadata:
   name: sp-db
   labels:
     engine: sp
-    app: dp
+    app: db
 spec:
   ports:
   - port: 3306

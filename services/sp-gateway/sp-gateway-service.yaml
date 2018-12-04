@@ -3,6 +3,9 @@ kind: Service
 metadata:
   namespace: kearch
   name: sp-gateway
+  labels:
+    engine: sp
+    app: gateway
 spec:
   type: NodePort
   ports:

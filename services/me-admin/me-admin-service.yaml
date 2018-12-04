@@ -3,6 +3,9 @@ kind: Service
 metadata:
   namespace: kearch
   name: me-admin
+  labels:
+    engine: me
+    app: admin
 spec:
   type: NodePort
   ports:

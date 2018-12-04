@@ -3,6 +3,9 @@ kind: Service
 metadata:
   namespace: kearch
   name: sp-front
+  labels:
+    engine: sp
+    app: front
 spec:
   type: NodePort
   ports:

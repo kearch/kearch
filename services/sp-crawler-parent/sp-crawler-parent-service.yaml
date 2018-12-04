@@ -3,6 +3,9 @@ kind: Service
 metadata:
   namespace: kearch
   name: sp-crawler-parent
+  labels:
+    engine: sp
+    app: crawler-parent
 spec:
   ports:
   - port: 10080
