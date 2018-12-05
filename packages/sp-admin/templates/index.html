@@ -1,177 +1,240 @@
 <html>
-    <head>
-        <style type="text/css">
-<!--
-.box {
-    padding: 0.5em 1em;
-    margin: 2em 0;
-    font-weight: bold;
-    border: solid 3px #000000;
-}
-.box p {
-    margin: 0; 
-    padding: 0;
-}
-                -->
-        </style>
-    </head>
-    <body>
-        <div class="box">
-            <form action="/update_config" method="post">
-                <label for="engine-name">Engine name: </label>
-                <input id="engine-name" type="text" name="engine_name" value="{{ config['engine_name'] }}">
-                <button class="button" type="submit">update</button>
-            </form>
-        </div>
+  <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="mt-3">sp-admin</h1>
 
-        <div class="box">
-            <p>Requests from meta servers to this specialist server</p>
-            <ul>
-                {% for name,state in requests['in'].items(): %}
-                <li>me_host = {{ name }}, is_approved = {{ state }}</li>
-                {% if state == 0 %}
-                <form action="/approve_a_connection_request" method="post">
-                    <button type="submit" name="me_host" value="{{ name }}">Approve</button>
-                </form>
-                {% endif %}
-                {% endfor %}
-            </ul>
+      <div class="card my-3">
+        <div class="card-body">
+          <h4 class="card-title">Set engine name</h4>
+          <form class="form-inline" action="/update_config" method="post">
+            <div class="form-group">
+              <label for="engine-name">Engine name: </label>
+              <input id="engine-name" class="ml-3 form-control" type="text" name="engine_name" value="{{ config['engine_name'] }}">
+            </div>
+            <button class="mx-3 btn btn-primary" type="submit">update</button>
+          </form>
         </div>
+      </div>
 
-        <div class="box">
-            <p>Select connection policy of this specialist search engine</p>
-            <p>The current connection policy = "{{ config['connection_policy'] }}" </p>
-            <form action="/update_config" method="post">
-                <select name="connection_policy">
-                    <option value="protected">protected</option>
-                    <option value="public">public</option>
-                </select>
-                <button class="button">set connection policy</button>
-            </form>
+      <div class="card my-3">
+        <div class="card-body">
+          <h4 class="card-title">Requests from meta servers to this specialist server</h4>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">me_host</th>
+                <th scope="col">is_approved</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for name,state in requests['in'].items(): %}
+              <tr>
+                <td>{{ name }}</td>
+                <td>{{ state }}</td>
+                <td>
+                  {% if state == 0 %}
+                  <form action="/approve_a_connection_request" method="post">
+                    <button type="submit" class="btn btn-primary" name="me_host" value="{{ name }}">Approve</button>
+                  </form>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        <div class="box">
-            <p>Requests from this specialist server to meta servers</p>
-            <ul>
-                {% for name,state in requests['out'].items(): %}
-                <li>me_host = {{ name }}, is_approved = {{ state }}</li>
-                {% endfor %}
-            </ul>
+      <div class="card my-3">
+        <div class="card-body">
+          <h4 class=card-title>Select connection policy of this specialist search engine</h4>
+          <p>The current connection policy = "{{ config['connection_policy'] }}"</p>
+          <form class="form-inline" action="/update_config" method="post">
+            <div class="form-group">
+              <select class="form-control" name="connection_policy">
+                <option value="protected">protected</option>
+                <option value="public">public</option>
+              </select>
+            </div>
+            <button class="mx-3 btn btn-primary">set connection policy</button>
+          </form>
         </div>
+      </div>
 
-        <div class="box">
-            <form action="/sp/admin/send_a_connection_request" method="post">
-                <p>Send a requests from this specialist server to meta servers</p>
-                <input type="text" id="me_host" name="me_host" cols="50" />
-                <button class="button">send a request to meta search engine</button>
-            </form>
+      <div class="card my-3">
+        <div class="card-body">
+          <h4 class="card-title">Requests from this specialist server to meta servers</h4>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">me_host</th>
+                <th scope="col">is_approved</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for name,state in requests['out'].items(): %}
+              <tr>
+                <td>{{ name }}</td>
+                <td>{{ state }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        <div class="box">
-            <p>Set your global IP adress or hostname here</p>
-            <p>The current IP adress or hostname = {{ config['host_name'] }} </p>
-            <form action="/update_config" method="post">
-                <input type="text" id="host_name" name="host_name" cols="50" />
-                <button class="button">set global IP adress or hostname</button>
-            </form>
+      <div class="card my-3">
+        <div class="card-body">
+          <h4 class="card-title">Send a requests from this specialist server to meta servers</h4>
+          <form class="form-inline" action="/sp/admin/send_a_connection_request" method="post">
+            <div class="form-group">
+              <input type="text" class="form-control" id="me_host" name="me_host" cols="50" />
+            </div>
+            <button class="mx-3 btn btn-primary">send a request to meta search engine</button>
+          </form>
         </div>
+      </div>
 
-        <div class="box">
-            <p>URLs to crawl separated by newlines</p>
-            <form action="/init_crawl_urls" method="post">
-                URLs↓<br/>
-                <textarea name="urls" cols="50" rows="5"></textarea>
-                <br/>
-                <button class="button">init crawl urls</button>
-            </form>
+      <div class="card my-3">
+        <div class="card-body">
+          <h4 class="card-title">Set your global IP adress or hostname here</h4>
+          <p>The current IP adress or hostname = {{ config['host_name'] }} </p>
+          <form class="form-inline" action="/update_config" method="post">
+            <div class="form-group">
+              <label for="host_name">Global IP adress or hostname:</label>
+              <input type="text" class="ml-3 form-control" id="host_name" name="host_name" cols="50" />
+            </div>
+            <button class="mx-3 btn btn-primary">update</button>
+          </form>
         </div>
+      </div>
 
-        <div class="box">
-            <p>Send DB summary</p>
-            <script>
-<!--
+      <div class="card my-3">
+        <div class="card-body">
+          <h4 class="card-title">URLs to crawl separated by newlines</h4>
+          <form action="/init_crawl_urls" method="post">
+            <div class="form-group">
+              <label>URLs:</label>
+              <textarea class="form-control" name="urls" rows="5"></textarea>
+            </div>
+            <button class="btn btn-primary">init crawl urls</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card my-3">
+        <div class="card-body">
+          <h4 class="card-title">Send DB summary</h4>
+          <script>
+            <!--
 function send_db_summary() {
-    button_status = document.getElementById("submit_button");
-    button_status.disabled = "disabled";
+  button_status = document.getElementById("submit_button");
+  button_status.disabled = "disabled";
 
-    var formData = "sp_host="+document.getElementById('sp_host').value+"&me_host="+document.getElementById('me_host').value;
+  var formData = "sp_host="+document.getElementById('sp_host').value+"&me_host="+document.getElementById('me_host').value;
 
-    var xhr = new XMLHttpRequest();
+  var xhr = new XMLHttpRequest();
 
-    xhr.addEventListener('load', function(event) {
-        button_status.disabled = "";
-        return false;
-    });
-
-    xhr.addEventListener('error', function(event) {
-        alert('failed');
-        return false;
-    });
-    xhr.open('POST', '/send_db_summary', true);
-
-    xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
-    xhr.send(formData);
+  xhr.addEventListener('load', function(event) {
+    button_status.disabled = "";
     return false;
+  });
+
+  xhr.addEventListener('error', function(event) {
+    alert('failed');
+    return false;
+  });
+  xhr.open('POST', '/send_db_summary', true);
+
+  xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
+  xhr.send(formData);
+  return false;
 }
 // -->
-            </script>
-            <form id=send_db_summary_form onsubmit="send_db_summary();return false;">
-                <div>
-                    <label for="me_host">me_host</label>
-                    <input type="text" id="me_host" name="me_host" cols="50" />
-                </div>
-                <div>
-                    <label for="sp_host">sp_host</label>
-                    <input type="text" id="sp_host" name="sp_host" cols="50" />
-                </div>
-                <button id="submit_button" type="submit">send db summary</button>
-            </form>
+          </script>
+          <form id=send_db_summary_form onsubmit="send_db_summary();return false;">
+            <div class="form-group row">
+              <label for="me_host" class="col-3">me_host:</label>
+              <input type="text" class="form-control col-9" id="me_host" name="me_host" cols="50" />
+            </div>
+            <div class="form-group row">
+              <label for="sp_host" class="col-3">sp_host:</label>
+              <input type="text" class="form-control col-9" id="sp_host" name="sp_host" cols="50" />
+            </div>
+            <button class="btn btn-primary" id="submit_button" type="submit">send db summary</button>
+          </form>
         </div>
+      </div>
 
-        <div class="box">
-            <p>Learn Parameter for the classifier in the crawler using url lists</p>
-            <form name=learn_params_from_url_form action="/learn_params_from_url" method="post">
-                language<br/>
-                <input type="text" id="language" name="language" cols="10" />
-                <br/>
-                URLs in your crawling topic↓<br/>
-                <textarea name="topic_urls" cols="50" rows="5"></textarea>
-                <br/>
-                URLs in random topic↓<br/>
-                <textarea name="random_urls" cols="50" rows="5"></textarea>
-                <br/>
-                <button type="submit">learn crawler parameters</button>
-            </form>
+      <div class="card my-3">
+        <div class="card-body">
+          <h4 class="card-title">Learn Parameter for the classifier in the crawler using url lists</h4>
+          <form name=learn_params_from_url_form action="/learn_params_from_url" method="post">
+            <div class="form-group">
+              <label for="language">language:</label>
+              <input type="text" class="form-control" id="language" name="language" cols="10" />
+            </div>
+            <div class="form-group">
+              <label for="topic_urls">URLs in your crawling topic:</label>
+              <textarea class="form-control" name="topic_urls" id="topic_urls" cols="50" rows="5"></textarea>
+            </div>
+            <div class="form-group">
+              <label>URLs in random topic:</label>
+              <textarea class="form-control" name="random_urls" id="random_urls" cols="50" rows="5"></textarea>
+            </div>
+            <button class="btn btn-primary" type="submit">learn crawler parameters</button>
+          </form>
         </div>
+      </div>
 
-            <script>
-<!--
+      <script>
+        <!--
 function disableForm( textid, ischecked ) {
-   if( ischecked == true ) {
-      document.getElementById(textid).disabled = true;
-   }
-   else {
-      document.getElementById(textid).disabled = false;
-   }
+  if( ischecked == true ) {
+    document.getElementById(textid).disabled = true;
+  }
+  else {
+    document.getElementById(textid).disabled = false;
+  }
 }
 // -->
-            </script>
+      </script>
 
-        <div class="box">
-            <p>Learn Parameter for the classifier in the crawler using word frequency</p>
-            <form name=learn_params_from_dict_form action="/learn_params_from_dict" method="post">
-                language<br/>
-                <input type="text" id="language" name="language" cols="10" />
-                <br/>
-                Word frequencies in your crawling topic↓<br/>
-                <textarea name="topic_dict" cols="50" rows="5"></textarea>
-                <br/>
-                Word frequencies in random topic↓<br/>
-                <label><input type="checkbox" name="use_default_dict" value="on" onclick="disableForm('random_dict_textbox',this.checked);">use default dict</label><br/>
-                <textarea name="random_dict" id="random_dict_textbox" cols="50" rows="5"></textarea>
-                <br/>
-                <button type="submit">learn crawler parameters</button>
-            </form>
+      <div class="card my-3">
+        <div class="card-body">
+          <h4 class~"card-title">Learn Parameter for the classifier in the crawler using word frequency</h4>
+          <form name=learn_params_from_dict_form action="/learn_params_from_dict" method="post">
+            <div class="form-group">
+              <label for="language">language:</label>
+              <input type="text" class="form-control" id="language" name="language" cols="10" />
+            </div>
+            <div class="form-group">
+              <label for="topic_dict">Word frequencies in your crawling topic:</label>
+              <textarea class="form-control" name="topic_dict" id="topic_dict" cols="50" rows="5"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="random_dict_textbox">Word frequencies in random topic:</label>
+              <div class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  name="use_default_dict"
+                  id="use_default_dict"
+                  value="on"
+                  onclick="disableForm('random_dict_textbox',this.checked);">
+                <label class="form-check-label" for="use_default_dict">use default dict</label>
+              </div>
+              <textarea name="random_dict" id="random_dict_textbox" cols="50" rows="5"></textarea>
+            </div>
+            <button class="btn btn-primary" type="submit">learn crawler parameters</button>
+          </form>
         </div>
-    </body>
+      </div>
+    </div>
+  </body>
 </html>
