@@ -345,7 +345,7 @@ class KearchRequester(object):
                     splited_path[2] == 'add_a_connection_request':
                 in_or_out = payload['in_or_out']
                 sp_host = payload['sp_host']
-                engine_name = payload['engine_name']
+                engine_name = payload.get('engine_name', '')
                 hosts_insert_statement = """
                 INSERT IGNORE INTO sp_hosts (`name`, `engine_name`)
                 VALUES (%s, %s)
@@ -593,7 +593,7 @@ class KearchRequester(object):
                     ret[word][host] = freq
             elif parsed_path == '/add_new_sp_server':
                 sp_host = payload['host']
-                engine_name = payload['summary']['engine_name']
+                engine_name = payload['summary'].get('engine_name', '')
                 summary = payload['summary']['dump']
                 sp_server_records = [(word, sp_host, frequency)
                                      for word, frequency in summary.items()
