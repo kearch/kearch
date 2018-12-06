@@ -1,78 +1,78 @@
 <html>
-    <head>
-        <style type="text/css">
+  <head>
+    <style type="text/css">
 <!--
 .box {
-    padding: 0.5em 1em;
-    margin: 2em 0;
-    font-weight: bold;
-    border: solid 3px #000000;
+  padding: 0.5em 1em;
+  margin: 2em 0;
+  font-weight: bold;
+  border: solid 3px #000000;
 }
 .box p {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
-            -->
-        </style>
-    </head>
-    <body>
-        <div class="box">
-            <p>Requests from specialist servers to this meta server</p>
-            <ul>
-                {% for name,state in requests['in'].items(): %}
-                <li>sp_host = {{ sp_servers.get(name, {}).get('engine_name', '') }} ({{ name }}), is_approved = {{ state }}</li>
-                {% if state == 0 %}
-                <form action="/approve_a_connection_request" method="post">
-                    <button type="submit" name="sp_host" value="{{ name }}">Approve</button>
-                </form>
-                {% endif %}
-                {% endfor %}
-            </ul>
-        </div>
+                -->
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <p>Requests from specialist servers to this meta server</p>
+      <ul>
+        {% for name,state in requests['in'].items(): %}
+        <li>sp_host = {{ sp_servers.get(name, {}).get('engine_name', '') }} ({{ name }}), is_approved = {{ state }}</li>
+        {% if state == 0 %}
+        <form action="/approve_a_connection_request" method="post">
+          <button type="submit" name="sp_host" value="{{ name }}">Approve</button>
+        </form>
+        {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
 
-        <div class="box">
-            <p>Requests from this meta server to specialist servers</p>
-            <ul>
-                {% for name,state in requests['out'].items(): %}
-                <li>sp_host = {{ sp_servers.get(name, {}).get('engine_name', '') }} ({{ name }}), is_approved = {{ state }}</li>
-                {% endfor %}
-            </ul>
-        </div>
+    <div class="box">
+      <p>Requests from this meta server to specialist servers</p>
+      <ul>
+        {% for name,state in requests['out'].items(): %}
+        <li>sp_host = {{ sp_servers.get(name, {}).get('engine_name', '') }} ({{ name }}), is_approved = {{ state }}</li>
+        {% endfor %}
+      </ul>
+    </div>
 
-        <div class="box">
-            <form action="/learn_params_for_evaluater" method="GET">
-                <button class="button">learn params for evaluater</button>
-            </form>
-        </div>
+    <div class="box">
+      <form action="/learn_params_for_evaluater" method="GET">
+        <button class="button">learn params for evaluater</button>
+      </form>
+    </div>
 
-        <div class="box">
-            <form action="/me/admin/send_a_connection_request" method="post">
-                <p>Send a requests from this meta server to specialist servers</p>
-                <input type="text" id="sp_host" name="sp_host" cols="50" />
-                <button class="button">send a request to specialist search engine</button>
-            </form>
-        </div>
+    <div class="box">
+      <form action="/me/admin/send_a_connection_request" method="post">
+        <p>Send a requests from this meta server to specialist servers</p>
+        <input type="text" id="sp_host" name="sp_host" cols="50" />
+        <button class="button">send a request to specialist search engine</button>
+      </form>
+    </div>
 
-        <div class="box">
-            <p>Set your global IP adress or hostname here</p>
-            <p>The current IP adress or hostname = {{ config['host_name'] }} </p>
-            <form action="/update_config" method="post">
-                <label for="host_name">global IP adress or hostname</label>
-                <input type="text" id="host_name" name="host_name" cols="50" />
-                <button class="button">set global IP adress or hostname</button>
-            </form>
-        </div>
+    <div class="box">
+      <p>Set your global IP adress or hostname here</p>
+      <p>The current IP adress or hostname = {{ config['host_name'] }} </p>
+      <form action="/update_config" method="post">
+        <label for="host_name">global IP adress or hostname</label>
+        <input type="text" id="host_name" name="host_name" cols="50" />
+        <button class="button">set global IP adress or hostname</button>
+      </form>
+    </div>
 
-        <div class="box">
-            <p>Select connection policy of this specialist search engine</p>
-            <p>The current connection policy = "{{ config['connection_policy'] }}" </p>
-            <form action="/update_config" method="post">
-                <select name="connection_policy">
-                    <option value="protected">protected</option>
-                    <option value="public">public</option>
-                </select>
-                <button class="button">set connection policy</button>
-            </form>
-        </div>
-    </body>
+    <div class="box">
+      <p>Select connection policy of this specialist search engine</p>
+      <p>The current connection policy = "{{ config['connection_policy'] }}" </p>
+      <form action="/update_config" method="post">
+        <select name="connection_policy">
+          <option value="protected">protected</option>
+          <option value="public">public</option>
+        </select>
+        <button class="button">set connection policy</button>
+      </form>
+    </div>
+  </body>
 </html>
