@@ -1,50 +1,31 @@
 <html>
-    <head>
-        <style type="text/css">
+  <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <style type="text/css">
 .padding{
-    padding: 70px 40px;
+  padding: 70px 40px;
 }
-
-.center{
-    width: 640px;
-    margin: 140px auto;
-    text-align: center;
+input[type=window].form-control {
+  width: 250px;
 }
-
-input[type=window] {
-    width: 350px;
-    padding: 12px 20px;
-    margin: 8px 20px;
-    box-sizing: border-box;
-    border: 1px solid;
-    border-radius: 4px;
-    font-size: 20px;
-}
-
-.button {
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-}
-
-        </style>
-    </head>
-    <div class="center">
-        <body>
-            <div class="padding">
-                <img src="{{url_for('static', filename='logo.png')}}" alt="logo" title="keach logo">
-            </div>
-            <form action="/search" method="get">
-                <input type="window" name="query">
-                <button class="button">retrieve</button>
-            </form>
-        </body>
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="my-5 text-center padding">
+        <img src="{{url_for('static', filename='logo.png')}}" alt="logo" title="keach logo">
+      </div>
+      <form action="/search" method="get">
+        <div class="my-3 form-row justify-content-center">
+          <div class="col-auto">
+            <input type="window" class="form-control" name="query">
+          </div>
+          <div class="col-auto">
+            <button class="mx-3 btn btn-success">retrieve</button>
+          </div>
+        </div>
+      </form>
     </div>
+  </body>
 </html>
