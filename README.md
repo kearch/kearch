@@ -8,10 +8,22 @@ cd kearch
 ./sp_deploy.sh spdb spes all
 ./me_deploy.sh medb all
 ```
-### Using ansible playbook to deploy a sp server
+## How to deploy kearch to your server using Ansible playbook
+### Deploy specialist search engine
 ```
 ansible-playbook sp-playbook.yml -i <HOSTNAME>, -u <USERNAME> --ask-become-pass -vvv
 ```
+### Deploy meta search engine
+```
+ansible-playbook me-playbook.yml -i <HOSTNAME>, -u <USERNAME> --ask-become-pass -vvv
+```
+## Port numbers for services
+- 32700: Admin setting page port of specialist search engines
+- 32600: Admin setting page port of meta search engines
+- 32500: Gateway port of specialist search engines
+- 32400: Gateway port of meta search engines
+- 32550: Search engine front page port of specialist search engines
+- 32450: Search engine front page port of meta search engines
 ## Check your DB in kearch
 Check the specialist DB.
 ```
