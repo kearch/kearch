@@ -620,7 +620,7 @@ class KearchRequester(object):
                 }
             elif parsed_path == '/list_up_sp_servers':
                 statement = """
-                SELECT DISTINCT `name`, `engine_name` FROM `sp_hosts`
+                SELECT `name`, `engine_name` FROM `sp_hosts`
                 """
                 cur.execute(statement)
                 ret = {}
