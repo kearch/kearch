@@ -62,7 +62,7 @@
           </form>
           <div class="results">
             {% for w in results %}
-            <div class="my-4">
+            <div class="my-4 result">
               <div class="title"><a href="{{ w['url'] }}">{{ w['title'] }}</a></div>
               <div class="url text-success text-truncate"><small>{{ w['url'] }}</small></div>
               <div class="summary">
@@ -80,10 +80,10 @@
             {% endfor %}
           </div>
           <script>
-            $("#list").each(function(){
-              $(this).find("li:gt(10)").each(function(){$(this).hide();});
+            $(".results").each(function(){
+              $(this).find(".result:gt(10)").each(function(){$(this).hide();});
               $(this).append('<p class="more">&raquo; More</p>');
-              $(this).find("p:last").click(function(){$(this).parent().find("li").show(400); $(this).remove();});
+              $(this).find(".more").click(function(){$(this).find(".result").show(400); $(this).remove();});
             });
           </script>
         </div>
