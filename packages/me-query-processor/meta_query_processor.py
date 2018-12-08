@@ -30,7 +30,7 @@ def get_result_from_sp(sp_host, query, max_urls):
 
 
 def get_result_from_sp_tuple(t):
-    return get_result_from_sp(t[0],t[1],t[2])
+    return get_result_from_sp(t[0], t[1], t[2])
 
 
 def retrieve(query, max_urls, sp=None):
