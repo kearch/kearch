@@ -1,4 +1,5 @@
 from kearch_common.requester import KearchRequester
+from concurrent.futures import ThreadPoolExecutor
 
 DATABASE_HOST = 'me-db.kearch.svc.cluster.local'
 DATABASE_PORT = 3306
@@ -8,6 +9,7 @@ GATEWAY_HOST = 'me-gateway.kearch.svc.cluster.local'
 GATEWAY_PORT = 10080
 REQUESTER_NAME = 'meta_query_processor'
 SP_HOST_RATIO = [8, 1, 1]
+NUM_THREAD = 10
 
 
 class MeQueryProcessorException(Exception):
@@ -27,6 +29,10 @@ def get_result_from_sp(sp_host, query, max_urls):
     return res
 
 
+def get_result_from_sp_tuple(t):
+    return get_result_from_sp(t[0],t[1],t[2])
+
+
 def retrieve(query, max_urls, sp=None):
     if sp is None:
         e_req = KearchRequester(EVALUATER_HOST, EVALUATER_PORT, REQUESTER_NAME)
@@ -35,10 +41,15 @@ def retrieve(query, max_urls, sp=None):
         a = list(sp_hosts.items())
         a.sort(key=lambda x: x[1], reverse=True)
         n = min(len(SP_HOST_RATIO), len(a))
-        res = list()
+
+        args = list()
         for i in range(0, n):
             m = max_urls * SP_HOST_RATIO[i] / sum(SP_HOST_RATIO[:n])
-            res.extend(get_result_from_sp(a[i][0], query, m))
+            args.append((a[i][0], query, m))
+        res = list()
+        with ThreadPoolExecutor(max_workers=NUM_THREAD) as executor:
+            res = executor.map(get_result_from_sp_tuple, args)
+
         return {'data': res}
     else:
         res = get_result_from_sp(sp, query, max_urls)
