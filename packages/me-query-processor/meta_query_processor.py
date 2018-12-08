@@ -48,7 +48,7 @@ def retrieve(query, max_urls, sp=None):
             args.append((a[i][0], query, m))
         res = list()
         with ThreadPoolExecutor(max_workers=NUM_THREAD) as executor:
-            res = executor.map(get_result_from_sp_tuple, args)
+            res = list(executor.map(get_result_from_sp_tuple, args))
 
         return {'data': res}
     else:
