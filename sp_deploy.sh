@@ -247,7 +247,7 @@ do
         echo "----- Start deployment of specialist classifier. -----"
 
         cd $KEARCH_ROOT_DIR
-        $CMD_DOCKER_BUILD -f packages/sp-sp-classifier/Dockerfile -t kearch/sp-classifier .
+        $CMD_DOCKER_BUILD -f packages/sp-classifier/Dockerfile -t kearch/sp-classifier .
 
 
         cd $KEARCH_ROOT_DIR/services/sp-classifier
