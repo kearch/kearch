@@ -15,6 +15,7 @@ if [ $# -lt 1 ]; then
     echo "\"spadmin\": Deploy sp-admin."
     echo "\"spqproc\": Deploy sp-query-processor."
     echo "\"spgate\": Deploy sp-gateway."
+    echo "\"spcls\": Deploy sp-classifier."
     exit 1
 fi
 
@@ -238,5 +239,22 @@ do
         kubectl delete pods --namespace=kearch -l engine=sp,app=gateway
 
         echo "----- Finish deployment of specialist gateway. -----"
+    fi
+
+    if [ $arg = spcls ] || [ $arg = all ]; then
+        # sp-classifier
+        echo
+        echo "----- Start deployment of specialist classifier. -----"
+
+        cd $KEARCH_ROOT_DIR
+        $CMD_DOCKER_BUILD -f packages/sp-sp-classifier/Dockerfile -t kearch/sp-classifier .
+
+
+        cd $KEARCH_ROOT_DIR/services/sp-classifier
+        kubectl --namespace=kearch apply --prune -l engine=sp,app=classifier --recursive -f .
+
+        kubectl delete pods --namespace=kearch -l engine=sp,app=classifier
+
+        echo "----- Finish deployment of specialist classifier. -----"
     fi
 done
