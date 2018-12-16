@@ -1,4 +1,5 @@
 import flask
+import hashlib
 from flask_login import LoginManager, logout_user, UserMixin, login_required, \
         login_user
 import base64
@@ -45,7 +46,18 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if username == 'root' and password == 'password':
+
+        db_req = KearchRequester(
+            DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+        auth_info = db_req.request(path='/sp/db/get_authentication')
+        is_valid = False
+        for d in auth_info.values():
+            u = d['username']
+            h = d['password_hash']
+            if u == username and \
+               h == hashlib.sha512(password.encode('utf-8')).hexdigest():
+                is_valid = True
+        if is_valid:
             user = User(0)
             login_user(user)
             return redirect(flask.url_for("index"))

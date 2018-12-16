@@ -480,6 +480,18 @@ class KearchRequester(object):
             elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
                     splited_path[2] == 'get_sp_summaries':
                 ret = dump_summaries_from_me_db(cur)
+            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'get_authentication':
+                statement = """
+                SELECT `id`,`username`,`password_hash` FROM `authentication`
+                """
+
+                ret = dict()
+                cur.execute(statement)
+                for row in cur.fetchall():
+                    ret[int(row[0])] = {'id': int(row[0]),
+                                        'username': row[1],
+                                        'password_hash': row[2]}
             elif parsed_path == '/push_webpage_to_database':
                 for webpage in payload['data']:
                     post_webpage_to_db(db, cur, webpage)
