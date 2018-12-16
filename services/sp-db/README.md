@@ -251,7 +251,7 @@ Expected return JSON
 This API could be used to set public/protected status.
 Access URL (POST)
 ```
-$(ip address of meta DB)/me/db/set_config_variables
+$(ip address of meta DB)/sp/db/set_config_variables
 ```
 POSTed JSON Example
 ```
@@ -263,7 +263,7 @@ POSTed JSON Example
 This API could be used to get public/protected status.
 Access URL (POST)
 ```
-$(ip address of meta DB)/me/db/get_config_variables
+$(ip address of meta DB)/sp/db/get_config_variables
 ```
 GETed JSON Example
 ```
@@ -271,4 +271,20 @@ GETed JSON Example
     'public_or_protected':'public'
 }
 ```
+## Get authentication information
+Access URL (GET)
+```
+$(ip address of meta DB)/sp/db/get_authentication
+```
+GETed JSON Example
+```
+{
+    0:{
+          'id': 0,
+          'username': 'root',
+          'password_hash': <SHA512 hashed password>
+      }
+}
 
+}
+```
