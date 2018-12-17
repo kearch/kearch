@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kearch
+  name: sp-classifier
+  labels:
+    engine: sp
+    app: classifier
+spec:
+  selector:
+    matchLabels:
+      engine: sp
+      app: classifier
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        engine: sp
+        app: classifier
+    spec:
+      containers:
+      - image: kearch/sp-classifier
+        name: sp-classifier
+        ports:
+        - containerPort: 10080
+        imagePullPolicy: Never
