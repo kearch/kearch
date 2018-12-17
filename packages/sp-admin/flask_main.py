@@ -1,6 +1,10 @@
 import flask
+import hashlib
+from flask_login import LoginManager, logout_user, UserMixin, login_required, \
+        login_user
 import base64
-from flask import jsonify
+import os
+from flask import Response, jsonify, request, redirect, abort
 from kearch_common.requester import KearchRequester
 import kearch_classifier.classifier
 import kearch_classifier.average_document as ave
@@ -16,8 +20,64 @@ SP_ADMIN_PORT = 10080
 
 DEFAULT_DICT_EN_FILE = 'en_default_dict.txt'
 
-
 app = flask.Flask(__name__)
+app.secret_key = os.urandom(24)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "/sp/admin/login"
+
+
+class User(UserMixin):
+    def __init__(self, id):
+        self.id = 0
+        self.name = 'root'
+        self.password = 'password'
+
+
+@app.route("/sp/admin/login", methods=["GET", "POST"])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        db_req = KearchRequester(
+            DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+        auth_info = db_req.request(path='/sp/db/get_authentication')
+        is_valid = False
+        for d in auth_info.values():
+            u = d['username']
+            h = d['password_hash']
+            if u == username and \
+               h == hashlib.sha512(password.encode('utf-8')).hexdigest():
+                is_valid = True
+        if is_valid:
+            user = User(0)
+            login_user(user)
+            return redirect(flask.url_for("index"))
+        else:
+            return abort(401)
+    else:
+        return flask.render_template('login.html')
+
+
+# somewhere to logout
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return Response('<p>Logged out</p>')
+
+
+# handle login failed
+@app.errorhandler(401)
+def page_not_found(e):
+    return Response('<p>Login failed</p>')
+
+
+@login_manager.user_loader
+def load_user(userid):
+    return User(userid)
 
 
 @app.route('/approve_a_connection_request', methods=['POST'])
@@ -194,6 +254,7 @@ def update_config():
 
 
 @app.route("/")
+@login_required
 def index():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')

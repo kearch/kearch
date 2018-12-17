@@ -4,6 +4,7 @@ From python:3.6
 ARG KEARCH_COMMON_BRANCH="dev"
 
 RUN pip install flask
+RUN pip install flask-login
 
 COPY packages/kearch_common /kearch/packages/kearch_common
 RUN cd /kearch/packages/kearch_common && pip install -e .
