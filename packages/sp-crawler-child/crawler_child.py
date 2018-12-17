@@ -12,6 +12,8 @@ from kearch_common.requester import KearchRequester, RequesterError
 
 DATABASE_HOST = 'sp-db.kearch.svc.cluster.local'
 DATABASE_PORT = 3306
+CLASSIFIER_HOST = 'sp-classifier.kearch.svc.cluster.local'
+CLASSIFIER_PORT = 10080
 REQUESTER_NAME = 'sp-crawler-child'
 
 confidence_threshold = -1.0e-10
@@ -58,9 +60,17 @@ def url_to_webpage(url):
         print('Cannot make webpage of ', url, file=sys.stderr)
         return None
 
-    cls = kearch_classifier.classifier.Classifier()
-    cls.load_params(kearch_classifier.classifier.PARAMS_FILE)
-    if cls.classify(w) == kearch_classifier.classifier.IN_TOPIC:
+    cl_req = KearchRequester(
+        CLASSIFIER_HOST, CLASSIFIER_PORT, REQUESTER_NAME)
+    payload = {'body_words': w.words, 'title_words': w.title_words}
+
+    try:
+        res = cl_req.request(path='/sp/classifier/classify', method='POST',
+                             payload=payload)
+    except RequesterError:
+        return None
+
+    if res['result'] == kearch_classifier.classifier.IN_TOPIC:
         return w
     else:
         None

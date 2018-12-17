@@ -41,7 +41,7 @@ class AbsClassifier(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def classify(self, webpage):
+    def classify(self, body_words, title_words):
         pass
 
 
@@ -182,12 +182,12 @@ class Classifier(AbsClassifier):
         self.clf_body.fit(samples, labels)
         print('classifer.py -- Making Classifier end', file=sys.stderr)
 
-    def classify(self, webpage):
-        bow_body = self.dictionary_body.doc2bow(webpage.words)
+    def classify(self, body_words, title_words):
+        bow_body = self.dictionary_body.doc2bow(body_words)
         res_body = self.clf_body.predict(
             [self.alist_to_vector(bow_body, self.dictionary_body)])
 
-        bow_title = self.dictionary_title.doc2bow(webpage.title_words)
+        bow_title = self.dictionary_title.doc2bow(title_words)
         res_title = self.clf_title.predict(
             [self.alist_to_vector(bow_title, self.dictionary_title)])
         if res_title[0] == IN_TOPIC or res_body[0] == IN_TOPIC:
