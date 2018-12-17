@@ -34,12 +34,6 @@ class User(UserMixin):
         self.name = 'root'
         self.password = 'password'
 
-    def __repr__(self):
-        return "%d/%s/%s" % (self.id, self.name, self.password)
-
-
-users = [User(id) for id in range(1, 21)]
-
 
 @app.route("/sp/admin/login", methods=["GET", "POST"])
 def login():
