@@ -4,7 +4,8 @@ import argparse
 import random
 import re
 import urllib
-import os
+import urllib.request
+import subprocess
 from bs4 import BeautifulSoup
 
 URLS_FOR_EXTRACT = ["https://en.wikipedia.org/wiki/Programming_language",
@@ -12,7 +13,7 @@ URLS_FOR_EXTRACT = ["https://en.wikipedia.org/wiki/Programming_language",
                     "https://en.wikipedia.org/wiki/Kyoto"]
 
 MAX_SIZE_OF_QUERY = 3
-CONCURRENCY_LIST = [30, 100, 300, 1000]
+MAX_CONCURRENCY = 1000
 SIZE_OF_TEST = 100
 
 if __name__ == '__main__':
@@ -34,7 +35,7 @@ if __name__ == '__main__':
             if r.match(str(s)) is not None:
                 words.append(r.match(str(s)).groups()[0])
 
-    for u in CONCURRENCY_LIST:
+    for u in range(20, MAX_CONCURRENCY+1, 20):
         for s in range(1, MAX_SIZE_OF_QUERY+1):
             with open('/tmp/tmp_file_for_benchmark', 'w') as f:
                 for t in range(0, SIZE_OF_TEST):
@@ -47,5 +48,8 @@ if __name__ == '__main__':
 
             print('======================================================')
             print('Size of query = ' + str(s) + ',Connections = ' + str(u))
-            os.system('siege --concurrent=' + str(u) +
-                      ' --time=10S --file=/tmp/tmp_file_for_benchmark')
+            cmd = 'siege --concurrent=' + str(u) + \
+                  ' --time=10S --file=/tmp/tmp_file_for_benchmark'
+            res = subprocess.run(
+                cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(res.stderr.decode(encoding='utf-8'))
