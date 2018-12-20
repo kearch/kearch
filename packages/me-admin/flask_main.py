@@ -69,7 +69,7 @@ def approve_a_connection_request():
     sp_host = flask.request.form['sp_host']
     dump = gt_req.request(path='/me/gateway/fetch_a_dump',
                           params={'sp_host': sp_host})
-    db_req.request(path='/add_new_sp_server',
+    db_req.request(path='/me/db/add_new_sp_server',
                    payload={'host': sp_host, 'summary': dump}, method='POST')
     db_req.request(path='/me/db/approve_a_connection_request',
                    payload={'in_or_out': 'in', 'sp_host': sp_host},

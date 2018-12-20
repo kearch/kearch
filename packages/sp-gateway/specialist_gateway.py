@@ -86,7 +86,7 @@ def get_a_dump(me_host):
 
     dump = {}
     if should_approve or is_connected(me_host):
-        dump = db_req.request(path='/dump_database')
+        dump = db_req.request(path='/sp/db/dump_database')
     if should_approve:
         db_req.request(path='/sp/db/approve_a_connection_request',
                        payload={'me_host': me_host, 'in_or_out': 'out'})
