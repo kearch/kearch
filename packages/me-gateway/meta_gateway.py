@@ -20,7 +20,7 @@ def get_me_host():
 
 def retrieve(sp_host, queries, max_urls):
     kr = KearchRequester(sp_host, SPECIALIST_GATEWAY_PORT, REQUESTER_NAME)
-    results = kr.request(path='/retrieve', method='GET',
+    results = kr.request(path='/sp/gateway/retrieve', method='GET',
                          params={'queries': queries, 'max_urls': max_urls})
     return results
 
@@ -28,7 +28,7 @@ def retrieve(sp_host, queries, max_urls):
 def add_new_sp_server(sp_host, summary):
     kr = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
                          conn_type='sql')
-    result = kr.request(path='/add_new_sp_server',
+    result = kr.request(path='/me/db/add_new_sp_server',
                         payload={'host': sp_host, 'summary': summary})
     kr.request('/me/db/approve_a_connection_request',
                payload={'in_or_out': 'out', 'sp_host': sp_host})
@@ -54,7 +54,7 @@ def add_a_connection_request(sp_host, engine_name):
                           params={'me_host': config[CONFIG_HOST_NAME]})
         db.request(path='/me/db/add_a_connection_request',
                    payload={'in_or_out': 'in', 'sp_host': sp_host})
-        db.request(path='/add_new_sp_server',
+        db.request(path='/me/db/add_new_sp_server',
                    payload={'host': sp_host, 'summary': dump})
         db.request(path='/me/db/approve_a_connection_request',
                    payload={'in_or_out': 'in', 'sp_host': sp_host},

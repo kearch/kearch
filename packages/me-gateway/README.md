@@ -73,7 +73,7 @@ This API takes a summary of specialist DB and register it to meta DB.
 
 URL (POST)
     ```
-$(ip adress of meta gateway)/add_new_sp_server (POST)
+$(ip adress of meta gateway)/me/gateway/add_new_sp_server (POST)
     ```
     Scheme of Posted JSON
     ```
@@ -102,7 +102,7 @@ This API cathes their queries and returns the result.
 
 URL (GET)
     ```
-    $(ip adress of meta gateway)/retrieve?queries=facebook+yahoo&max_urls=100&sp_host=10.229.55.44
+    $(ip adress of meta gateway)/me/gateway/retrieve?queries=facebook+yahoo&max_urls=100&sp_host=10.229.55.44
     ```
     Return JSON
     ```
