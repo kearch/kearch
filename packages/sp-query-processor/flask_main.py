@@ -9,7 +9,7 @@ import specialist_query_processor
 app = flask.Flask(__name__)
 
 
-@app.route('/retrieve', methods=['GET'])
+@app.route('/sp/qurey-processor/retrieve', methods=['GET'])
 def post():
     queries = flask.request.args.get('queries')
     queries = queries.split(' ')
