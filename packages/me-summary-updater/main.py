@@ -10,7 +10,7 @@ REQUESTER_NAME = 'meta_gateway'
 def update_sp_servers():
     db = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
                          conn_type='sql')
-    sp_servers = db.request(path='/list_up_sp_servers')
+    sp_servers = db.request(path='/me/db/list_up_sp_servers')
     print(sp_servers.keys())
 
     for sp_host in sp_servers.keys():
@@ -22,7 +22,7 @@ def update_sp_servers():
         print('saving summary from {} ...'.format(sp_host))
         me_db = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
                                 conn_type='sql')
-        me_db.request(path='/add_new_sp_server',
+        me_db.request(path='/me/db/add_new_sp_server',
                       payload={'host': sp_host, 'summary': dump})
 
 

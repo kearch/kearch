@@ -17,7 +17,7 @@ SP_ADMIN_PORT = 10080
 app = flask.Flask(__name__)
 
 
-@app.route('/learn_params_for_evaluater')
+@app.route('/me/admin/learn_params_for_evaluater')
 def learn_params_for_evaluater():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
@@ -40,13 +40,13 @@ def index():
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
     config = db_req.request(path='/me/db/get_config_variables')
     requests = db_req.request(path='/me/db/get_connection_requests')
-    sp_servers = db_req.request(path='/list_up_sp_servers')
+    sp_servers = db_req.request(path='/me/db/list_up_sp_servers')
 
     return flask.render_template('index.html', config=config,
                                  requests=requests, sp_servers=sp_servers)
 
 
-@app.route("/update_config", methods=['POST'])
+@app.route("/me/admin/update_config", methods=['POST'])
 def update_config():
     update = dict()
     if 'connection_policy' in flask.request.form:
@@ -60,7 +60,7 @@ def update_config():
     return flask.redirect(flask.url_for("index"))
 
 
-@app.route('/approve_a_connection_request', methods=['POST'])
+@app.route('/me/admin/approve_a_connection_request', methods=['POST'])
 def approve_a_connection_request():
     gt_req = KearchRequester(GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
     db_req = KearchRequester(
@@ -69,7 +69,7 @@ def approve_a_connection_request():
     sp_host = flask.request.form['sp_host']
     dump = gt_req.request(path='/me/gateway/fetch_a_dump',
                           params={'sp_host': sp_host})
-    db_req.request(path='/add_new_sp_server',
+    db_req.request(path='/me/db/add_new_sp_server',
                    payload={'host': sp_host, 'summary': dump}, method='POST')
     db_req.request(path='/me/db/approve_a_connection_request',
                    payload={'in_or_out': 'in', 'sp_host': sp_host},

@@ -9,7 +9,7 @@ import meta_query_processor
 app = flask.Flask(__name__)
 
 
-@app.route('/retrieve', methods=['GET'])
+@app.route('/me/query-processor/retrieve', methods=['GET'])
 def post():
     query = flask.request.args.get('query')
     max_urls = int(flask.request.args.get('max_urls'))

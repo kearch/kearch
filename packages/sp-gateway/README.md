@@ -31,7 +31,7 @@ This API takes the summary and send it to the meta.
 
 URL (POST)
 ```
-$(ip adress of specialist gateway)/send_DB_summary (POST)
+$(ip adress of specialist gateway)/sp/gateway/send_DB_summary (POST)
 ```
 Scheme of Posted JSON
 ```
@@ -111,7 +111,7 @@ This API cathes their queries and returns the result.
 
 URL (GET)
     ```
-    $(ip adress of specialist gateway)/retrieve?queries=facebook+yahoo&max_urls=100
+    $(ip adress of specialist gateway)/sp/gateway/retrieve?queries=facebook+yahoo&max_urls=100
     ```
     Return JSON
     ```

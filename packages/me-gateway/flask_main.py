@@ -8,7 +8,7 @@ META_GATE_PORT = 10080
 app = flask.Flask(__name__)
 
 
-@app.route('/add_new_sp_server', methods=['POST'])
+@app.route('/me/gateway/add_new_sp_server', methods=['POST'])
 def add_new_sp_server():
     data = unwrap_json(flask.request.get_json())
     sp_host = data['host']
@@ -50,7 +50,7 @@ def send_a_connection_request():
     return jsonify(res)
 
 
-@app.route('/retrieve', methods=['GET'])
+@app.route('/me/gateway/retrieve', methods=['GET'])
 def retrieve():
     queries = flask.request.args.get('queries')
     queries = queries.split(' ')

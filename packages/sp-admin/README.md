@@ -2,7 +2,7 @@
 ## Send Database summary to meta server
 Access URL (GET)
 ```
-$(ip adress of the specialist admin)/send_db_summary?meta_ip=$(IP ADDRESS OF META SERVER)
+$(ip adress of the specialist admin)/sp/admin/send_db_summary?meta_ip=$(IP ADDRESS OF META SERVER)
 ```
 Example of URL
 ```
@@ -11,7 +11,7 @@ Example of URL
 ## Initialize URLs to start crawling
 Access URL (POST)
 ```
-$(ip adress of the specialist admin)/init_crawl_urls
+$(ip adress of the specialist admin)/sp/admin/init_crawl_urls
 ```
 Example of URL
 ```

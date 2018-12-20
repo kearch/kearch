@@ -10,7 +10,7 @@ import crawler_child
 app = flask.Flask(__name__)
 
 
-@app.route('/crawl_a_page', methods=['GET'])
+@app.route('/sp/crawler-child/crawl_a_page', methods=['GET'])
 def crawl_a_page():
     url = flask.request.args.get('url')
     print(url, file=sys.stderr)

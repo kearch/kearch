@@ -10,7 +10,7 @@ MAX_URLS = 100
 app = flask.Flask(__name__)
 
 
-@app.route('/search', methods=['GET', 'POST'])
+@app.route('/sp/front/search', methods=['GET', 'POST'])
 def search():
     if flask.request.method == 'GET':
         query = flask.request.args['query']
