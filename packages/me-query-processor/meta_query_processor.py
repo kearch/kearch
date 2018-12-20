@@ -20,7 +20,7 @@ class MeQueryProcessorException(Exception):
 def get_result_from_sp(sp_host, query, max_urls):
     g_req = KearchRequester(GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
     r = g_req.request(
-        path='/retrieve',
+        path='/sp/gateway/retrieve',
         params={'sp_host': sp_host, 'queries': query, 'max_urls': max_urls})
     res = list()
     for d in r['data']:
