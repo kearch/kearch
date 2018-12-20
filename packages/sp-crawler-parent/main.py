@@ -139,7 +139,7 @@ if __name__ == '__main__':
         resp = get_next_urls_dummy(MAX_URLS)
     else:
         resp = database_requester.request(
-            path='/get_next_urls', params={'max_urls': MAX_URLS})
+            path='/sp/db/get_next_urls', params={'max_urls': MAX_URLS})
     url_queue = URLQueue()
     url_queue.push(resp['urls'])
     urls_to_push = list()
@@ -165,7 +165,7 @@ if __name__ == '__main__':
                     # push data to database
                     print('pushing {} urls ...'.format(len(urls_to_push)))
                     resp = database_requester.request(
-                        path='/push_urls_to_queue', method='POST',
+                        path='/sp/db/push_urls_to_queue', method='POST',
                         payload={'urls': urls_to_push})
                 except RequesterError as e:
                     print(e, file=sys.stderr)
@@ -174,7 +174,7 @@ if __name__ == '__main__':
                 try:
                     print('pushing {} dumps ...'.format(len(dump_to_push)))
                     resp = database_requester.request(
-                        path='/update_dump', method='POST',
+                        path='/sp/db/update_dump', method='POST',
                         payload={'data': dump_to_push})
                 except RequesterError as e:
                     print(e, file=sys.stderr)
@@ -187,7 +187,7 @@ if __name__ == '__main__':
                 random.shuffle(crawled_url)
                 try:
                     resp = database_requester.request(
-                        path='/push_crawled_urls', method='POST',
+                        path='/sp/db/push_crawled_urls', method='POST',
                         payload={'data': crawled_url})
                 except RequesterError as e:
                     print(e, file=sys.stderr)
@@ -206,7 +206,8 @@ if __name__ == '__main__':
                 try:
                     # fetch urls from database
                     resp = database_requester.request(
-                        path='/get_next_urls', params={'max_urls': MAX_URLS})
+                        path='/sp/db/get_next_urls',
+                        params={'max_urls': MAX_URLS})
                     url_queue.push(resp['urls'])
                 except RequesterError as e:
                     print(e, file=sys.stderr)
