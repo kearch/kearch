@@ -3,7 +3,7 @@
 Comment: Use POST query because parameters may be too long for GET query.
 Access URL (POST)
 ```
-$(ip adress of the specialist classifier)/sp/classify
+$(ip adress of the specialist classifier)/sp/classifier/classify
 ```
 JSON to POST  
 ```

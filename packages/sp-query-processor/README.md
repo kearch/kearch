@@ -3,7 +3,7 @@ This directory is made for specialist_query_processor.
 ## API of specialist_query_processor
 URL
 ```
-$(ip adress of specialist_query_processor):10080/retrieve?queries=google+facebook&max_urls=100
+$(ip adress of specialist_query_processor):10080/sp/query-processor/retrieve?queries=google+facebook&max_urls=100
 ```
 Return JSON
 ```
