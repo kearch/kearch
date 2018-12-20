@@ -17,7 +17,7 @@ SP_ADMIN_PORT = 10080
 app = flask.Flask(__name__)
 
 
-@app.route('/learn_params_for_evaluater')
+@app.route('/me/admin/learn_params_for_evaluater')
 def learn_params_for_evaluater():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
@@ -46,7 +46,7 @@ def index():
                                  requests=requests, sp_servers=sp_servers)
 
 
-@app.route("/update_config", methods=['POST'])
+@app.route("/me/admin/update_config", methods=['POST'])
 def update_config():
     update = dict()
     if 'connection_policy' in flask.request.form:
@@ -60,7 +60,7 @@ def update_config():
     return flask.redirect(flask.url_for("index"))
 
 
-@app.route('/approve_a_connection_request', methods=['POST'])
+@app.route('/me/admin/approve_a_connection_request', methods=['POST'])
 def approve_a_connection_request():
     gt_req = KearchRequester(GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
     db_req = KearchRequester(
