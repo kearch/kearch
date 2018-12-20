@@ -62,7 +62,7 @@ def login():
 
 
 # somewhere to logout
-@app.route("/logout")
+@app.route("/sp/admin/logout")
 @login_required
 def logout():
     logout_user()
@@ -80,20 +80,21 @@ def load_user(userid):
     return User(userid)
 
 
-@app.route('/approve_a_connection_request', methods=['POST'])
+@app.route('/sp/admin/approve_a_connection_request', methods=['POST'])
 def approve_a_connection_request():
     me_host = flask.request.form['me_host']
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
 
-    summary = db_req.request(path='/dump_database')
+    summary = db_req.request(path='/sp/db/dump_database')
     config = db_req.request(path='/sp/db/get_config_variables')
     pld = {'sp_host': config['host_name'],
            'me_host': me_host, 'summary': summary}
 
     gw_req = KearchRequester(
         GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
-    gw_req.request(path='/send_DB_summary', payload=pld, method='POST')
+    gw_req.request(path='/sp/gateway/send_DB_summary',
+                   payload=pld, method='POST')
 
     db_req.request('/sp/db/approve_a_connection_request',
                    payload={'in_or_out': 'in', 'me_host': me_host})
@@ -117,23 +118,24 @@ def send_a_connection_request():
     return flask.redirect(flask.url_for("index"))
 
 
-@app.route('/send_db_summary', methods=['POST'])
+@app.route('/sp/db/send_db_summary', methods=['POST'])
 def send_db_summary():
     me_host = flask.request.form['me_host']
     sp_host = flask.request.form['sp_host']
 
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
-    summary = db_req.request(path='/dump_database')
+    summary = db_req.request(path='/sp/db/dump_database')
     pld = {'sp_host': sp_host, 'me_host': me_host, 'summary': summary}
 
     gw_req = KearchRequester(
         GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
-    ret = gw_req.request(path='/send_DB_summary', payload=pld, method='POST')
+    ret = gw_req.request(path='/sp/gateway/send_DB_summary',
+                         payload=pld, method='POST')
     return jsonify(ret)
 
 
-@app.route('/init_crawl_urls', methods=['POST'])
+@app.route('/sp/admin/init_crawl_urls', methods=['POST'])
 def init_crawl_urls():
     form_input = flask.request.form['urls']
     urls = form_input.split('\n')
@@ -143,12 +145,12 @@ def init_crawl_urls():
 
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
-    ret = db_req.request(path='/push_urls_to_queue',
+    ret = db_req.request(path='/sp/db/push_urls_to_queue',
                          payload=payload, method='POST')
     return jsonify(ret)
 
 
-@app.route('/learn_params_from_url', methods=['POST'])
+@app.route('/sp/admin/learn_params_from_url', methods=['POST'])
 def learn_params_from_url():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
@@ -180,7 +182,7 @@ def learn_params_from_url():
     return flask.redirect(flask.url_for("index"))
 
 
-@app.route('/learn_params_from_dict', methods=['POST'])
+@app.route('/sp/admin/learn_params_from_dict', methods=['POST'])
 def learn_params_from_dict():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
@@ -236,7 +238,7 @@ def learn_params_from_dict():
     return flask.redirect(flask.url_for("index"))
 
 
-@app.route("/update_config", methods=['POST'])
+@app.route("/sp/admin/update_config", methods=['POST'])
 def update_config():
     update = dict()
     if 'connection_policy' in flask.request.form:

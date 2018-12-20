@@ -10,7 +10,7 @@
       <div class="card my-3">
         <div class="card-body">
           <h4 class="card-title">Set engine name</h4>
-          <form class="form-inline" action="/update_config" method="post">
+          <form class="form-inline" action="/sp/admin/update_config" method="post">
             <div class="form-group">
               <label for="engine-name">Engine name: </label>
               <input id="engine-name" class="ml-3 form-control" type="text" name="engine_name" value="{{ config['engine_name'] }}">
@@ -38,7 +38,7 @@
                 <td>{{ state }}</td>
                 <td>
                   {% if state == 0 %}
-                  <form action="/approve_a_connection_request" method="post">
+                  <form action="/sp/admin/approve_a_connection_request" method="post">
                     <button type="submit" class="btn btn-primary" name="me_host" value="{{ name }}">Approve</button>
                   </form>
                   {% endif %}
@@ -54,7 +54,7 @@
         <div class="card-body">
           <h4 class=card-title>Select connection policy of this specialist search engine</h4>
           <p>The current connection policy = "{{ config['connection_policy'] }}"</p>
-          <form class="form-inline" action="/update_config" method="post">
+          <form class="form-inline" action="/sp/admin/update_config" method="post">
             <div class="form-group">
               <select class="form-control" name="connection_policy">
                 <option value="protected">protected</option>
@@ -104,7 +104,7 @@
         <div class="card-body">
           <h4 class="card-title">Set your global IP adress or hostname here</h4>
           <p>The current IP adress or hostname = {{ config['host_name'] }} </p>
-          <form class="form-inline" action="/update_config" method="post">
+          <form class="form-inline" action="/sp/admin/update_config" method="post">
             <div class="form-group">
               <label for="host_name">Global IP adress or hostname:</label>
               <input type="text" class="ml-3 form-control" id="host_name" name="host_name" cols="50" />
@@ -117,7 +117,7 @@
       <div class="card my-3">
         <div class="card-body">
           <h4 class="card-title">URLs to crawl separated by newlines</h4>
-          <form action="/init_crawl_urls" method="post">
+          <form action="/sp/admin/init_crawl_urls" method="post">
             <div class="form-group">
               <label>URLs:</label>
               <textarea class="form-control" name="urls" rows="5"></textarea>
@@ -174,7 +174,7 @@ function send_db_summary() {
       <div class="card my-3">
         <div class="card-body">
           <h4 class="card-title">Learn Parameter for the classifier in the crawler using url lists</h4>
-          <form name=learn_params_from_url_form action="/learn_params_from_url" method="post">
+          <form name=learn_params_from_url_form action="/sp/admin/learn_params_from_url" method="post">
             <div class="form-group">
               <label for="language">language:</label>
               <input type="text" class="form-control" id="language" name="language" cols="10" />
@@ -208,7 +208,7 @@ function disableForm( textid, ischecked ) {
       <div class="card my-3">
         <div class="card-body">
           <h4 class~"card-title">Learn Parameter for the classifier in the crawler using word frequency</h4>
-          <form name=learn_params_from_dict_form action="/learn_params_from_dict" method="post">
+          <form name=learn_params_from_dict_form action="/sp/admin/learn_params_from_dict" method="post">
             <div class="form-group">
               <label for="language">language:</label>
               <input type="text" class="form-control" id="language" name="language" cols="10" />
