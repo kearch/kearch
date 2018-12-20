@@ -33,59 +33,6 @@ def get_tfidf_sum_statement(queries):
     return ' + '.join(tfidfs)
 
 
-def post_webpage_to_db(db, cur, webpage):
-    statement = """
-    INSERT INTO `webpages`
-    (`url`, `title`, `summary`)
-    VALUES (%s, %s, %s)
-    ON DUPLICATE KEY UPDATE `title` = VALUES(`title`),
-    `summary` = VALUES(`summary`)
-    """
-    cur.execute(statement,
-                (webpage['url'], webpage['title'], webpage['summary']))
-    db.commit()
-
-    statement = """
-    SELECT `id` FROM `webpages` WHERE `url` = %s LIMIT 1
-    """
-    cur.execute(statement, (webpage['url'],))
-    row = cur.fetchone()
-    webpage_id = row[0]
-
-    statement = """
-    INSERT IGNORE INTO `words`
-    (`str`)
-    VALUES (%s)
-    """
-    words = list(webpage['tfidf']) + webpage['title_words']
-    word_records = map(lambda w: (w,),
-                       filter(lambda w: len(w) < MAX_WORD_LEN, words))
-    cur.executemany(statement, word_records)
-    db.commit()
-
-    statement = """
-    INSERT IGNORE INTO `title_words`
-    (`webpage_id`, `word_id`)
-    SELECT %s, `words`.`id` FROM `words` WHERE `str` = %s LIMIT 1
-    """
-    title_word_records = map(lambda w: (webpage_id, w), webpage['title_words'])
-    for record in title_word_records:
-        cur.execute(statement, record)
-    db.commit()
-
-    statement = """
-    INSERT INTO `tfidfs`
-    (`webpage_id`, `word_id`, `value`)
-    SELECT %s, `words`.`id`, %s FROM `words` WHERE `str` = %s LIMIT 1
-    ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)
-    """
-    tfidfs_records = map(lambda w: (
-        webpage_id, webpage['tfidf'][w], w), webpage['tfidf'].keys())
-    for record in tfidfs_records:
-        cur.execute(statement, record)
-    db.commit()
-
-
 def dump_summary_from_sp_db(cur):
     page_size = 1000
     statement = """
@@ -246,9 +193,7 @@ class KearchRequester(object):
         splited_path.extend(["", "", ""])
 
         db_name = ''
-        me_apis = ['/add_new_sp_server', '/retrieve_sp_servers',
-                   '/list_up_sp_servers']
-        if parsed_path in me_apis or splited_path[0] == 'me':
+        if splited_path[0] == 'me':
             db_name = 'kearch_me_dev'
         else:
             db_name = 'kearch_sp_dev'
@@ -492,11 +437,8 @@ class KearchRequester(object):
                     ret[int(row[0])] = {'id': int(row[0]),
                                         'username': row[1],
                                         'password_hash': row[2]}
-            elif parsed_path == '/push_webpage_to_database':
-                for webpage in payload['data']:
-                    post_webpage_to_db(db, cur, webpage)
-                ret = len(payload['data'])
-            elif parsed_path == '/push_crawled_urls':
+            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'push_crawled_urls':
                 now = datetime.now()
                 url_queue_records = list(map(
                     lambda w: (w['url'], now), payload['data']))
@@ -513,7 +455,8 @@ class KearchRequester(object):
                     cur.executemany(statement, url_queue_records)
                     db.commit()
                     ret = cur.rowcount
-            elif parsed_path == '/get_next_urls':
+            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'get_next_urls':
                 max_urls = int(params['max_urls'])
                 select_statement = """
                 SELECT `url` FROM `url_queue`
@@ -535,7 +478,8 @@ class KearchRequester(object):
                 }
                 cur.execute(delete_statement, (max_urls,))
                 db.commit()
-            elif parsed_path == '/push_urls_to_queue':
+            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'push_urls_to_queue':
                 url_queue_records = [(url,) for url in payload['urls']]
                 statement = """
                 INSERT IGNORE INTO `url_queue` (`url`) VALUES (%s);
@@ -544,36 +488,11 @@ class KearchRequester(object):
                 cur.executemany(statement, url_queue_records)
                 db.commit()
                 ret = cur.rowcount
-            elif parsed_path == '/retrieve_webpages':
-                queries = params['queries']
-                max_urls = int(params['max_urls'])
-
-                statement = """
-                SELECT `webpages`.`id`, `url`, `title`, `summary`,
-                SUM(`value`) AS `score`
-                FROM `words`
-                JOIN `tfidfs` ON `words`.`id` = `tfidfs`.`word_id`
-                JOIN `webpages` ON `tfidfs`.`webpage_id` = `webpages`.`id`
-                WHERE `words`.`str` IN ({})
-                GROUP BY `webpages`.`id`
-                ORDER BY `score` DESC
-                LIMIT %s;
-                """.format(','.join(['%s'] * len(queries)))
-                cur.execute(statement, tuple(queries) + (max_urls,))
-                result_webpages = [{
-                    'id': row[0],
-                    'url': row[1],
-                    'title': row[2],
-                    'summary': row[3],
-                    'score': row[4],
-                } for row in cur.fetchall()]
-
-                ret = {
-                    'data': result_webpages
-                }
-            elif parsed_path == '/dump_database':
+            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'dump_database':
                 ret = dump_summary_from_sp_db(cur)
-            elif parsed_path == '/update_dump':
+            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'update_dump':
                 summary_records = [(word, freq)
                                    for word, freq in payload['data'].items()]
                 statement = """
@@ -586,7 +505,8 @@ class KearchRequester(object):
                 cur.executemany(statement, summary_records)
                 db.commit()
                 ret = cur.rowcount
-            elif parsed_path == '/retrieve_sp_servers':
+            elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'retrieve_sp_servers':
                 queries = params['queries']
 
                 format_strings = ','.join(['%s'] * len(queries))
@@ -603,7 +523,8 @@ class KearchRequester(object):
                     if word not in ret:
                         ret[word] = {}
                     ret[word][host] = freq
-            elif parsed_path == '/add_new_sp_server':
+            elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'add_new_sp_server':
                 sp_host = payload['host']
                 engine_name = payload['summary'].get('engine_name', '')
                 summary = payload['summary']['dump']
@@ -630,7 +551,8 @@ class KearchRequester(object):
                     'host': sp_host,
                     'engine_name': engine_name,
                 }
-            elif parsed_path == '/list_up_sp_servers':
+            elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'list_up_sp_servers':
                 statement = """
                 SELECT `name`, `engine_name` FROM `sp_hosts`
                 """

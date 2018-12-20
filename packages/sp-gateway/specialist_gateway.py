@@ -46,7 +46,7 @@ def send_a_connection_request(me_host):
 def retrieve(queries, max_urls):
     kr = KearchRequester(QUERY_PROCESSOR_HOST,
                          QUERY_PROCESSOR_PORT, REQUESTER_NAME)
-    results = kr.request(path='/retrieve', method='GET',
+    results = kr.request(path='/sp/query-processor/retrieve', method='GET',
                          params={'queries': ' '.join(queries),
                                  'max_urls': max_urls})
     return results
@@ -69,7 +69,7 @@ def add_a_connection_request(me_host):
     config = db.request(path='/sp/db/get_config_variables', method='GET')
     if config[CONFIG_CONNECTION_POLICY] == 'public':
         sp_host = config[CONFIG_HOST_NAME]
-        dump = db.request(path='/dump_database', method='GET')
+        dump = db.request(path='/sp/db/dump_database', method='GET')
         res = send_a_dump(sp_host, me_host, dump)
         return res
     else:

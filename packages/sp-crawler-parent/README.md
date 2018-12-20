@@ -2,28 +2,6 @@
 This is a controller of crawler children.
 ## APIs used in this package
 ### Database
-#### Push datum of webpage to database
-Access URL
-```
-$(ip adress of the database server)/push_webpage_to_database
-```
-JSON for POST method
-```
-{'data':[
-    {
-        'url':'www.google.com',
-        'title': 'Google'
-        'title_words':['google','usa'],
-        'summary':'google is strong',
-        'tfidf':{
-            'google':1.0,
-            'facebook':2.0
-        }
-    },...
-]}
-
-```
-
 #### Fetch urls from FIFO queue in database
 Access URL
 ```

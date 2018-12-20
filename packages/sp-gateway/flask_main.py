@@ -8,7 +8,7 @@ SPECIALIST_GATE_PORT = 10080
 app = flask.Flask(__name__)
 
 
-@app.route('/send_DB_summary', methods=['POST'])
+@app.route('/sp/gateway/send_DB_summary', methods=['POST'])
 def send_DB_summary():
     data = unwrap_json(flask.request.get_json())
     sp_host = data['sp_host']
@@ -51,7 +51,7 @@ def send_a_connection_request():
     return jsonify(res)
 
 
-@app.route('/retrieve', methods=['GET'])
+@app.route('/sp/gateway/retrieve', methods=['GET'])
 def retrieve():
     queries = flask.request.args.get('queries')
     queries = queries.split(' ')
