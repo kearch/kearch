@@ -99,7 +99,7 @@ def crawl_a_page(url):
         try:
             print('requesting   /crawl_a_page?url={} ...'.format(url))
             ret = crawler_requester.request(
-                path='/crawl_a_page', params={'url': url},
+                path='/sp/crawler-child/crawl_a_page', params={'url': url},
                 timeout=SP_CHILD_TIMEOUT)
             print('get response /crawl_a_page?url={}'.format(url))
         except RequesterError as e:

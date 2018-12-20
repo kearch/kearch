@@ -40,7 +40,7 @@ def index():
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
     config = db_req.request(path='/me/db/get_config_variables')
     requests = db_req.request(path='/me/db/get_connection_requests')
-    sp_servers = db_req.request(path='/list_up_sp_servers')
+    sp_servers = db_req.request(path='/me/db/list_up_sp_servers')
 
     return flask.render_template('index.html', config=config,
                                  requests=requests, sp_servers=sp_servers)
