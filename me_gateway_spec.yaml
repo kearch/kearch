@@ -25,10 +25,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                data:
-                  $ref: '#/components/schemas/Summary'
+              $ref: '#/components/schemas/Summary'
       responses:
         '200':
           description: An info about the specialist server of the added summary.
@@ -37,13 +34,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  data:
+                  engine_name:
+                    type: string
+                  dump:
                     type: object
-                    properties:
-                      engine_name:
-                        type: string
-                      dump:
-                        type: object
   /add_a_conenction_request:
     post:
       summary: Add a connection request from specialist server to meta server.
@@ -53,10 +47,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                data:
-                  $ref: '#/components/schemas/ConnectionRequest'
+              $ref: '#/components/schemas/ConnectionRequestOnME'
       responses:
         '200':
           description: An info about the specialist server that requested the connection.
@@ -65,11 +56,8 @@ paths:
               schema:
                 type: object
                 properties:
-                  data:
-                    type: object
-                    properties:
-                      sp_host:
-                        type: string
+                  sp_host:
+                    type: string
   /retrieve:
     get:
       summary: Retrieve search results.
@@ -84,21 +72,24 @@ paths:
           schema:
             type: integer
           description: Max number of URLs to retrive from specialist servers
+        - in: query
+          name: sp_host
+          schema:
+            type: string
+          description: A host name to retrieve results from.
       responses:
         '200':
           description: Search results.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Document'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+
 components:
   schemas:
-    ConnectionRequest:
+    ConnectionRequestOnME:
       properties:
         sp_host:
           type: string
