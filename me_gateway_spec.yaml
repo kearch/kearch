@@ -4,31 +4,98 @@ info:
   description: Kearch meta search engine gateway API
   version: 0.1.0
 servers:
-- url: '{scheme}://{me_host}:{port}/v0'
-  variables:
-    scheme:
-      enum:
-      - http
-      - https
-      default: https
-    me_host:
-      default: localhost
-    port:
-      default: '32400'
+  - url: '{scheme}://{me_host}:{port}/v0/me/gateway'
+    variables:
+      scheme:
+        enum:
+          - http
+          - https
+        default: https
+      me_host:
+        default: localhost
+      port:
+        default: '32400'
 paths:
-  /users:
-    get:
-      summary: Returns a list of users.
-      description: Optional extended description in CommonMark or HTML.
+  /add_a_summary:
+    post:
+      summary: Add a summary to meta server.
+      requestBody:
+        description: A summary of the specialist server.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/Summary'
       responses:
-        '200':    # status code
-          description: A JSON array of user names
+        '200':
+          description: An info about the specialist server of the added summary.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: string
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      engine_name:
+                        type: string
+                      dump:
+                        type: object
+  /add_a_conenction_request:
+    post:
+      summary: Add a connection request from specialist server to meta server.
+      requestBody:
+        description: A connection request.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/ConnectionRequest'
+      responses:
+        '200':
+          description: An info about the specialist server that requested the connection.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      sp_host:
+                        type: string
+  /retrieve:
+    get:
+      summary: Retrieve search results.
+      parameters:
+        - in: query
+          name: queries
+          schema:
+            type: string
+          description: Space-separated query words
+        - in: query
+          name: max_urls
+          schema:
+            type: integer
+          description: Max number of URLs to retrive from specialist servers
+      responses:
+        '200':
+          description: Search results.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Document'
 components:
   schemas:
     ConnectionRequest:
@@ -43,18 +110,13 @@ components:
           type: string
         dump:
           type: object
-    SearchResult:
+    Document:
       properties:
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              url:
-                type: string
-              title:
-                type: string
-              summary:
-                type: string
-              score:
-                type: number
+        url:
+          type: string
+        title:
+          type: string
+        summary:
+          type: string
+        score:
+          type: number
