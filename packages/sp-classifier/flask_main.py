@@ -3,7 +3,6 @@ import sys
 import base64
 from flask import jsonify
 from kearch_common.requester import KearchRequester, RequesterError
-from kearch_common.data_format import unwrap_json
 import kearch_classifier.classifier
 
 DATABASE_HOST = 'sp-db.kearch.svc.cluster.local'
@@ -36,7 +35,7 @@ def update_param_file(filename):
 
 @app.route('/sp/classifier/classify', methods=['POST'])
 def classify():
-    data = unwrap_json(flask.request.get_json())
+    data = flask.request.get_json()
     body_words = data['body_words']
     title_words = data['title_words']
     print('Start checking parameter files.', file=sys.stderr)

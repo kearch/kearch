@@ -6,8 +6,6 @@ import urllib
 import mysql.connector
 import requests
 
-from kearch_common.data_format import wrap_json
-
 
 MAX_WORD_LEN = 200
 
@@ -152,12 +150,8 @@ class KearchRequester(object):
             resp = requests.get(url, params=params, timeout=timeout)
         else:
             # GET 以外は json に payload を含めて送る
-            meta = {
-                'requester': self.requester_name,
-            }
-            data = wrap_json(payload, meta)
             resp = requests.request(
-                method, url, params=params, json=data, timeout=timeout)
+                method, url, params=params, json=payload, timeout=timeout)
 
         return resp.json()
 

@@ -1,6 +1,5 @@
 import flask
 from flask import jsonify
-from kearch_common.data_format import unwrap_json
 
 import specialist_gateway
 
@@ -10,7 +9,7 @@ app = flask.Flask(__name__)
 
 @app.route('/sp/gateway/send_DB_summary', methods=['POST'])
 def send_DB_summary():
-    data = unwrap_json(flask.request.get_json())
+    data = flask.request.get_json()
     sp_host = data['sp_host']
     me_host = data['me_host']
     summary = data['summary']
@@ -20,7 +19,7 @@ def send_DB_summary():
 
 @app.route('/sp/gateway/send_a_dump', methods=['POST'])
 def send_a_dump():
-    data = unwrap_json(flask.request.get_json())
+    data = flask.request.get_json()
     sp_host = data['sp_host']
     me_host = data['me_host']
     summary = data['summary']
@@ -37,7 +36,7 @@ def get_a_dump():
 
 @app.route('/sp/gateway/add_a_connection_request', methods=['POST'])
 def add_a_connection_request():
-    data = unwrap_json(flask.request.get_json())
+    data = flask.request.get_json()
     me_host = data['me_host']
     result = specialist_gateway.add_a_connection_request(me_host)
     return jsonify(result)
@@ -45,7 +44,7 @@ def add_a_connection_request():
 
 @app.route('/sp/gateway/send_a_connection_request', methods=['POST'])
 def send_a_connection_request():
-    data = unwrap_json(flask.request.get_json())
+    data = flask.request.get_json()
     me_host = data['me_host']
     res = specialist_gateway.send_a_connection_request(me_host)
     return jsonify(res)
