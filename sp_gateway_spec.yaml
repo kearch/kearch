@@ -14,7 +14,7 @@ servers:
       sp_host:
         default: localhost
       port:
-        default: '32400'
+        default: '32500'
 paths:
   /get_a_summary:
     get:
