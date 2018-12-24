@@ -89,17 +89,21 @@ components:
           type: string
     Summary:
       properties:
+        sp_host:
+          type: string
         engine_name:
           type: string
         dump:
           type: object
+          additionalProperties:
+            type: integer
     Document:
       properties:
         url:
           type: string
         title:
           type: string
-        summary:
+        description:
           type: string
         score:
           type: number
