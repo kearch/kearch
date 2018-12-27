@@ -9,6 +9,22 @@
 
       <div class="card my-3">
         <div class="card-body">
+          <h4 class="card-title">Update password</h4>
+          <form class="form-inline" action="/sp/admin/update_password" method="post">
+            <div class="form-group">
+              <label for="password">New password: </label>
+              <input id="password" class="ml-3 form-control" type="text" name="password">
+              <br/>
+              <label for="password-again">New password again: </label>
+              <input id="password-again" class="ml-3 form-control" type="text" name="password_again">
+            </div>
+            <button class="mx-3 btn btn-primary" type="submit">update</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card my-3">
+        <div class="card-body">
           <h4 class="card-title">Set engine name</h4>
           <form class="form-inline" action="/sp/admin/update_config" method="post">
             <div class="form-group">
