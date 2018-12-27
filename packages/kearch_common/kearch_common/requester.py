@@ -440,6 +440,7 @@ class KearchRequester(object):
                 """
 
                 cur.execute(statement, (passhash, username))
+                db.commit()
                 ret = {'username': username}
             elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
                     splited_path[2] == 'push_crawled_urls':
