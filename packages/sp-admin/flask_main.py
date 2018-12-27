@@ -1,7 +1,8 @@
 import flask
+import sys
 import hashlib
 from flask_login import LoginManager, logout_user, UserMixin, login_required, \
-        login_user
+    login_user, current_user
 import base64
 import os
 from flask import Response, jsonify, request, redirect, abort
@@ -32,7 +33,6 @@ class User(UserMixin):
     def __init__(self, id):
         self.id = 0
         self.name = 'root'
-        self.password = 'password'
 
 
 @app.route("/sp/admin/login", methods=["GET", "POST"])
@@ -78,6 +78,25 @@ def page_not_found(e):
 @login_manager.user_loader
 def load_user(userid):
     return User(userid)
+
+
+@app.route('/sp/admin/update_password', methods=['POST'])
+@login_required
+def update_password():
+    password = flask.request.form['password']
+    password_again = flask.request.form['password_again']
+    if password != password_again:
+        r = {'message': 'Passwords do not match.'}
+        abort(500, r)
+    u = current_user.name
+    h = hashlib.sha512(password.encode('utf-8')).hexdigest()
+    print(u, h, file=sys.stderr)
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    ret = db_req.request(path='/sp/db/update_password_hash',
+                         payload={'username': u, 'password_hash': h},
+                         method='POST')
+    return jsonify(ret)
 
 
 @app.route('/sp/admin/approve_a_connection_request', methods=['POST'])
