@@ -81,6 +81,7 @@ def load_user(userid):
 
 
 @app.route('/sp/admin/approve_a_connection_request', methods=['POST'])
+@login_required
 def approve_a_connection_request():
     me_host = flask.request.form['me_host']
     db_req = KearchRequester(
@@ -102,6 +103,7 @@ def approve_a_connection_request():
 
 
 @app.route('/sp/admin/send_a_connection_request', methods=['POST'])
+@login_required
 def send_a_connection_request():
     me_host = flask.request.form['me_host']
 
@@ -119,6 +121,7 @@ def send_a_connection_request():
 
 
 @app.route('/sp/db/send_db_summary', methods=['POST'])
+@login_required
 def send_db_summary():
     me_host = flask.request.form['me_host']
     sp_host = flask.request.form['sp_host']
@@ -136,6 +139,7 @@ def send_db_summary():
 
 
 @app.route('/sp/admin/init_crawl_urls', methods=['POST'])
+@login_required
 def init_crawl_urls():
     form_input = flask.request.form['urls']
     urls = form_input.split('\n')
@@ -151,6 +155,7 @@ def init_crawl_urls():
 
 
 @app.route('/sp/admin/learn_params_from_url', methods=['POST'])
+@login_required
 def learn_params_from_url():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
@@ -183,6 +188,7 @@ def learn_params_from_url():
 
 
 @app.route('/sp/admin/learn_params_from_dict', methods=['POST'])
+@login_required
 def learn_params_from_dict():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
@@ -239,6 +245,7 @@ def learn_params_from_dict():
 
 
 @app.route("/sp/admin/update_config", methods=['POST'])
+@login_required
 def update_config():
     update = dict()
     if 'connection_policy' in flask.request.form:
