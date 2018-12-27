@@ -432,6 +432,16 @@ class KearchRequester(object):
                                         'username': row[1],
                                         'password_hash': row[2]}
             elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'update_password_hash':
+                username = payload['username']
+                passhash = payload['password_hash']
+                statement = """
+                UPDATE `authentication` SET `password_hash` = %s WHERE `username` = %s
+                """
+
+                cur.execute(statement, (passhash, username))
+                ret = {'username': username}
+            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
                     splited_path[2] == 'push_crawled_urls':
                 now = datetime.now()
                 url_queue_records = list(map(
