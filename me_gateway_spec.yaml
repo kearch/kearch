@@ -40,7 +40,7 @@ paths:
                     type: string
   /add_a_conenction_request:
     post:
-      summary: Add a connection request from specialist server to meta server.
+      summary: Add a connection request sent from specialist server to meta server.
       requestBody:
         description: A connection request.
         required: true
@@ -48,6 +48,25 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ConnectionRequestOnME'
+      responses:
+        '200':
+          description: An info about the specialist server that requested the connection.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sp_host:
+                    type: string
+  /delete_a_conenction_request:
+    delete:
+      summary: Delete a connection request sent from specialist server to this meta server.
+      parameters:
+        - in: query
+          name: sp_host
+          schema:
+            type: string
+          description: A specialist host name of the connection request to delete.
       responses:
         '200':
           description: An info about the specialist server that requested the connection.
