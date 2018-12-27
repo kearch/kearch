@@ -1,7 +1,8 @@
 import flask
+import sys
 import hashlib
 from flask_login import LoginManager, logout_user, UserMixin, login_required, \
-        login_user
+    login_user, current_user
 import base64
 import os
 from flask import Response, jsonify, request, redirect, abort
@@ -32,7 +33,6 @@ class User(UserMixin):
     def __init__(self, id):
         self.id = 0
         self.name = 'root'
-        self.password = 'password'
 
 
 @app.route("/sp/admin/login", methods=["GET", "POST"])
@@ -80,7 +80,27 @@ def load_user(userid):
     return User(userid)
 
 
+@app.route('/sp/admin/update_password', methods=['POST'])
+@login_required
+def update_password():
+    password = flask.request.form['password']
+    password_again = flask.request.form['password_again']
+    if password != password_again:
+        r = {'message': 'Passwords do not match.'}
+        abort(500, r)
+    u = current_user.name
+    h = hashlib.sha512(password.encode('utf-8')).hexdigest()
+    print(u, h, file=sys.stderr)
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    ret = db_req.request(path='/sp/db/update_password_hash',
+                         payload={'username': u, 'password_hash': h},
+                         method='POST')
+    return jsonify(ret)
+
+
 @app.route('/sp/admin/approve_a_connection_request', methods=['POST'])
+@login_required
 def approve_a_connection_request():
     me_host = flask.request.form['me_host']
     db_req = KearchRequester(
@@ -102,6 +122,7 @@ def approve_a_connection_request():
 
 
 @app.route('/sp/admin/send_a_connection_request', methods=['POST'])
+@login_required
 def send_a_connection_request():
     me_host = flask.request.form['me_host']
 
@@ -119,6 +140,7 @@ def send_a_connection_request():
 
 
 @app.route('/sp/db/send_db_summary', methods=['POST'])
+@login_required
 def send_db_summary():
     me_host = flask.request.form['me_host']
     sp_host = flask.request.form['sp_host']
@@ -136,6 +158,7 @@ def send_db_summary():
 
 
 @app.route('/sp/admin/init_crawl_urls', methods=['POST'])
+@login_required
 def init_crawl_urls():
     form_input = flask.request.form['urls']
     urls = form_input.split('\n')
@@ -151,6 +174,7 @@ def init_crawl_urls():
 
 
 @app.route('/sp/admin/learn_params_from_url', methods=['POST'])
+@login_required
 def learn_params_from_url():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
@@ -183,6 +207,7 @@ def learn_params_from_url():
 
 
 @app.route('/sp/admin/learn_params_from_dict', methods=['POST'])
+@login_required
 def learn_params_from_dict():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
@@ -239,6 +264,7 @@ def learn_params_from_dict():
 
 
 @app.route("/sp/admin/update_config", methods=['POST'])
+@login_required
 def update_config():
     update = dict()
     if 'connection_policy' in flask.request.form:
