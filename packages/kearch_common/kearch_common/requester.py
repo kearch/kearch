@@ -419,7 +419,8 @@ class KearchRequester(object):
             elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
                     splited_path[2] == 'get_sp_summaries':
                 ret = dump_summaries_from_me_db(cur)
-            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+            elif (splited_path[0] == 'sp' or splited_path[0] == 'me') and \
+                    splited_path[1] == 'db' and \
                     splited_path[2] == 'get_authentication':
                 statement = """
                 SELECT `id`,`username`,`password_hash` FROM `authentication`
@@ -431,12 +432,14 @@ class KearchRequester(object):
                     ret[int(row[0])] = {'id': int(row[0]),
                                         'username': row[1],
                                         'password_hash': row[2]}
-            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+            elif (splited_path[0] == 'sp' or splited_path[0] == 'me') and \
+                    splited_path[1] == 'db' and \
                     splited_path[2] == 'update_password_hash':
                 username = payload['username']
                 passhash = payload['password_hash']
                 statement = """
-                UPDATE `authentication` SET `password_hash` = %s WHERE `username` = %s
+                UPDATE `authentication` SET `password_hash` = %s
+                WHERE `username` = %s
                 """
 
                 cur.execute(statement, (passhash, username))
