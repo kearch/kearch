@@ -1,6 +1,11 @@
 import flask
-from flask import jsonify
+from flask import Response, jsonify, request, redirect, abort
+from flask_login import LoginManager, logout_user, UserMixin, login_required, \
+    login_user, current_user
+import os
+import sys
 import base64
+import hashlib
 import kearch_evaluater.evaluater
 from kearch_common.requester import KearchRequester
 
@@ -15,9 +20,85 @@ REQUESTER_NAME = 'me_admin'
 SP_ADMIN_PORT = 10080
 
 app = flask.Flask(__name__)
+app.secret_key = os.urandom(24)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "/me/admin/login"
+
+
+class User(UserMixin):
+    def __init__(self, id):
+        self.id = 0
+        self.name = 'root'
+
+
+@app.route("/me/admin/login", methods=["GET", "POST"])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        db_req = KearchRequester(
+            DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+        auth_info = db_req.request(path='/me/db/get_authentication')
+        is_valid = False
+        for d in auth_info.values():
+            u = d['username']
+            h = d['password_hash']
+            if u == username and \
+               h == hashlib.sha512(password.encode('utf-8')).hexdigest():
+                is_valid = True
+        if is_valid:
+            user = User(0)
+            login_user(user)
+            return redirect(flask.url_for("index"))
+        else:
+            return abort(401)
+    else:
+        return flask.render_template('login.html')
+
+
+# somewhere to logout
+@app.route("/me/admin/logout")
+@login_required
+def logout():
+    logout_user()
+    return Response('<p>Logged out</p>')
+
+
+# handle login failed
+@app.errorhandler(401)
+def page_not_found(e):
+    return Response('<p>Login failed</p>')
+
+
+@login_manager.user_loader
+def load_user(userid):
+    return User(userid)
+
+
+@app.route('/me/admin/update_password', methods=['POST'])
+@login_required
+def update_password():
+    password = flask.request.form['password']
+    password_again = flask.request.form['password_again']
+    if password != password_again:
+        r = {'message': 'Passwords do not match.'}
+        abort(500, r)
+    u = current_user.name
+    h = hashlib.sha512(password.encode('utf-8')).hexdigest()
+    print(u, h, file=sys.stderr)
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    ret = db_req.request(path='/me/db/update_password_hash',
+                         payload={'username': u, 'password_hash': h},
+                         method='POST')
+    return jsonify(ret)
 
 
 @app.route('/me/admin/learn_params_for_evaluater')
+@login_required
 def learn_params_for_evaluater():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
@@ -35,6 +116,7 @@ def learn_params_for_evaluater():
 
 
 @app.route("/")
+@login_required
 def index():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
@@ -47,6 +129,7 @@ def index():
 
 
 @app.route("/me/admin/update_config", methods=['POST'])
+@login_required
 def update_config():
     update = dict()
     if 'connection_policy' in flask.request.form:
@@ -61,6 +144,7 @@ def update_config():
 
 
 @app.route('/me/admin/approve_a_connection_request', methods=['POST'])
+@login_required
 def approve_a_connection_request():
     gt_req = KearchRequester(GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
     db_req = KearchRequester(
@@ -78,6 +162,7 @@ def approve_a_connection_request():
 
 
 @app.route('/me/admin/send_a_connection_request', methods=['POST'])
+@login_required
 def send_a_connection_request():
     sp_host = flask.request.form['sp_host']
     gt_req = KearchRequester(GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
