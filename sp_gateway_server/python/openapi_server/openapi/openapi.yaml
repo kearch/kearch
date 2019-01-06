@@ -1,0 +1,164 @@
+openapi: 3.0.0
+info:
+  description: Kearch specialist search engine gateway API
+  title: Kearch specialist search engine gateway API
+  version: 0.1.0
+servers:
+- url: '{scheme}://{sp_host}:{port}/v0/sp/gateway'
+  variables:
+    scheme:
+      default: https
+      enum:
+      - http
+      - https
+    sp_host:
+      default: localhost
+    port:
+      default: "32500"
+paths:
+  /get_a_summary:
+    get:
+      operationId: get_a_summary_get
+      parameters:
+      - description: A host name of the meta server.
+        explode: true
+        in: query
+        name: me_host
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Summary'
+          description: A summary of this specialist server.
+      summary: Get summary of this specialist server.
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+  /add_a_conenction_request:
+    post:
+      operationId: add_a_conenction_request_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectionRequestOnSP'
+        description: A connection request.
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+          description: An info about the meta server that requested the connection.
+      summary: Add a connection request sent from meta server to specialist server.
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+  /delete_a_conenction_request:
+    delete:
+      operationId: delete_a_conenction_request_delete
+      parameters:
+      - description: A meta host name of the connection request to delete.
+        explode: true
+        in: query
+        name: me_host
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+          description: An info about the meta server that requested the connection.
+      summary: Delete a connection request sent from meta server to specialist server.
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+  /retrieve:
+    get:
+      operationId: retrieve_get
+      parameters:
+      - description: Space-separated query words
+        explode: true
+        in: query
+        name: queries
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Max number of URLs to retrive from specialist servers
+        explode: true
+        in: query
+        name: max_urls
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - description: A host name to retrieve results from.
+        explode: true
+        in: query
+        name: sp_host
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Document'
+                type: array
+          description: Search results.
+      summary: Retrieve search results.
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+components:
+  schemas:
+    ConnectionRequestOnSP:
+      example:
+        me_host: me_host
+      properties:
+        me_host:
+          type: string
+    Summary:
+      example:
+        engine_name: engine_name
+        dump:
+          key: 0
+        sp_host: sp_host
+      properties:
+        sp_host:
+          type: string
+        engine_name:
+          type: string
+        dump:
+          additionalProperties:
+            format: int32
+            type: integer
+          type: object
+    Document:
+      example:
+        score: 0.80082819046101150206595775671303272247314453125
+        description: description
+        title: title
+        url: url
+      properties:
+        url:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        score:
+          type: number
+    inline_response_200:
+      example:
+        me_host: me_host
+      properties:
+        me_host:
+          type: string
