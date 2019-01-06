@@ -1,5 +1,6 @@
 CREATE TABLE `sp_hosts` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `scheme` varchar(255) DEFAULT 'http',
   `name` varchar(255) NOT NULL,
   `engine_name` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

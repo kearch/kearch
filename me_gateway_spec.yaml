@@ -114,6 +114,8 @@ components:
           type: string
         engine_name:
           type: string
+        scheme:
+          type: string
     Summary:
       properties:
         sp_host:

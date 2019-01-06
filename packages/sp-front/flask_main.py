@@ -17,7 +17,7 @@ def search():
         queries = query.split()
         kr = KearchRequester(QUERY_PROCESSOR_HOST,
                              QUERY_PROCESSOR_PORT, REQUESTER_NAME)
-        results = kr.request(path='/retrieve', method='GET',
+        results = kr.request(path='/sp/query-processor/retrieve', method='GET',
                              params={'queries': ' '.join(queries),
                                      'max_urls': MAX_URLS})
         return flask.render_template('result.html', results=results['data'],
