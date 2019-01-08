@@ -106,6 +106,8 @@ components:
       properties:
         me_host:
           type: string
+        scheme:
+          type: string
     Summary:
       properties:
         sp_host:
