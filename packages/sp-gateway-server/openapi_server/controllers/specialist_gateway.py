@@ -62,6 +62,14 @@ def add_a_connection_request(scheme, me_host):
         return res
 
 
+def delete_a_conenction_request(me_host):
+    db = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
+                         conn_type='sql')
+    res = db.request(path='/sp/db/delete_a_connection_request',
+                     payload={'me_host': me_host})
+    return res
+
+
 def get_a_dump(me_host):
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
