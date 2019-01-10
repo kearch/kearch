@@ -358,6 +358,7 @@ class KearchRequester(object):
                 cur.execute(statement, ('in_requests', me_host))
                 cur.execute(statement, ('out_requests', me_host))
                 db.commit()
+                ret = {'me_host': me_host}
             elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
                     splited_path[2] == 'delete_a_connection_request':
                 sp_host = payload['sp_host']
@@ -365,6 +366,7 @@ class KearchRequester(object):
                 cur.execute(statement, ('in_requests', sp_host))
                 cur.execute(statement, ('out_requests', sp_host))
                 db.commit()
+                ret = {'sp_host': sp_host}
             elif splited_path[1] == 'db' and \
                     splited_path[2] == 'get_config_variables':
                 select_statement = """
