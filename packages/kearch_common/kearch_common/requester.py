@@ -255,12 +255,13 @@ class KearchRequester(object):
 
             elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
                     splited_path[2] == 'add_a_connection_request':
+                scheme = payload['scheme']
                 in_or_out = payload['in_or_out']
                 me_host = payload['me_host']
                 hosts_insert_statement = """
-                INSERT IGNORE INTO me_hosts (`name`) VALUES (%s)
+                INSERT IGNORE INTO me_hosts (`scheme`, `name`) VALUES (%s, %s)
                 """
-                cur.execute(hosts_insert_statement, (me_host,))
+                cur.execute(hosts_insert_statement, (scheme, me_host))
                 db.commit()
                 host_id_statement = """
                 SELECT `id` FROM `me_hosts` WHERE `name` = %s
@@ -283,13 +284,15 @@ class KearchRequester(object):
             elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
                     splited_path[2] == 'add_a_connection_request':
                 in_or_out = payload['in_or_out']
+                scheme = payload['scheme']
                 sp_host = payload['sp_host']
                 engine_name = payload.get('engine_name', '')
                 hosts_insert_statement = """
-                INSERT IGNORE INTO sp_hosts (`name`, `engine_name`)
-                VALUES (%s, %s)
+                INSERT IGNORE INTO sp_hosts (`scheme`, `name`, `engine_name`)
+                VALUES (%s, %s, %s)
                 """
-                cur.execute(hosts_insert_statement, (sp_host, engine_name))
+                cur.execute(hosts_insert_statement,
+                            (scheme, sp_host, engine_name))
                 db.commit()
                 host_id_statement = """
                 SELECT `id` FROM `sp_hosts` WHERE `name` = %s
