@@ -1,4 +1,4 @@
-FROM python:3-alpine
+FROM python:3.6
 ARG KEARCH_COMMON_BRANCH="dev"
 
 RUN mkdir -p /usr/src/app
@@ -8,7 +8,7 @@ COPY requirements.txt /usr/src/app/
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 RUN git clone https://github.com/kearch/kearch
-RUN cd /kearch/packages/kearch_common && git checkout $KEARCH_COMMON_BRANCH && pip install -e .
+RUN cd kearch/packages/kearch_common && git checkout $KEARCH_COMMON_BRANCH && pip install -e .
 
 COPY . /usr/src/app
 
