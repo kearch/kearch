@@ -98,14 +98,6 @@ paths:
           format: int32
           type: integer
         style: form
-      - description: A host name to retrieve results from.
-        explode: true
-        in: query
-        name: sp_host
-        required: false
-        schema:
-          type: string
-        style: form
       responses:
         200:
           content:

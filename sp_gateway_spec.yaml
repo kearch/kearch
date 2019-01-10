@@ -85,11 +85,6 @@ paths:
           schema:
             type: integer
           description: Max number of URLs to retrive from specialist servers
-        - in: query
-          name: sp_host
-          schema:
-            type: string
-          description: A host name to retrieve results from.
       responses:
         '200':
           description: Search results.

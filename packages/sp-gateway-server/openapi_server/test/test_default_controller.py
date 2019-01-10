@@ -61,8 +61,7 @@ class TestDefaultController(BaseTestCase):
         Retrieve search results.
         """
         query_string = [('queries', 'queries_example'),
-                        ('max_urls', 56),
-                        ('sp_host', 'sp_host_example')]
+                        ('max_urls', 56)]
         response = self.client.open(
             '/v0/sp/gateway/retrieve',
             method='GET',
