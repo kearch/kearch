@@ -72,7 +72,7 @@ def get_summary_from_sp_db(cur):
 
     return {
         'engine_name': engine_name,
-        'host_name': host_name,
+        'sp_host': host_name,
         'dump': dump
     }
 
