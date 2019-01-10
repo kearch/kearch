@@ -8,6 +8,8 @@ from openapi_server.models.inline_response2001 import InlineResponse2001  # noqa
 from openapi_server.models.summary import Summary  # noqa: E501
 from openapi_server import util
 
+import meta_gateway
+
 
 def add_a_conenction_request_post(connection_request_on_me):  # noqa: E501
     """Add a connection request sent from specialist server to meta server.
@@ -21,7 +23,12 @@ def add_a_conenction_request_post(connection_request_on_me):  # noqa: E501
     """
     if connexion.request.is_json:
         connection_request_on_me = ConnectionRequestOnME.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        sp_host = connection_request_on_me.sp_host()
+        scheme = connection_request_on_me.scheme()
+        engine_name = connection_request_on_me.engine_name()
+        res = meta_gateway.add_a_connection_request(sp_host, scheme,
+                                                    engine_name)
+        return res
 
 
 def add_a_summary_post(summary):  # noqa: E501
@@ -36,7 +43,11 @@ def add_a_summary_post(summary):  # noqa: E501
     """
     if connexion.request.is_json:
         summary = Summary.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        engine_name = summary.engine_name()
+        sp_host = summary.sp_host()
+        dump = summary.dump()
+        res = meta_gateway.add_new_sp_server(sp_host, engine_name, dump)
+        return res
 
 
 def delete_a_conenction_request_delete(sp_host=None):  # noqa: E501
@@ -49,7 +60,8 @@ def delete_a_conenction_request_delete(sp_host=None):  # noqa: E501
 
     :rtype: InlineResponse2001
     """
-    return 'do some magic!'
+    res = meta_gateway.delete_a_conenction_request(sp_host)
+    return res
 
 
 def retrieve_get(queries=None, max_urls=None, sp_host=None):  # noqa: E501
@@ -66,4 +78,5 @@ def retrieve_get(queries=None, max_urls=None, sp_host=None):  # noqa: E501
 
     :rtype: List[Document]
     """
-    return 'do some magic!'
+    res = meta_gateway.retrieve(sp_host, queries, max_urls)
+    return res
