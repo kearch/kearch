@@ -3,7 +3,7 @@
 import sys
 from setuptools import setup, find_packages
 
-NAME = "openapi_server"
+NAME = "sp_gateway_server"
 VERSION = "1.0.0"
 
 # To install the library, run the following
@@ -31,7 +31,7 @@ setup(
     package_data={'': ['openapi/openapi.yaml']},
     include_package_data=True,
     entry_points={
-        'console_scripts': ['openapi_server=openapi_server.__main__:main']},
+        'console_scripts': ['sp_gateway_server=sp_gateway_server.__main__:main']},
     long_description="""\
     Kearch specialist search engine gateway API
     """

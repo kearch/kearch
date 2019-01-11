@@ -16,4 +16,4 @@ EXPOSE 10080
 
 ENTRYPOINT ["python3"]
 
-CMD ["-m", "openapi_server"]
+CMD ["-m", "sp_gateway_server"]
