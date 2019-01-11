@@ -1,6 +1,3 @@
-# Example for api is
-# $(ip adress of specialist_query_processor)/retrieve?queries=google+facebook&max_urls=100
-
 import flask
 from flask import jsonify
 
@@ -9,8 +6,8 @@ import specialist_query_processor
 app = flask.Flask(__name__)
 
 
-@app.route('/sp/qurey-processor/retrieve', methods=['GET'])
-def post():
+@app.route('/sp/query-processor/retrieve', methods=['GET'])
+def retrieve():
     queries = flask.request.args.get('queries')
     queries = queries.split(' ')
     max_urls = flask.request.args.get('max_urls', int)
