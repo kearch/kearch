@@ -32,7 +32,7 @@ def search():
             params['sp'] = sp
 
         results = query_processor_requester.request(
-            path='/retrieve', method='GET', params=params)
+            path='/me/query-processor/retrieve', method='GET', params=params)
         sp_servers = database_requester.request(
             path='/me/db/list_up_sp_servers', method='GET')
 
