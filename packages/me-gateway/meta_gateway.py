@@ -25,14 +25,23 @@ def retrieve(sp_host, queries, max_urls):
     return results
 
 
-def add_new_sp_server(sp_host, summary):
+def add_new_sp_server(summary):
     kr = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
                          conn_type='sql')
     result = kr.request(path='/me/db/add_new_sp_server',
-                        payload={'host': sp_host, 'summary': summary})
+                        payload=summary)
+    sp_host = summary['sp_host']
     kr.request('/me/db/approve_a_connection_request',
                payload={'in_or_out': 'out', 'sp_host': sp_host})
     return result
+
+
+def delete_a_connection_request(sp_host):
+    db = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
+                         conn_type='sql')
+    res = db.request(path='/me/db/delete_a_connection_request',
+                     payload={'sp_host': sp_host})
+    return res
 
 
 def fetch_a_dump(sp_host):
@@ -44,7 +53,7 @@ def fetch_a_dump(sp_host):
     return results
 
 
-def add_a_connection_request(sp_host, engine_name):
+def add_a_connection_request(sp_host, engine_name, scheme):
     db = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
                          conn_type='sql')
     config = db.request(path='/me/db/get_config_variables', method='GET')
@@ -53,7 +62,8 @@ def add_a_connection_request(sp_host, engine_name):
         dump = sp.request(path='/sp/gateway/get_a_dump',
                           params={'me_host': config[CONFIG_HOST_NAME]})
         db.request(path='/me/db/add_a_connection_request',
-                   payload={'in_or_out': 'in', 'sp_host': sp_host})
+                   payload={'in_or_out': 'in', 'sp_host': sp_host,
+                            'engine_name': engine_name, 'scheme': scheme})
         db.request(path='/me/db/add_new_sp_server',
                    payload={'host': sp_host, 'summary': dump})
         db.request(path='/me/db/approve_a_connection_request',
@@ -64,7 +74,7 @@ def add_a_connection_request(sp_host, engine_name):
     else:
         db.request(path='/me/db/add_a_connection_request',
                    payload={'in_or_out': 'in', 'sp_host': sp_host,
-                            'engine_name': engine_name})
+                            'engine_name': engine_name, 'scheme': scheme})
         return {'sp_host': sp_host}
 
 

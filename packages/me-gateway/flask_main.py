@@ -4,55 +4,39 @@ from flask import jsonify
 import meta_gateway
 
 META_GATE_PORT = 10080
+BASEURL = '/v0/me/gateway/'
 app = flask.Flask(__name__)
 
 
-@app.route('/me/gateway/add_new_sp_server', methods=['POST'])
-def add_new_sp_server():
-    data = flask.request.get_json()
-    sp_host = data['host']
-    summary = data['summary']
-    result = meta_gateway.add_new_sp_server(sp_host, summary)
+@app.route(BASEURL + 'add_a_summary', methods=['POST'])
+def add_a_summary():
+    summary = flask.request.get_json()
+    result = meta_gateway.add_new_sp_server(summary)
     return jsonify(result)
 
 
-@app.route('/me/gateway/add_a_dump', methods=['POST'])
-def add_a_dump():
-    data = flask.request.get_json()
-    sp_host = data['host']
-    summary = data['summary']
-    result = meta_gateway.add_new_sp_server(sp_host, summary)
-    return jsonify(result)
-
-
-@app.route('/me/gateway/fetch_a_dump', methods=['GET'])
-def fetch_a_dump():
-    sp_host = flask.request.args.get('sp_host')
-    dump = meta_gateway.fetch_a_dump(sp_host)
-    return jsonify(dump)
-
-
-@app.route('/me/gateway/add_a_connection_request', methods=['POST'])
+@app.route(BASEURL + 'add_a_connection_request', methods=['POST'])
 def add_a_connection_request():
     data = flask.request.get_json()
     sp_host = data['sp_host']
     engine_name = data['engine_name']
-    result = meta_gateway.add_a_connection_request(sp_host, engine_name)
+    scheme = data['scheme']
+    result = meta_gateway.add_a_connection_request(sp_host, engine_name,
+                                                   scheme)
     return jsonify(result)
 
 
-@app.route('/me/gateway/send_a_connection_request', methods=['POST'])
+@app.route(BASEURL + 'delete_a_connection_request', methods=['DELETE'])
 def send_a_connection_request():
     data = flask.request.get_json()
     sp_host = data['sp_host']
-    res = meta_gateway.send_a_connection_request(sp_host)
+    res = meta_gateway.delete_a_connection_request(sp_host)
     return jsonify(res)
 
 
-@app.route('/me/gateway/retrieve', methods=['GET'])
+@app.route(BASEURL + 'retrieve', methods=['GET'])
 def retrieve():
     queries = flask.request.args.get('queries')
-    queries = queries.split(' ')
     max_urls = flask.request.args.get('max_urls', int)
     sp_host = flask.request.args.get('sp_host')
     results = meta_gateway.retrieve(sp_host, queries, max_urls)
