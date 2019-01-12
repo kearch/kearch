@@ -63,7 +63,7 @@ def send_a_dump(sp_host, me_host, summary):
     return result
 
 
-def add_a_connection_request(me_host):
+def add_a_connection_request(me_host, scheme):
     db = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
                          conn_type='sql')
     config = db.request(path='/sp/db/get_config_variables', method='GET')
@@ -74,7 +74,8 @@ def add_a_connection_request(me_host):
         return res
     else:
         res = db.request(path='/sp/db/add_a_connection_request',
-                         payload={'in_or_out': 'in', 'me_host': me_host})
+                         payload={'in_or_out': 'in', 'me_host': me_host,
+                                  'scheme': scheme})
         return res
 
 
