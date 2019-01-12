@@ -32,7 +32,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Summary'
-  /add_a_conenction_request:
+  /add_a_connection_request:
     post:
       summary: Add a connection request sent from meta server to specialist server.
       requestBody:
@@ -52,7 +52,7 @@ paths:
                 properties:
                   me_host:
                     type: string
-  /delete_a_conenction_request:
+  /delete_a_connection_request:
     delete:
       summary: Delete a connection request sent from meta server to specialist server.
       parameters:
@@ -85,11 +85,6 @@ paths:
           schema:
             type: integer
           description: Max number of URLs to retrive from specialist servers
-        - in: query
-          name: sp_host
-          schema:
-            type: string
-          description: A host name to retrieve results from.
       responses:
         '200':
           description: Search results.
@@ -105,6 +100,8 @@ components:
     ConnectionRequestOnSP:
       properties:
         me_host:
+          type: string
+        scheme:
           type: string
     Summary:
       properties:

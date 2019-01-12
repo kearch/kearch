@@ -4,56 +4,37 @@ from flask import jsonify
 import specialist_gateway
 
 SPECIALIST_GATE_PORT = 10080
+BASEURL = '/v0/sp/gateway/'
 app = flask.Flask(__name__)
 
 
-@app.route('/sp/gateway/send_DB_summary', methods=['POST'])
-def send_DB_summary():
-    data = flask.request.get_json()
-    sp_host = data['sp_host']
-    me_host = data['me_host']
-    summary = data['summary']
-    result = specialist_gateway.send_a_dump(sp_host, me_host, summary)
-    return jsonify(result)
-
-
-@app.route('/sp/gateway/send_a_dump', methods=['POST'])
-def send_a_dump():
-    data = flask.request.get_json()
-    sp_host = data['sp_host']
-    me_host = data['me_host']
-    summary = data['summary']
-    result = specialist_gateway.send_a_dump(sp_host, me_host, summary)
-    return jsonify(result)
-
-
-@app.route('/sp/gateway/get_a_dump', methods=['GET'])
+@app.route(BASEURL + 'get_a_summary', methods=['GET'])
 def get_a_dump():
     me_host = flask.request.args.get('me_host')
     result = specialist_gateway.get_a_dump(me_host)
     return jsonify(result)
 
 
-@app.route('/sp/gateway/add_a_connection_request', methods=['POST'])
+@app.route(BASEURL + 'add_a_connection_request', methods=['POST'])
 def add_a_connection_request():
     data = flask.request.get_json()
     me_host = data['me_host']
-    result = specialist_gateway.add_a_connection_request(me_host)
+    scheme = data['scheme']
+    result = specialist_gateway.add_a_connection_request(me_host, scheme)
     return jsonify(result)
 
 
-@app.route('/sp/gateway/send_a_connection_request', methods=['POST'])
-def send_a_connection_request():
+@app.route(BASEURL + 'delete_a_connection_request', methods=['DELETE'])
+def delete_a_connection_request():
     data = flask.request.get_json()
     me_host = data['me_host']
-    res = specialist_gateway.send_a_connection_request(me_host)
-    return jsonify(res)
+    result = specialist_gateway.delete_a_connection_request(me_host)
+    return jsonify(result)
 
 
-@app.route('/sp/gateway/retrieve', methods=['GET'])
+@app.route(BASEURL + 'retrieve', methods=['GET'])
 def retrieve():
     queries = flask.request.args.get('queries')
-    queries = queries.split(' ')
     max_urls = flask.request.args.get('max_urls', int)
     result = specialist_gateway.retrieve(queries, max_urls)
     return jsonify(result)

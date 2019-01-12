@@ -32,9 +32,9 @@ def search():
             params['sp'] = sp
 
         results = query_processor_requester.request(
-            path='/retrieve', method='GET', params=params)
+            path='/me/query-processor/retrieve', method='GET', params=params)
         sp_servers = database_requester.request(
-            path='/list_up_sp_servers', method='GET')
+            path='/me/db/list_up_sp_servers', method='GET')
 
         print('results = ', results, file=sys.stderr)
 
@@ -50,7 +50,7 @@ def index():
     database_requester = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type="sql")
     sp_servers = database_requester.request(
-        path='/list_up_sp_servers', method='GET')
+        path='/me/db/list_up_sp_servers', method='GET')
 
     return flask.render_template('index.html', sp_servers=sp_servers)
 

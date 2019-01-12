@@ -31,7 +31,7 @@ def get_tfidf_sum_statement(queries):
     return ' + '.join(tfidfs)
 
 
-def dump_summary_from_sp_db(cur):
+def get_summary_from_sp_db(cur):
     page_size = 1000
     statement = """
     SELECT `id`, `word`, `frequency`
@@ -40,7 +40,7 @@ def dump_summary_from_sp_db(cur):
     LIMIT %s
     """
 
-    sp_summary = {}
+    dump = {}
     prev_rowcount = -1
     last_word_id = 0
     while prev_rowcount != 0:
@@ -51,7 +51,7 @@ def dump_summary_from_sp_db(cur):
             last_word_id = row[0]
             word = row[1]
             cnt = row[2]
-            sp_summary[word] = cnt
+            dump[word] = cnt
         prev_rowcount = cur.rowcount
 
     statement = """
@@ -62,9 +62,18 @@ def dump_summary_from_sp_db(cur):
     cur.execute(statement)
     engine_name = cur.fetchone()[1]
 
+    statement = """
+    SELECT `name`, `value`
+    FROM `config_variables`
+    WHERE `name` = 'host_name'
+    """
+    cur.execute(statement)
+    host_name = cur.fetchone()[1]
+
     return {
         'engine_name': engine_name,
-        'dump': sp_summary
+        'sp_host': host_name,
+        'dump': dump
     }
 
 
@@ -255,12 +264,13 @@ class KearchRequester(object):
 
             elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
                     splited_path[2] == 'add_a_connection_request':
+                scheme = payload['scheme']
                 in_or_out = payload['in_or_out']
                 me_host = payload['me_host']
                 hosts_insert_statement = """
-                INSERT IGNORE INTO me_hosts (`name`) VALUES (%s)
+                INSERT IGNORE INTO me_hosts (`scheme`, `name`) VALUES (%s, %s)
                 """
-                cur.execute(hosts_insert_statement, (me_host,))
+                cur.execute(hosts_insert_statement, (scheme, me_host))
                 db.commit()
                 host_id_statement = """
                 SELECT `id` FROM `me_hosts` WHERE `name` = %s
@@ -283,13 +293,15 @@ class KearchRequester(object):
             elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
                     splited_path[2] == 'add_a_connection_request':
                 in_or_out = payload['in_or_out']
+                scheme = payload['scheme']
                 sp_host = payload['sp_host']
                 engine_name = payload.get('engine_name', '')
                 hosts_insert_statement = """
-                INSERT IGNORE INTO sp_hosts (`name`, `engine_name`)
-                VALUES (%s, %s)
+                INSERT IGNORE INTO sp_hosts (`scheme`, `name`, `engine_name`)
+                VALUES (%s, %s, %s)
                 """
-                cur.execute(hosts_insert_statement, (sp_host, engine_name))
+                cur.execute(hosts_insert_statement,
+                            (scheme, sp_host, engine_name))
                 db.commit()
                 host_id_statement = """
                 SELECT `id` FROM `sp_hosts` WHERE `name` = %s
@@ -348,7 +360,22 @@ class KearchRequester(object):
                 """.format(table_name)
                 cur.execute(requests_statement, (host_id,))
                 db.commit()
-
+            elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'delete_a_connection_request':
+                me_host = payload['me_host']
+                statement = """DELETE FROM %s WHERE `me_host` = %s"""
+                cur.execute(statement, ('in_requests', me_host))
+                cur.execute(statement, ('out_requests', me_host))
+                db.commit()
+                ret = {'me_host': me_host}
+            elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
+                    splited_path[2] == 'delete_a_connection_request':
+                sp_host = payload['sp_host']
+                statement = """DELETE FROM %s WHERE `sp_host` = %s"""
+                cur.execute(statement, ('in_requests', sp_host))
+                cur.execute(statement, ('out_requests', sp_host))
+                db.commit()
+                ret = {'sp_host': sp_host}
             elif splited_path[1] == 'db' and \
                     splited_path[2] == 'get_config_variables':
                 select_statement = """
@@ -498,7 +525,7 @@ class KearchRequester(object):
                 ret = cur.rowcount
             elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
                     splited_path[2] == 'dump_database':
-                ret = dump_summary_from_sp_db(cur)
+                ret = get_summary_from_sp_db(cur)
             elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
                     splited_path[2] == 'update_dump':
                 summary_records = [(word, freq)
@@ -533,11 +560,11 @@ class KearchRequester(object):
                     ret[word][host] = freq
             elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
                     splited_path[2] == 'add_new_sp_server':
-                sp_host = payload['host']
-                engine_name = payload['summary'].get('engine_name', '')
-                summary = payload['summary']['dump']
+                sp_host = payload['sp_host']
+                engine_name = payload['engine_name']
+                dump = payload['dump']
                 sp_server_records = [(word, sp_host, frequency)
-                                     for word, frequency in summary.items()
+                                     for word, frequency in dump.items()
                                      if len(word) <= MAX_WORD_LEN]
 
                 sp_host_statement = """

@@ -165,7 +165,7 @@ function send_db_summary() {
     alert('failed');
     return false;
   });
-  xhr.open('POST', '/send_db_summary', true);
+  xhr.open('POST', '/sp/admin/send_db_summary', true);
 
   xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
   xhr.send(formData);

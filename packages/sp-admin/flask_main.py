@@ -21,6 +21,9 @@ SP_ADMIN_PORT = 10080
 
 DEFAULT_DICT_EN_FILE = 'en_default_dict.txt'
 
+ME_GATEWAY_PORT = 32400
+ME_GATEWAY_BASEURL = '/v0/me/gateway/'
+
 app = flask.Flask(__name__)
 app.secret_key = os.urandom(24)
 
@@ -80,6 +83,16 @@ def load_user(userid):
     return User(userid)
 
 
+def send_a_summary(me_host):
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    summary = db_req.request(path='/sp/db/dump_database')
+    gw_req = KearchRequester(me_host, ME_GATEWAY_PORT, REQUESTER_NAME)
+    res = gw_req.request(path=ME_GATEWAY_BASEURL + 'add_a_summary',
+                         payload=summary, method='POST')
+    return res
+
+
 @app.route('/sp/admin/update_password', methods=['POST'])
 @login_required
 def update_password():
@@ -106,18 +119,11 @@ def approve_a_connection_request():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
 
-    summary = db_req.request(path='/sp/db/dump_database')
-    config = db_req.request(path='/sp/db/get_config_variables')
-    pld = {'sp_host': config['host_name'],
-           'me_host': me_host, 'summary': summary}
-
-    gw_req = KearchRequester(
-        GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
-    gw_req.request(path='/sp/gateway/send_DB_summary',
-                   payload=pld, method='POST')
+    send_a_summary(me_host)
 
     db_req.request('/sp/db/approve_a_connection_request',
                    payload={'in_or_out': 'in', 'me_host': me_host})
+
     return flask.redirect(flask.url_for("index"))
 
 
@@ -128,33 +134,22 @@ def send_a_connection_request():
 
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    payload = {'me_host': me_host, 'in_or_out': 'out', 'scheme': 'http'}
+
     db_req.request(path='/sp/db/add_a_connection_request',
-                   payload={'me_host': me_host, 'in_or_out': 'out'},
-                   method='POST')
+                   payload=payload, method='POST')
 
-    gw_req = KearchRequester(
-        GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
-    gw_req.request(path='/sp/gateway/send_a_connection_request',
-                   payload={'me_host': me_host}, method='POST')
+    config = db_req.request(path='/sp/db/get_config_variables')
+    sp_host = config['host_name']
+    engine_name = config['engine_name']
+    payload = {'sp_host': sp_host,
+               'engine_name': engine_name, 'scheme': 'http'}
+
+    gw_req = KearchRequester(me_host, ME_GATEWAY_PORT, REQUESTER_NAME)
+    gw_req.request(path=ME_GATEWAY_BASEURL + 'add_a_connection_request',
+                   payload=payload, method='POST')
+
     return flask.redirect(flask.url_for("index"))
-
-
-@app.route('/sp/db/send_db_summary', methods=['POST'])
-@login_required
-def send_db_summary():
-    me_host = flask.request.form['me_host']
-    sp_host = flask.request.form['sp_host']
-
-    db_req = KearchRequester(
-        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
-    summary = db_req.request(path='/sp/db/dump_database')
-    pld = {'sp_host': sp_host, 'me_host': me_host, 'summary': summary}
-
-    gw_req = KearchRequester(
-        GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
-    ret = gw_req.request(path='/sp/gateway/send_DB_summary',
-                         payload=pld, method='POST')
-    return jsonify(ret)
 
 
 @app.route('/sp/admin/init_crawl_urls', methods=['POST'])

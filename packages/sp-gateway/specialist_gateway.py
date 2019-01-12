@@ -47,8 +47,7 @@ def retrieve(queries, max_urls):
     kr = KearchRequester(QUERY_PROCESSOR_HOST,
                          QUERY_PROCESSOR_PORT, REQUESTER_NAME)
     results = kr.request(path='/sp/query-processor/retrieve', method='GET',
-                         params={'queries': ' '.join(queries),
-                                 'max_urls': max_urls})
+                         params={'queries': queries, 'max_urls': max_urls})
     return results
 
 
@@ -63,7 +62,7 @@ def send_a_dump(sp_host, me_host, summary):
     return result
 
 
-def add_a_connection_request(me_host):
+def add_a_connection_request(me_host, scheme):
     db = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
                          conn_type='sql')
     config = db.request(path='/sp/db/get_config_variables', method='GET')
@@ -74,8 +73,17 @@ def add_a_connection_request(me_host):
         return res
     else:
         res = db.request(path='/sp/db/add_a_connection_request',
-                         payload={'in_or_out': 'in', 'me_host': me_host})
+                         payload={'in_or_out': 'in', 'me_host': me_host,
+                                  'scheme': scheme})
         return res
+
+
+def delete_a_connection_request(me_host):
+    db = KearchRequester(DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME,
+                         conn_type='sql')
+    res = db.request(path='/sp/db/delete_a_connection_request',
+                     payload={'me_host': me_host})
+    return res
 
 
 def get_a_dump(me_host):
