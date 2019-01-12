@@ -139,7 +139,7 @@ def send_a_connection_request():
     return flask.redirect(flask.url_for("index"))
 
 
-@app.route('/sp/db/send_db_summary', methods=['POST'])
+@app.route('/sp/admin/send_db_summary', methods=['POST'])
 @login_required
 def send_db_summary():
     me_host = flask.request.form['me_host']
