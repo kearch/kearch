@@ -134,13 +134,20 @@ def send_a_connection_request():
 
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    payload = {'me_host': me_host, 'in_or_out': 'out', 'scheme': 'http'}
+
     db_req.request(path='/sp/db/add_a_connection_request',
-                   payload={'me_host': me_host, 'in_or_out': 'out'},
-                   method='POST')
+                   payload=payload, method='POST')
+
+    config = db_req.request(path='/sp/db/get_config_variables')
+    sp_host = config['host_name']
+    engine_name = config['engine_name']
+    payload = {'sp_host': sp_host,
+               'engine_name': engine_name, 'scheme': 'http'}
 
     gw_req = KearchRequester(me_host, ME_GATEWAY_PORT, REQUESTER_NAME)
     gw_req.request(path=ME_GATEWAY_BASEURL + 'add_a_connection_request',
-                   payload={'me_host': me_host}, method='POST')
+                   payload=payload, method='POST')
 
     return flask.redirect(flask.url_for("index"))
 
