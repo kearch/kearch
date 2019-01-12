@@ -38,7 +38,7 @@ paths:
                     type: string
                   engine_name:
                     type: string
-  /add_a_conenction_request:
+  /add_a_connection_request:
     post:
       summary: Add a connection request sent from specialist server to meta server.
       requestBody:
@@ -58,7 +58,7 @@ paths:
                 properties:
                   sp_host:
                     type: string
-  /delete_a_conenction_request:
+  /delete_a_connection_request:
     delete:
       summary: Delete a connection request sent from specialist server to this meta server.
       parameters:

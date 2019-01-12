@@ -32,7 +32,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Summary'
-  /add_a_conenction_request:
+  /add_a_connection_request:
     post:
       summary: Add a connection request sent from meta server to specialist server.
       requestBody:
@@ -52,7 +52,7 @@ paths:
                 properties:
                   me_host:
                     type: string
-  /delete_a_conenction_request:
+  /delete_a_connection_request:
     delete:
       summary: Delete a connection request sent from meta server to specialist server.
       parameters:
