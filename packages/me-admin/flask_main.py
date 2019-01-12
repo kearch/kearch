@@ -15,9 +15,12 @@ DATABASE_PORT = 3306
 GATEWAY_HOST = 'me-gateway.kearch.svc.cluster.local'
 GATEWAY_PORT = 10080
 
+SP_GATEWAY_PORT = 32500
+SP_GATEWAY_BASEURL = '/v0/sp/gateway/'
+
 REQUESTER_NAME = 'me_admin'
 
-SP_ADMIN_PORT = 10080
+ME_ADMIN_PORT = 10080
 
 app = flask.Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -146,36 +149,44 @@ def update_config():
 @app.route('/me/admin/approve_a_connection_request', methods=['POST'])
 @login_required
 def approve_a_connection_request():
-    gt_req = KearchRequester(GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
+    sp_host = flask.request.form['sp_host']
+
+    gw_req = KearchRequester(sp_host, SP_GATEWAY_PORT, REQUESTER_NAME)
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+    config = db_req.request(path='/me/db/get_config_variables')
+    me_host = config['host_name']
 
-    sp_host = flask.request.form['sp_host']
-    dump = gt_req.request(path='/me/gateway/fetch_a_dump',
-                          params={'sp_host': sp_host})
+    summary = gw_req.request(path=SP_GATEWAY_BASEURL + 'get_a_summary',
+                             params={'me_host': me_host})
     db_req.request(path='/me/db/add_new_sp_server',
-                   payload={'host': sp_host, 'summary': dump}, method='POST')
+                   payload=summary, method='POST')
     db_req.request(path='/me/db/approve_a_connection_request',
                    payload={'in_or_out': 'in', 'sp_host': sp_host},
                    method='POST')
-    return jsonify(dump)
+    return jsonify(summary)
 
 
 @app.route('/me/admin/send_a_connection_request', methods=['POST'])
 @login_required
 def send_a_connection_request():
     sp_host = flask.request.form['sp_host']
-    gt_req = KearchRequester(GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
 
+    config = db_req.request(path='/me/db/get_config_variables')
+    me_host = config['host_name']
+
+    gw_req = KearchRequester(sp_host, SP_GATEWAY_PORT, REQUESTER_NAME)
+
     db_req.request(path='/me/db/add_a_connection_request',
                    payload={'in_or_out': 'out', 'sp_host': sp_host})
-    gt_req.request(path='/me/gateway/send_a_connection_request',
-                   payload={'sp_host': sp_host}, method='POST')
+    gw_req.request(path=SP_GATEWAY_BASEURL + 'send_a_connection_request',
+                   payload={'me_host': me_host, 'scheme': 'http'},
+                   method='POST')
     return flask.redirect(flask.url_for("index"))
 
 
 if __name__ == '__main__':
     app.debug = True
-    app.run(host='0.0.0.0', port=SP_ADMIN_PORT)  # どこからでもアクセス可能に
+    app.run(host='0.0.0.0', port=ME_ADMIN_PORT)  # どこからでもアクセス可能に
