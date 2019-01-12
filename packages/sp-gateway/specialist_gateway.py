@@ -47,8 +47,7 @@ def retrieve(queries, max_urls):
     kr = KearchRequester(QUERY_PROCESSOR_HOST,
                          QUERY_PROCESSOR_PORT, REQUESTER_NAME)
     results = kr.request(path='/sp/query-processor/retrieve', method='GET',
-                         params={'queries': ' '.join(queries),
-                                 'max_urls': max_urls})
+                         params={'queries': queries, 'max_urls': max_urls})
     return results
 
 

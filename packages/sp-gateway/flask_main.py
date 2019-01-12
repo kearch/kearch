@@ -24,18 +24,9 @@ def add_a_connection_request():
     return jsonify(result)
 
 
-@app.route('/sp/gateway/send_a_connection_request', methods=['POST'])
-def send_a_connection_request():
-    data = flask.request.get_json()
-    me_host = data['me_host']
-    res = specialist_gateway.send_a_connection_request(me_host)
-    return jsonify(res)
-
-
-@app.route('/sp/gateway/retrieve', methods=['GET'])
+@app.route(BASEURL + 'retrieve', methods=['GET'])
 def retrieve():
     queries = flask.request.args.get('queries')
-    queries = queries.split(' ')
     max_urls = flask.request.args.get('max_urls', int)
     result = specialist_gateway.retrieve(queries, max_urls)
     return jsonify(result)
