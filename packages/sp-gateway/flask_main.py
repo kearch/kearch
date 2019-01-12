@@ -24,6 +24,14 @@ def add_a_connection_request():
     return jsonify(result)
 
 
+@app.route(BASEURL + 'delete_a_connection_request', methods=['DELETE'])
+def delete_a_connection_request():
+    data = flask.request.get_json()
+    me_host = data['me_host']
+    result = specialist_gateway.delete_a_connection_request(me_host)
+    return jsonify(result)
+
+
 @app.route(BASEURL + 'retrieve', methods=['GET'])
 def retrieve():
     queries = flask.request.args.get('queries')
