@@ -8,6 +8,10 @@
     "node": ">=8.0.0 <10",
     "yarn": ">=1.12.0"
   },
+  "scripts": {
+    "build": "webpack",
+    "build-watch": "webpack --watch --color"
+  },
   "dependencies": {
     "materialize-css": "^1.0.0-rc.2"
   },
