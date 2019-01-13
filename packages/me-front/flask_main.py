@@ -9,7 +9,6 @@ QUERY_PROCESSOR_PORT = 10080
 DATABASE_HOST = 'me-db.kearch.svc.cluster.local'
 DATABASE_PORT = 3306
 
-REQUESTER_NAME = 'meta_front'
 MAX_URLS = 100
 
 
@@ -23,9 +22,9 @@ def search():
         sp = flask.request.args['sp']
 
         query_processor_requester = KearchRequester(
-            QUERY_PROCESSOR_HOST, QUERY_PROCESSOR_PORT, REQUESTER_NAME)
+            QUERY_PROCESSOR_HOST, QUERY_PROCESSOR_PORT)
         database_requester = KearchRequester(
-            DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type="sql")
+            DATABASE_HOST, DATABASE_PORT, conn_type="sql")
 
         params = {'query': query, 'max_urls': MAX_URLS}
         if sp != "":
@@ -48,7 +47,7 @@ def search():
 @app.route("/")
 def index():
     database_requester = KearchRequester(
-        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type="sql")
+        DATABASE_HOST, DATABASE_PORT, conn_type="sql")
     sp_servers = database_requester.request(
         path='/me/db/list_up_sp_servers', method='GET')
 

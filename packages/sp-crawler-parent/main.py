@@ -22,8 +22,6 @@ ELASTIC_TYPE = 'webpage'
 NUM_THREAD = 10
 SP_CHILD_TIMEOUT = 300
 
-REQUESTER_NAME = 'specialist_crawler_parent'
-
 MAX_URLS = 20
 
 NUM_OF_WORDS_FOR_DUMP = 100
@@ -95,7 +93,7 @@ def crawl_a_page(url):
         return ret
     else:
         crawler_requester = KearchRequester(
-            CRAWLER_CHILD_HOST, CRAWLER_CHILD_PORT, REQUESTER_NAME)
+            CRAWLER_CHILD_HOST, CRAWLER_CHILD_PORT)
         try:
             print('requesting   /crawl_a_page?url={} ...'.format(url))
             ret = crawler_requester.request(
@@ -130,9 +128,9 @@ def exclude_deeper_link(original, derives):
 
 if __name__ == '__main__':
     database_requester = KearchRequester(
-        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+        DATABASE_HOST, DATABASE_PORT, conn_type='sql')
     elastic_requester = KearchRequester(
-        ELASTIC_HOST, ELASTIC_PORT, REQUESTER_NAME, conn_type='elastic')
+        ELASTIC_HOST, ELASTIC_PORT, conn_type='elastic')
     robots_checker = RobotsChecker()
 
     if DEBUG_UNIT_TEST:

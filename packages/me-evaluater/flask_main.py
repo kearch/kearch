@@ -7,7 +7,6 @@ from kearch_common.requester import KearchRequester
 
 DATABASE_HOST = 'me-db.kearch.svc.cluster.local'
 DATABASE_PORT = 3306
-REQUESTER_NAME = 'me-evaluater'
 
 timestamp = dict()
 app = flask.Flask(__name__)
@@ -16,7 +15,7 @@ evaluater = kearch_evaluater.evaluater.Evaluater()
 
 def update_param_file(filename):
     db_req = KearchRequester(
-        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+        DATABASE_HOST, DATABASE_PORT, conn_type='sql')
     ret = db_req.request(path='/me/db/check_binary_file_timestamp',
                          params={'name': filename})
     dt = ret['updated_at']

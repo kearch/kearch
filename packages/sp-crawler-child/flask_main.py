@@ -5,7 +5,7 @@
 import sys
 import flask
 from flask import jsonify
-import crawler_child
+import sp_crawler_child
 
 app = flask.Flask(__name__)
 
@@ -14,7 +14,7 @@ app = flask.Flask(__name__)
 def crawl_a_page():
     url = flask.request.args.get('url')
     print(url, file=sys.stderr)
-    result = crawler_child.url_to_json(url)
+    result = sp_crawler_child.url_to_json(url)
     return jsonify(result)
 
 

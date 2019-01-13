@@ -8,7 +8,6 @@ import kearch_classifier.classifier
 DATABASE_HOST = 'sp-db.kearch.svc.cluster.local'
 DATABASE_PORT = 3306
 SP_CLASSIFIER_PORT = 10080
-REQUESTER_NAME = 'specialist_classifier'
 
 timestamp = dict()
 app = flask.Flask(__name__)
@@ -16,7 +15,7 @@ app = flask.Flask(__name__)
 
 def update_param_file(filename):
     db_req = KearchRequester(
-        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+        DATABASE_HOST, DATABASE_PORT, conn_type='sql')
     try:
         ret = db_req.request(path='/sp/db/check_binary_file_timestamp',
                              params={'name': filename})

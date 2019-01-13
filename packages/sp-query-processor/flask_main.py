@@ -1,7 +1,7 @@
 import flask
 from flask import jsonify
 
-import specialist_query_processor
+import sp_query_processor
 
 app = flask.Flask(__name__)
 
@@ -11,7 +11,7 @@ def retrieve():
     queries = flask.request.args.get('queries')
     queries = queries.split(' ')
     max_urls = flask.request.args.get('max_urls', int)
-    result = specialist_query_processor.retrieve(queries, max_urls)
+    result = sp_query_processor.retrieve(queries, max_urls)
     return jsonify(result)
 
 

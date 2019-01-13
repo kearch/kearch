@@ -110,13 +110,11 @@ class KearchRequester(object):
     """Interface for communicating between containers or servers."""
 
     def __init__(self,
-                 host='localhost', port=None,
-                 requester_name='', conn_type='json'):
+                 host='localhost', port=None, conn_type='json'):
         super(KearchRequester, self).__init__()
         self.host = host
         self.port = port
         self.conn_type = conn_type
-        self.requester_name = requester_name
 
     def __repr__(self):
         return '<KearchRequester host: {}, port: {}, conn_type: {}>'.\
