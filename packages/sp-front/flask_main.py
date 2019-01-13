@@ -3,7 +3,6 @@ from kearch_common.requester import KearchRequester
 
 QUERY_PROCESSOR_HOST = 'sp-query-processor.kearch.svc.cluster.local'
 QUERY_PROCESSOR_PORT = 10080
-REQUESTER_NAME = 'specialist_front'
 MAX_URLS = 100
 
 
@@ -15,8 +14,7 @@ def search():
     if flask.request.method == 'GET':
         query = flask.request.args['query']
         queries = query.split()
-        kr = KearchRequester(QUERY_PROCESSOR_HOST,
-                             QUERY_PROCESSOR_PORT, REQUESTER_NAME)
+        kr = KearchRequester(QUERY_PROCESSOR_HOST, QUERY_PROCESSOR_PORT)
         results = kr.request(path='/sp/query-processor/retrieve', method='GET',
                              params={'queries': ' '.join(queries),
                                      'max_urls': MAX_URLS})

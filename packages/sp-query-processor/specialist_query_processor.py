@@ -6,12 +6,10 @@ ELASTIC_PORT = 9200
 ELASTIC_INDEX = 'sp'
 ELASTIC_TYPE = 'webpage'
 
-REQUESTER_NAME = 'specialist_query_processor'
-
 
 def retrieve(queries, max_urls):
     elastic_requester = KearchRequester(
-        ELASTIC_HOST, ELASTIC_PORT, REQUESTER_NAME, conn_type='elastic')
+        ELASTIC_HOST, ELASTIC_PORT, conn_type='elastic')
 
     query = ' '.join(queries)
     payload = {'query': {'multi_match': {'query': query,

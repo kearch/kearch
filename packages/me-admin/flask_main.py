@@ -18,8 +18,6 @@ GATEWAY_PORT = 10080
 SP_GATEWAY_PORT = 32500
 SP_GATEWAY_BASEURL = '/v0/sp/gateway/'
 
-REQUESTER_NAME = 'me_admin'
-
 ME_ADMIN_PORT = 10080
 
 app = flask.Flask(__name__)
@@ -43,7 +41,7 @@ def login():
         password = request.form['password']
 
         db_req = KearchRequester(
-            DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+            DATABASE_HOST, DATABASE_PORT, conn_type='sql')
         auth_info = db_req.request(path='/me/db/get_authentication')
         is_valid = False
         for d in auth_info.values():
@@ -93,7 +91,7 @@ def update_password():
     h = hashlib.sha512(password.encode('utf-8')).hexdigest()
     print(u, h, file=sys.stderr)
     db_req = KearchRequester(
-        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+        DATABASE_HOST, DATABASE_PORT, conn_type='sql')
     ret = db_req.request(path='/me/db/update_password_hash',
                          payload={'username': u, 'password_hash': h},
                          method='POST')
@@ -104,7 +102,7 @@ def update_password():
 @login_required
 def learn_params_for_evaluater():
     db_req = KearchRequester(
-        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+        DATABASE_HOST, DATABASE_PORT, conn_type='sql')
     summaries = db_req.request(path='/me/db/get_sp_summaries')
     e = kearch_evaluater.evaluater.Evaluater()
     e.learn_params(summaries)
@@ -122,7 +120,7 @@ def learn_params_for_evaluater():
 @login_required
 def index():
     db_req = KearchRequester(
-        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+        DATABASE_HOST, DATABASE_PORT, conn_type='sql')
     config = db_req.request(path='/me/db/get_config_variables')
     requests = db_req.request(path='/me/db/get_connection_requests')
     sp_servers = db_req.request(path='/me/db/list_up_sp_servers')
@@ -140,7 +138,7 @@ def update_config():
     if 'host_name' in flask.request.form:
         update['host_name'] = flask.request.form['host_name']
     db_req = KearchRequester(
-        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+        DATABASE_HOST, DATABASE_PORT, conn_type='sql')
     db_req.request(path='/me/db/set_config_variables',
                    payload=update, method='POST')
     return flask.redirect(flask.url_for("index"))
@@ -151,9 +149,9 @@ def update_config():
 def approve_a_connection_request():
     sp_host = flask.request.form['sp_host']
 
-    gw_req = KearchRequester(sp_host, SP_GATEWAY_PORT, REQUESTER_NAME)
+    gw_req = KearchRequester(sp_host, SP_GATEWAY_PORT)
     db_req = KearchRequester(
-        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+        DATABASE_HOST, DATABASE_PORT, conn_type='sql')
     config = db_req.request(path='/me/db/get_config_variables')
     me_host = config['host_name']
 
@@ -172,12 +170,12 @@ def approve_a_connection_request():
 def send_a_connection_request():
     sp_host = flask.request.form['sp_host']
     db_req = KearchRequester(
-        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+        DATABASE_HOST, DATABASE_PORT, conn_type='sql')
 
     config = db_req.request(path='/me/db/get_config_variables')
     me_host = config['host_name']
 
-    gw_req = KearchRequester(sp_host, SP_GATEWAY_PORT, REQUESTER_NAME)
+    gw_req = KearchRequester(sp_host, SP_GATEWAY_PORT)
 
     db_req.request(path='/me/db/add_a_connection_request',
                    payload={'in_or_out': 'out', 'sp_host': sp_host})

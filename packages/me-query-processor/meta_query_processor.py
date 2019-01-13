@@ -8,7 +8,6 @@ EVALUATER_PORT = 10080
 GATEWAY_HOST = 'me-gateway.kearch.svc.cluster.local'
 GATEWAY_PORT = 10080
 ME_GATEWAY_BASEURL = '/v0/me/gateway/'
-REQUESTER_NAME = 'meta_query_processor'
 SP_HOST_RATIO = [8, 1, 1]
 NUM_THREAD = 10
 
@@ -19,7 +18,7 @@ class MeQueryProcessorException(Exception):
 
 
 def get_result_from_sp(sp_host, query, max_urls):
-    gw_req = KearchRequester(GATEWAY_HOST, GATEWAY_PORT, REQUESTER_NAME)
+    gw_req = KearchRequester(GATEWAY_HOST, GATEWAY_PORT)
     r = gw_req.request(
         path=ME_GATEWAY_BASEURL + 'retrieve',
         params={'sp_host': sp_host, 'queries': query, 'max_urls': max_urls})
@@ -36,7 +35,7 @@ def get_result_from_sp_tuple(t):
 
 def retrieve(query, max_urls, sp=None):
     if sp is None:
-        e_req = KearchRequester(EVALUATER_HOST, EVALUATER_PORT, REQUESTER_NAME)
+        e_req = KearchRequester(EVALUATER_HOST, EVALUATER_PORT)
         sp_hosts = e_req.request(path='/me/evaluater/evaluate',
                                  params={'query': query})
         a = list(sp_hosts.items())

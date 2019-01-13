@@ -14,7 +14,6 @@ DATABASE_HOST = 'sp-db.kearch.svc.cluster.local'
 DATABASE_PORT = 3306
 CLASSIFIER_HOST = 'sp-classifier.kearch.svc.cluster.local'
 CLASSIFIER_PORT = 10080
-REQUESTER_NAME = 'sp-crawler-child'
 
 confidence_threshold = -1.0e-10
 n_outer_derives = 100
@@ -61,7 +60,7 @@ def url_to_webpage(url):
         return None
 
     cl_req = KearchRequester(
-        CLASSIFIER_HOST, CLASSIFIER_PORT, REQUESTER_NAME)
+        CLASSIFIER_HOST, CLASSIFIER_PORT)
     payload = {'body_words': w.words, 'title_words': w.title_words}
 
     try:
@@ -78,7 +77,7 @@ def url_to_webpage(url):
 
 def update_param_file(filename):
     db_req = KearchRequester(
-        DATABASE_HOST, DATABASE_PORT, REQUESTER_NAME, conn_type='sql')
+        DATABASE_HOST, DATABASE_PORT, conn_type='sql')
     try:
         ret = db_req.request(path='/sp/db/check_binary_file_timestamp',
                              params={'name': filename})
