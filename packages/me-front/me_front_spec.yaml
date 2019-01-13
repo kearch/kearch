@@ -23,6 +23,7 @@ paths:
           name: query
           schema:
             type: string
+          required: true
         - in: query
           name: sp
           schema:

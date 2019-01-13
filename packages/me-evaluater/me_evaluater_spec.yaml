@@ -18,6 +18,7 @@ paths:
           name: query
           schema:
             type: string
+          required: true
       responses:
         '200':
           description: An info about specialist servers for a given query.

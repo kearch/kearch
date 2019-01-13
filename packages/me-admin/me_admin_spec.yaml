@@ -23,10 +23,12 @@ paths:
           name: username
           schema:
             type: string
+          required: true
         - in: query
           name: password
           schema:
             type: string
+          required: true
   /logout:
     get:
       summary:
@@ -39,6 +41,7 @@ paths:
           application/json:
             schema:
               properties:
+                required: true
                 password:
                   type: string
                 password_again:
