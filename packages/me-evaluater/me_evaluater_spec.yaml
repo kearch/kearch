@@ -1,0 +1,35 @@
+openapi: 3.0.0
+info:
+  title: kearch meta search engine evaluater API
+  description: kearch meta search engine evaluater API
+  version: 0.1.0
+servers:
+  - url: 'http://{me_host}:{port}/me/evaluater'
+    variables:
+      me_host:
+        default: me-evaluater.kearch.svc.cluster.local
+      port:
+        default: '10080'
+paths:
+  /evaluate:
+    get:
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An info about specialist servers for a given query.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evaluation'                  
+components:
+  schemas:
+    Evaluation:
+      type: object
+      additionalProperties:
+        type: number
+        format: float
+      example: {'192.168.99.100': 0.91}
