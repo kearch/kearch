@@ -34,7 +34,7 @@ class User(UserMixin):
         self.name = 'root'
 
 
-@app.route("/me/admin/login", methods=["GET", "POST"])
+@app.route("/me/admin/login", methods=["GET"])
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -95,10 +95,10 @@ def update_password():
     ret = db_req.request(path='/me/db/update_password_hash',
                          payload={'username': u, 'password_hash': h},
                          method='POST')
-    return jsonify(ret)
+    return flask.render_template('login.html')
 
 
-@app.route('/me/admin/learn_params_for_evaluater')
+@app.route('/me/admin/learn_params_for_evaluater', methods=['GET'])
 @login_required
 def learn_params_for_evaluater():
     db_req = KearchRequester(

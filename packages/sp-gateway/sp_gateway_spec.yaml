@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: Kearch specialist search engine gateway API
-  description: Kearch specialist search engine gateway API
+  title: kearch specialist search engine gateway API
+  description: kearch specialist search engine gateway API
   version: 0.1.0
 servers:
   - url: '{scheme}://{sp_host}:{port}/v0/sp/gateway'
