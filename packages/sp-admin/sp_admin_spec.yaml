@@ -45,9 +45,51 @@ paths:
                   type: string
                 password_again:
                   type: string
-  /learn_params_for_evaluater:
-    get:
-      summary:
+  /init_crawl_urls:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                required: true
+                urls:
+                  type: string
+  /learn_params_from_url:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                required: true
+                topic_urls:
+                  type: string
+                random_urls:
+                  type: string
+  /learn_params_from_dict:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                required: true
+                topic_dict:
+                  schema:
+                    $ref: '#/components/schemas/Dict'
+                random_dict:
+                  schema:
+                    $ref: '#/components/schemas/Dict'
+                language:
+                  type: string
+                use_default_dict:
+                  type: string
+  /update_config:
+    post:
   /approve_a_connection_request:
     post:
       requestBody:
@@ -80,4 +122,12 @@ paths:
               properties:
                 required: true
                 me_host:
-                  type: string                
+                  type: string
+components:
+  schemas:
+    Dict:
+      type: object
+      additionalProperties:
+        type: number
+        format: integer
+      example: {'OCaml': 10}                
