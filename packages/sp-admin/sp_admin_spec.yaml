@@ -1,17 +1,17 @@
 openapi: 3.0.0
 info:
-  title: kearch meta search engine admin API
-  description: kearch meta search engine admin API
+  title: kearch specialist search engine admin API
+  description: kearch specialist search engine admin API
   version: 0.1.0
 servers:
-  - url: '{scheme}://{me_host}:{port}/me/admin'
+  - url: '{scheme}://{sp_host}:{port}/sp/admin'
     variables:
       scheme:
         enum:
           - http
           - https
         default: http
-      me_host:
+      sp_host:
         default: localhost
       port:
         default: '32600'
@@ -57,7 +57,7 @@ paths:
             schema:
               properties:
                 required: true
-                sp_host:
+                me_host:
                   type: string
   /delete_a_connection_request:
     delete:
@@ -68,7 +68,7 @@ paths:
             schema:
               properties:
                 required: true
-                sp_host:
+                me_host:
                   type: string
   /send_a_connection_request:
     post:
@@ -79,5 +79,5 @@ paths:
             schema:
               properties:
                 required: true
-                sp_host:
+                me_host:
                   type: string                
