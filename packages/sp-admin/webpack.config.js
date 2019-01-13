@@ -26,7 +26,7 @@ module.exports = {
       {
         test: /\.(sa|sc|c)ss$/,
         use: [
-          NODE_PROD ? MiniCssExtractPlugin.loader : 'style-loader',
+          MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
           },
