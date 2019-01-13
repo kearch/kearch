@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: Kearch meta search engine gateway API
-  description: Kearch meta search engine gateway API
+  title: kearch meta search engine gateway API
+  description: kearch meta search engine gateway API
   version: 0.1.0
 servers:
   - url: '{scheme}://{me_host}:{port}/v0/me/gateway'
