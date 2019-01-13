@@ -1,0 +1,47 @@
+openapi: 3.0.0
+info:
+  title: kearch specialist search engine front API
+  description: kearch specialist search engine front API
+  version: 0.1.0
+servers:
+  - url: '{scheme}://{sp_host}:{port}/sp/front'
+    variables:
+      scheme:
+        enum:
+          - http
+          - https
+        default: http
+      sp_host:
+        default: sp-front.kearch.svc.cluster.local
+      port:
+        default: '10080'
+paths:
+  /search:
+    get:
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Search results.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+components:
+  schemas:
+    Document:
+      properties:
+        url:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        score:
+          type: number

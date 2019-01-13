@@ -1,0 +1,35 @@
+openapi: 3.0.0
+info:
+  title: kearch specialist search engine classifier API
+  description: kearch specialist search engine classifier API
+  version: 0.1.0
+servers:
+  - url: '{scheme}://{sp_host}:{port}/sp/classifier'
+    variables:
+      scheme:
+        enum:
+          - http
+          - https
+        default: http
+      sp_host:
+        default: sp-classifier.kearch.svc.cluster.local
+      port:
+        default: '10080'
+paths:
+  /classify:
+    post:
+      requestBody:
+        description: A connection request.
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                body_words:
+                  type: array
+                  items:
+                    type: string
+                title_words:
+                  type: array
+                  items:
+                    type: string
