@@ -33,3 +33,11 @@ paths:
                   type: array
                   items:
                     type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: integer
