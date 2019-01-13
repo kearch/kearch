@@ -1,9 +1,9 @@
 const path = require('path');
 const webpack = require('webpack');
+const autoprefixer = require('autoprefixer');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const devMode = process.env.NODE_ENV !== 'production';
+const NODE_PROD = process.env.NODE_ENV === 'production';
 
 module.exports = {
   entry: './css/index.scss',
@@ -16,13 +16,6 @@ module.exports = {
     publicPath: '/'
   },
 
-  devServer: {
-    contentBase: path.join(__dirname, 'public'),
-    compress: true,
-    port: 3500,
-    hot: true,
-  },
-
   module: {
     rules: [
       {
@@ -33,18 +26,29 @@ module.exports = {
       {
         test: /\.(sa|sc|c)ss$/,
         use: [
-          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-          'css-loader',
-          'postcss-loader',
-          'sass-loader',
-        ]
+          NODE_PROD ? MiniCssExtractPlugin.loader : 'style-loader',
+          {
+            loader: 'css-loader',
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: () => [
+                autoprefixer({
+                  browsers: ['last 2 versions'],
+                }),
+              ],
+            },
+          },
+          {
+            loader: 'sass-loader',
+          },
+        ],
       }
     ]
   },
 
   plugins: [
-    new HtmlWebpackPlugin({template: './app/index.html'}),
-    new webpack.HotModuleReplacementPlugin(),
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
