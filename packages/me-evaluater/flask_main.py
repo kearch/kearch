@@ -39,7 +39,20 @@ def post():
     queries = flask.request.args.get('query')
     queries = queries.split(' ')
 
-    return jsonify(evaluater.evaluate(queries))
+    # Some specialist servers in the evaluater may be deleted
+    # by /me/gateway/delete_a_connection_request.
+    # Therefore, we must confirm all specialist servers in the evaluater
+    # exist in the database truly.
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, conn_type='sql')
+    sp_servers = db_req.request(path='/me/db/list_up_sp_servers')
+    res_eval = evaluater.evaluate(queries)
+    res = dict()
+    for s in sp_servers.keys():
+        if s in res_eval:
+            res[s] = res_eval[s]
+
+    return jsonify(res)
 
 
 if __name__ == '__main__':

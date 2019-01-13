@@ -165,6 +165,25 @@ def approve_a_connection_request():
     return jsonify(summary)
 
 
+@app.route('/me/admin/delete_a_connection_request', methods=['DELETE'])
+@login_required
+def delete_a_connection_request():
+    sp_host = flask.request.form['sp_host']
+    db_req = KearchRequester(
+        DATABASE_HOST, DATABASE_PORT, conn_type='sql')
+
+    db_req.request('/me/db/delete_a_connection_request',
+                   payload={'sp_host': sp_host})
+
+    config = db_req.request(path='/me/db/get_config_variables')
+    me_host = config['host_name']
+    gw_req = KearchRequester(sp_host, SP_GATEWAY_PORT)
+    gw_req.request(path=SP_GATEWAY_BASEURL + 'delete_a_connection_request',
+                   payload={'me_host': me_host}, method='DELETE')
+
+    return flask.redirect(flask.url_for("index"))
+
+
 @app.route('/me/admin/send_a_connection_request', methods=['POST'])
 @login_required
 def send_a_connection_request():
