@@ -48,7 +48,7 @@ def post():
     sp_servers = db_req.request(path='/me/db/list_up_sp_servers')
     res_eval = evaluater.evaluate(queries)
     res = dict()
-    for s in sp_servers.items():
+    for s in sp_servers.keys():
         if s in res_eval:
             res[s] = res_eval[s]
 
