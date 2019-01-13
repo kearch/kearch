@@ -1,7 +1,6 @@
 {
   "name": "kearch-sp-admin",
   "version": "1.0.0",
-  "main": "index.js",
   "repository": "https://github.com/kearch/kearch",
   "author": "kearch",
   "license": "MIT",
@@ -22,6 +21,8 @@
     "style-loader": "^0.23.1",
     "stylelint": "^9.9.0",
     "stylelint-config-airbnb": "^0.0.0",
+    "stylelint-order": "^2.0.0",
+    "stylelint-scss": "^3.4.4",
     "webpack": "^4.28.4"
   }
 }
