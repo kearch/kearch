@@ -372,7 +372,16 @@ class KearchRequester(object):
                 statement = """DELETE FROM %s WHERE `sp_host` = %s"""
                 cur.execute(statement, ('in_requests', sp_host))
                 cur.execute(statement, ('out_requests', sp_host))
+
+                sp_host_statement = """
+                DELETE FROM `sp_hosts` WHERE `name` = %s"""
+                cur.execute(sp_host_statement, (sp_host,))
+
+                sp_servers_statement = """
+                DELETE FROM `sp_servers` WHERE `name` = %s"""
+                cur.execute(sp_servers_statement, (sp_host,))
                 db.commit()
+
                 ret = {'sp_host': sp_host}
             elif splited_path[1] == 'db' and \
                     splited_path[2] == 'get_config_variables':
