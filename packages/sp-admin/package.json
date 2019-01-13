@@ -10,6 +10,7 @@
   },
   "scripts": {
     "build": "webpack",
+    "build-prod": "NODE_ENV=production webpack --production",
     "build-watch": "webpack --watch --color"
   },
   "dependencies": {
