@@ -22,7 +22,7 @@ RUN python -c "import nltk; nltk.download('punkt')"
 RUN python -c "import nltk; nltk.download('stopwords')"
 
 COPY /packages/sp-admin /kearch/packages/sp-admin
-COPY --from=builder /kearch/packages/sp-admin/dist /kearch/packages/sp-admin
+COPY --from=builder /kearch/packages/sp-admin/static/dist /kearch/packages/sp-admin/static
 WORKDIR /kearch/packages/sp-admin
 
 CMD ["python", "-u", "flask_main.py"]
