@@ -6,7 +6,7 @@ mv index.html packages/sp-gateway/
 
 docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i /local/packages/me-gateway/me_gateway_spec.yaml -g html -o /local/
 sudo chown $USER:$USER index.html
-mv index.html packages/me-me-gateway/
+mv index.html packages/me-gateway/
 
 docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i /local/packages/sp-classifier/sp_classifier_spec.yaml -g html -o /local/
 sudo chown $USER:$USER index.html
