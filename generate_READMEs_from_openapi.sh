@@ -35,3 +35,5 @@ mv index.html packages/me-front/
 docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i /local/packages/me-evaluater/me_evaluater_spec.yaml -g html -o /local/
 sudo chown $USER:$USER index.html
 mv index.html packages/me-evaluater/
+
+sudo rm -rf ./.openapi-generator-ignore ./.openapi-generator
