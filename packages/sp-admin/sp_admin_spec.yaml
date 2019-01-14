@@ -56,6 +56,7 @@ paths:
                 required: true
                 urls:
                   type: string
+                  example: www.google.com\nwww.facebook.com
   /learn_params_from_url:
     post:
       requestBody:
@@ -67,8 +68,10 @@ paths:
                 required: true
                 topic_urls:
                   type: string
+                  example: www.google.com\nwww.facebook.com
                 random_urls:
                   type: string
+                  example: www.google.com\nwww.facebook.com
   /learn_params_from_dict:
     post:
       requestBody:
@@ -76,20 +79,22 @@ paths:
         content:
           application/json:
             schema:
-              properties:
-                required: true
-                topic_dict:
-                  schema:
-                    $ref: '#/components/schemas/Dict'
-                random_dict:
-                  schema:
-                    $ref: '#/components/schemas/Dict'
-                language:
-                  type: string
-                use_default_dict:
-                  type: string
+              $ref: '#/components/schemas/Dict'
   /update_config:
     post:
+      requestBody:
+        description: Designated configs(connection_policy, host_name or engine_name) are updated  
+        required: true        
+        content:
+          application/json:
+            schema:
+              properties:
+                connection_policy:
+                  type: string
+                host_name:
+                  type: string
+                engine_name:
+                  type: string
   /approve_a_connection_request:
     post:
       requestBody:
@@ -126,8 +131,20 @@ paths:
 components:
   schemas:
     Dict:
-      type: object
-      additionalProperties:
-        type: number
-        format: integer
-      example: {'OCaml': 10}                
+      properties:
+        language:
+          type: string
+        use_default_dict:
+          type: string
+        topic_dict:
+          type: object
+          additionalProperties:
+            type: number
+            format: integer
+          example: {'lisp': 91}
+        random_dict:
+          type: object
+          additionalProperties:
+            type: number
+            format: integer
+          example: {'OCaml': 91}
