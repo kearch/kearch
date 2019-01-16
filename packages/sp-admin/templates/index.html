@@ -148,50 +148,6 @@
 
       <div class="card">
         <div class="card-content">
-          <span class="card-title">Send DB summary</span>
-          <script>
-            <!--
-function send_db_summary() {
-  button_status = document.getElementById("submit_button");
-  button_status.disabled = "disabled";
-
-  var formData = "sp_host="+document.getElementById('sp_host').value+"&me_host="+document.getElementById('me_host').value;
-
-  var xhr = new XMLHttpRequest();
-
-  xhr.addEventListener('load', function(event) {
-    button_status.disabled = "";
-    return false;
-  });
-
-  xhr.addEventListener('error', function(event) {
-    alert('failed');
-    return false;
-  });
-  xhr.open('POST', '/sp/admin/send_db_summary', true);
-
-  xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
-  xhr.send(formData);
-  return false;
-}
-// -->
-          </script>
-          <form id=send_db_summary_form onsubmit="send_db_summary();return false;">
-            <div class="input-field row">
-              <label for="me_host" class="col-3">me_host</label>
-              <input type="text" class="form-control col-9" id="me_host" name="me_host" cols="50" />
-            </div>
-            <div class="input-field row">
-              <label for="sp_host" class="col-3">sp_host</label>
-              <input type="text" class="form-control col-9" id="sp_host" name="sp_host" cols="50" />
-            </div>
-            <button class="btn" id="submit_button" type="submit">send db summary</button>
-          </form>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-content">
           <span class="card-title">Learn Parameter for the classifier in the crawler using url lists</span>
           <form name=learn_params_from_url_form action="/sp/admin/learn_params_from_url" method="post">
             <div class="input-field">
