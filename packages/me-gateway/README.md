@@ -1,467 +1,308 @@
-<!doctype html>
-<html>
-  <head>
-    <title>kearch meta search engine gateway API</title>
-    <style type="text/css">
-      body {
-	font-family: Trebuchet MS, sans-serif;
-	font-size: 15px;
-	color: #444;
-	margin-right: 24px;
+---
+title: kearch meta search engine gateway API
+language_tabs:
+  - shell: Shell
+  - http: HTTP
+  - javascript: JavaScript
+  - javascript--nodejs: Node.JS
+  - ruby: Ruby
+  - python: Python
+  - java: Java
+  - go: Go
+toc_footers: []
+includes: []
+search: true
+highlight_theme: darkula
+headingLevel: 2
+
+---
+
+<h1 id="kearch-meta-search-engine-gateway-api">kearch meta search engine gateway API v0.1.0</h1>
+
+> Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
+
+kearch meta search engine gateway API
+
+Base URLs:
+
+* <a href="{scheme}://{me_host}:{port}/v0/me/gateway">{scheme}://{me_host}:{port}/v0/me/gateway</a>
+
+    * **scheme** -  Default: https
+
+        * http
+
+        * https
+
+    * **me_host** -  Default: localhost
+
+    * **port** -  Default: 32400
+
+<h1 id="kearch-meta-search-engine-gateway-api-default">Default</h1>
+
+## post__add_a_summary
+
+`POST /add_a_summary`
+
+*Add a summary to meta server.*
+
+> Body parameter
+
+```json
+{
+  "sp_host": "string",
+  "engine_name": "string",
+  "dump": {
+    "property1": 0,
+    "property2": 0
+  }
+}
+```
+
+<h3 id="post__add_a_summary-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[Summary](#schemasummary)|true|A summary of the specialist server.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "sp_host": "string",
+  "engine_name": "string"
+}
+```
+
+<h3 id="post__add_a_summary-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|An info about the specialist server of the added summary.|Inline|
+
+<h3 id="post__add_a_summary-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» sp_host|string|false|none|none|
+|» engine_name|string|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## post__add_a_connection_request
+
+`POST /add_a_connection_request`
+
+*Add a connection request sent from specialist server to meta server.*
+
+> Body parameter
+
+```json
+{
+  "sp_host": "string",
+  "engine_name": "string",
+  "scheme": "string"
+}
+```
+
+<h3 id="post__add_a_connection_request-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[ConnectionRequestOnME](#schemaconnectionrequestonme)|true|A connection request.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "sp_host": "string"
+}
+```
+
+<h3 id="post__add_a_connection_request-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|An info about the specialist server that requested the connection.|Inline|
+
+<h3 id="post__add_a_connection_request-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» sp_host|string|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## delete__delete_a_connection_request
+
+`DELETE /delete_a_connection_request`
+
+*Delete a connection request sent from specialist server to this meta server.*
+
+<h3 id="delete__delete_a_connection_request-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sp_host|query|string|false|A specialist host name of the connection request to delete.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "sp_host": "string"
+}
+```
+
+<h3 id="delete__delete_a_connection_request-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|An info about the specialist server that requested the connection.|Inline|
+
+<h3 id="delete__delete_a_connection_request-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» sp_host|string|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## get__retrieve
+
+`GET /retrieve`
+
+*Retrieve search results.*
+
+<h3 id="get__retrieve-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|queries|query|string|false|Space-separated query words|
+|max_urls|query|integer|false|Max number of URLs to retrive from specialist servers|
+|sp_host|query|string|false|A host name to retrieve results from.|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "url": "string",
+    "title": "string",
+    "description": "string",
+    "score": 0
+  }
+]
+```
+
+<h3 id="get__retrieve-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Search results.|Inline|
+
+<h3 id="get__retrieve-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[Document](#schemadocument)]|false|none|none|
+|» url|string|false|none|none|
+|» title|string|false|none|none|
+|» description|string|false|none|none|
+|» score|number|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+# Schemas
+
+<h2 id="tocSconnectionrequestonme">ConnectionRequestOnME</h2>
+
+<a id="schemaconnectionrequestonme"></a>
+
+```json
+{
+  "sp_host": "string",
+  "engine_name": "string",
+  "scheme": "string"
 }
 
-h1	{
-	font-size: 25px;
-}
-h2	{
-	font-size: 20px;
-}
-h3	{
-	font-size: 16px;
-	font-weight: bold;
-}
-hr	{
-	height: 1px;
-	border: 0;
-	color: #ddd;
-	background-color: #ddd;
-}
+```
 
-.app-desc {
-  clear: both;
-  margin-left: 20px;
-}
-.param-name {
-  width: 100%;
-}
-.license-info {
-  margin-left: 20px;
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|sp_host|string|false|none|none|
+|engine_name|string|false|none|none|
+|scheme|string|false|none|none|
+
+<h2 id="tocSsummary">Summary</h2>
+
+<a id="schemasummary"></a>
+
+```json
+{
+  "sp_host": "string",
+  "engine_name": "string",
+  "dump": {
+    "property1": 0,
+    "property2": 0
+  }
 }
 
-.license-url {
-  margin-left: 20px;
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|sp_host|string|false|none|none|
+|engine_name|string|false|none|none|
+|dump|object|false|none|none|
+|» **additionalProperties**|integer|false|none|none|
+
+<h2 id="tocSdocument">Document</h2>
+
+<a id="schemadocument"></a>
+
+```json
+{
+  "url": "string",
+  "title": "string",
+  "description": "string",
+  "score": 0
 }
 
-.model {
-  margin: 0 0 0px 20px;
-}
+```
 
-.method {
-  margin-left: 20px;
-}
+### Properties
 
-.method-notes	{
-	margin: 10px 0 20px 0;
-	font-size: 90%;
-	color: #555;
-}
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|url|string|false|none|none|
+|title|string|false|none|none|
+|description|string|false|none|none|
+|score|number|false|none|none|
 
-pre {
-  padding: 10px;
-  margin-bottom: 2px;
-}
-
-.http-method {
- text-transform: uppercase;
-}
-
-pre.get {
-  background-color: #0f6ab4;
-}
-
-pre.post {
-  background-color: #10a54a;
-}
-
-pre.put {
-  background-color: #c5862b;
-}
-
-pre.delete {
-  background-color: #a41e22;
-}
-
-.huge	{
-	color: #fff;
-}
-
-pre.example {
-  background-color: #f3f3f3;
-  padding: 10px;
-  border: 1px solid #ddd;
-}
-
-code {
-  white-space: pre;
-}
-
-.nickname {
-  font-weight: bold;
-}
-
-.method-path {
-  font-size: 1.5em;
-  background-color: #0f6ab4;
-}
-
-.up {
-  float:right;
-}
-
-.parameter {
-  width: 500px;
-}
-
-.param {
-  width: 500px;
-  padding: 10px 0 0 20px;
-  font-weight: bold;
-}
-
-.param-desc {
-  width: 700px;
-  padding: 0 0 0 20px;
-  color: #777;
-}
-
-.param-type {
-  font-style: italic;
-}
-
-.param-enum-header {
-width: 700px;
-padding: 0 0 0 60px;
-color: #777;
-font-weight: bold;
-}
-
-.param-enum {
-width: 700px;
-padding: 0 0 0 80px;
-color: #777;
-font-style: italic;
-}
-
-.field-label {
-  padding: 0;
-  margin: 0;
-  clear: both;
-}
-
-.field-items	{
-	padding: 0 0 15px 0;
-	margin-bottom: 15px;
-}
-
-.return-type {
-  clear: both;
-  padding-bottom: 10px;
-}
-
-.param-header {
-  font-weight: bold;
-}
-
-.method-tags {
-  text-align: right;
-}
-
-.method-tag {
-  background: none repeat scroll 0% 0% #24A600;
-  border-radius: 3px;
-  padding: 2px 10px;
-  margin: 2px;
-  color: #FFF;
-  display: inline-block;
-  text-decoration: none;
-}
-
-    </style>
-  </head>
-  <body>
-  <h1>kearch meta search engine gateway API</h1>
-    <div class="app-desc">kearch meta search engine gateway API</div>
-    <div class="app-desc">More information: <a href="https://openapi-generator.tech">https://openapi-generator.tech</a></div>
-    <div class="app-desc">Contact Info: <a href="team@openapitools.org">team@openapitools.org</a></div>
-    <div class="app-desc">Version: 0.1.0</div>
-    <div class="app-desc">BasePath:/v0/me/gateway</div>
-    <div class="license-info">All rights reserved</div>
-    <div class="license-url">http://apache.org/licenses/LICENSE-2.0.html</div>
-  <h2>Access</h2>
-
-  <h2><a name="__Methods">Methods</a></h2>
-  [ Jump to <a href="#__Models">Models</a> ]
-
-  <h3>Table of Contents </h3>
-  <div class="method-summary"></div>
-  <h4><a href="#Default">Default</a></h4>
-  <ul>
-  <li><a href="#addAConnectionRequestPost"><code><span class="http-method">post</span> /add_a_connection_request</code></a></li>
-  <li><a href="#addASummaryPost"><code><span class="http-method">post</span> /add_a_summary</code></a></li>
-  <li><a href="#deleteAConnectionRequestDelete"><code><span class="http-method">delete</span> /delete_a_connection_request</code></a></li>
-  <li><a href="#retrieveGet"><code><span class="http-method">get</span> /retrieve</code></a></li>
-  </ul>
-
-  <h1><a name="Default">Default</a></h1>
-  <div class="method"><a name="addAConnectionRequestPost"/>
-    <div class="method-path">
-    <a class="up" href="#__Methods">Up</a>
-    <pre class="post"><code class="huge"><span class="http-method">post</span> /add_a_connection_request</code></pre></div>
-    <div class="method-summary">Add a connection request sent from specialist server to meta server. (<span class="nickname">addAConnectionRequestPost</span>)</div>
-    <div class="method-notes"></div>
-
-
-    <h3 class="field-label">Consumes</h3>
-    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
-    <ul>
-      <li><code>application/json</code></li>
-    </ul>
-
-    <h3 class="field-label">Request body</h3>
-    <div class="field-items">
-      <div class="param">ConnectionRequestOnME <a href="#ConnectionRequestOnME">ConnectionRequestOnME</a> (required)</div>
-
-      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
-
-    </div>  <!-- field-items -->
-
-
-
-
-    <h3 class="field-label">Return type</h3>
-    <div class="return-type">
-      <a href="#inline_response_200_1">inline_response_200_1</a>
-      
-    </div>
-
-    <!--Todo: process Response Object and its headers, schema, examples -->
-
-    <h3 class="field-label">Example data</h3>
-    <div class="example-data-content-type">Content-Type: application/json</div>
-    <pre class="example"><code>{
-  "sp_host" : "sp_host"
-}</code></pre>
-
-    <h3 class="field-label">Produces</h3>
-    This API call produces the following media types according to the <span class="header">Accept</span> request header;
-    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
-    <ul>
-      <li><code>application/json</code></li>
-    </ul>
-
-    <h3 class="field-label">Responses</h3>
-    <h4 class="field-label">200</h4>
-    An info about the specialist server that requested the connection.
-        <a href="#inline_response_200_1">inline_response_200_1</a>
-  </div> <!-- method -->
-  <hr/>
-  <div class="method"><a name="addASummaryPost"/>
-    <div class="method-path">
-    <a class="up" href="#__Methods">Up</a>
-    <pre class="post"><code class="huge"><span class="http-method">post</span> /add_a_summary</code></pre></div>
-    <div class="method-summary">Add a summary to meta server. (<span class="nickname">addASummaryPost</span>)</div>
-    <div class="method-notes"></div>
-
-
-    <h3 class="field-label">Consumes</h3>
-    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
-    <ul>
-      <li><code>application/json</code></li>
-    </ul>
-
-    <h3 class="field-label">Request body</h3>
-    <div class="field-items">
-      <div class="param">Summary <a href="#Summary">Summary</a> (required)</div>
-
-      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
-
-    </div>  <!-- field-items -->
-
-
-
-
-    <h3 class="field-label">Return type</h3>
-    <div class="return-type">
-      <a href="#inline_response_200">inline_response_200</a>
-      
-    </div>
-
-    <!--Todo: process Response Object and its headers, schema, examples -->
-
-    <h3 class="field-label">Example data</h3>
-    <div class="example-data-content-type">Content-Type: application/json</div>
-    <pre class="example"><code>{
-  "engine_name" : "engine_name",
-  "sp_host" : "sp_host"
-}</code></pre>
-
-    <h3 class="field-label">Produces</h3>
-    This API call produces the following media types according to the <span class="header">Accept</span> request header;
-    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
-    <ul>
-      <li><code>application/json</code></li>
-    </ul>
-
-    <h3 class="field-label">Responses</h3>
-    <h4 class="field-label">200</h4>
-    An info about the specialist server of the added summary.
-        <a href="#inline_response_200">inline_response_200</a>
-  </div> <!-- method -->
-  <hr/>
-  <div class="method"><a name="deleteAConnectionRequestDelete"/>
-    <div class="method-path">
-    <a class="up" href="#__Methods">Up</a>
-    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /delete_a_connection_request</code></pre></div>
-    <div class="method-summary">Delete a connection request sent from specialist server to this meta server. (<span class="nickname">deleteAConnectionRequestDelete</span>)</div>
-    <div class="method-notes"></div>
-
-
-
-
-
-    <h3 class="field-label">Query parameters</h3>
-    <div class="field-items">
-      <div class="param">sp_host (optional)</div>
-
-      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; A specialist host name of the connection request to delete. default: null </div>
-    </div>  <!-- field-items -->
-
-
-    <h3 class="field-label">Return type</h3>
-    <div class="return-type">
-      <a href="#inline_response_200_1">inline_response_200_1</a>
-      
-    </div>
-
-    <!--Todo: process Response Object and its headers, schema, examples -->
-
-    <h3 class="field-label">Example data</h3>
-    <div class="example-data-content-type">Content-Type: application/json</div>
-    <pre class="example"><code>{
-  "sp_host" : "sp_host"
-}</code></pre>
-
-    <h3 class="field-label">Produces</h3>
-    This API call produces the following media types according to the <span class="header">Accept</span> request header;
-    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
-    <ul>
-      <li><code>application/json</code></li>
-    </ul>
-
-    <h3 class="field-label">Responses</h3>
-    <h4 class="field-label">200</h4>
-    An info about the specialist server that requested the connection.
-        <a href="#inline_response_200_1">inline_response_200_1</a>
-  </div> <!-- method -->
-  <hr/>
-  <div class="method"><a name="retrieveGet"/>
-    <div class="method-path">
-    <a class="up" href="#__Methods">Up</a>
-    <pre class="get"><code class="huge"><span class="http-method">get</span> /retrieve</code></pre></div>
-    <div class="method-summary">Retrieve search results. (<span class="nickname">retrieveGet</span>)</div>
-    <div class="method-notes"></div>
-
-
-
-
-
-    <h3 class="field-label">Query parameters</h3>
-    <div class="field-items">
-      <div class="param">queries (optional)</div>
-
-      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Space-separated query words default: null </div><div class="param">max_urls (optional)</div>
-
-      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Max number of URLs to retrive from specialist servers default: null format: int32</div><div class="param">sp_host (optional)</div>
-
-      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; A host name to retrieve results from. default: null </div>
-    </div>  <!-- field-items -->
-
-
-    <h3 class="field-label">Return type</h3>
-    <div class="return-type">
-      array[<a href="#Document">Document</a>]
-      
-    </div>
-
-    <!--Todo: process Response Object and its headers, schema, examples -->
-
-    <h3 class="field-label">Example data</h3>
-    <div class="example-data-content-type">Content-Type: application/json</div>
-    <pre class="example"><code>{
-  "score" : 0.80082819046101150206595775671303272247314453125,
-  "description" : "description",
-  "title" : "title",
-  "url" : "url"
-}</code></pre>
-
-    <h3 class="field-label">Produces</h3>
-    This API call produces the following media types according to the <span class="header">Accept</span> request header;
-    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
-    <ul>
-      <li><code>application/json</code></li>
-    </ul>
-
-    <h3 class="field-label">Responses</h3>
-    <h4 class="field-label">200</h4>
-    Search results.
-        
-  </div> <!-- method -->
-  <hr/>
-
-  <h2><a name="__Models">Models</a></h2>
-  [ Jump to <a href="#__Methods">Methods</a> ]
-
-  <h3>Table of Contents</h3>
-  <ol>
-    <li><a href="#ConnectionRequestOnME"><code>ConnectionRequestOnME</code> - </a></li>
-    <li><a href="#Document"><code>Document</code> - </a></li>
-    <li><a href="#Summary"><code>Summary</code> - </a></li>
-    <li><a href="#inline_response_200"><code>inline_response_200</code> - </a></li>
-    <li><a href="#inline_response_200_1"><code>inline_response_200_1</code> - </a></li>
-  </ol>
-
-  <div class="model">
-    <h3><a name="ConnectionRequestOnME"><code>ConnectionRequestOnME</code> - </a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'></div>
-    <div class="field-items">
-      <div class="param">spUnderscorehost (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">engineUnderscorename (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">scheme (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-    </div>  <!-- field-items -->
-  </div>
-  <div class="model">
-    <h3><a name="Document"><code>Document</code> - </a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'></div>
-    <div class="field-items">
-      <div class="param">url (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">title (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">description (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">score (optional)</div><div class="param-desc"><span class="param-type"><a href="#number">BigDecimal</a></span>  </div>
-    </div>  <!-- field-items -->
-  </div>
-  <div class="model">
-    <h3><a name="Summary"><code>Summary</code> - </a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'></div>
-    <div class="field-items">
-      <div class="param">spUnderscorehost (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">engineUnderscorename (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">dump (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">map[String, Integer]</a></span>  format: int32</div>
-    </div>  <!-- field-items -->
-  </div>
-  <div class="model">
-    <h3><a name="inline_response_200"><code>inline_response_200</code> - </a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'></div>
-    <div class="field-items">
-      <div class="param">spUnderscorehost (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">engineUnderscorename (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-    </div>  <!-- field-items -->
-  </div>
-  <div class="model">
-    <h3><a name="inline_response_200_1"><code>inline_response_200_1</code> - </a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'></div>
-    <div class="field-items">
-      <div class="param">spUnderscorehost (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-    </div>  <!-- field-items -->
-  </div>
-  </body>
-</html>
