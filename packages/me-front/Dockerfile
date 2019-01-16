@@ -1,6 +1,6 @@
 FROM node:8-alpine as builder
 COPY /packages/me-front /kearch/packages/me-front
-WORKDIR /kearch/packages/sp-admin
+WORKDIR /kearch/packages/me-front
 RUN yarn && yarn build-prod
 
 
