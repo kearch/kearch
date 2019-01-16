@@ -19,7 +19,7 @@
             <div class="search">
               <div class="search-left">
                 <div class="input-field">
-                  <input class="input" name="query" value="{{ query }}">
+                  <input class="input" name="query" value="{{ query }}" placeholder="Search">
                 </div>
               </div>
               <div class="search-right">
@@ -47,16 +47,20 @@
         {% for w in results %}
         <div class="result">
           <a href="{{ w['url'] }}">
-            <h5 class="title">{{ w['title'] }}</h5>
-            <div class="url">{{ w['url'] }}</div>
+            <h6 class="title">{{ w['title'] }}</h6>
+            <div class="url">
+              <p>
+                {{ w['url'] }}
+              </p>
+            </div>
           </a>
-          <div class="summary">
-            <p class="">
-              {{ w['summary'] }}
+          <div class="description">
+            <p>
+              {{ w['description'] }}
             </p>
           </div>
           <div class="detail">
-            <p class="grey-text">
+            <p>
               {{ w['score'] }}
               from {{ sp_servers.get(w['sp_host'], {}).get('engine_name', '') }} ({{ w['sp_host'] }})
             </p>

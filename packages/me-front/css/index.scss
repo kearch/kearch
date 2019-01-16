@@ -33,8 +33,11 @@
 
 .result {
 
+  margin-bottom: 35px;
+
   .title {
     color: black;
+    font-weight: bold;
   }
 
   a:hover .title {
@@ -43,5 +46,13 @@
 
   .url {
     color: $secondary-color;
+  }
+
+  .detail {
+    color: grey;
+  }
+
+  p {
+    margin: 5px 0;
   }
 }
