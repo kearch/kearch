@@ -1,0 +1,55 @@
+openapi: 3.0.0
+info:
+  title: kearch specialist search engine crawler-child API
+  description: kearch specialist search engine crawler-child API
+  version: 0.1.0
+servers:
+  - url: '{scheme}://{sp_host}:{port}/sp/crawler-child'
+    variables:
+      scheme:
+        enum:
+          - http
+          - https
+        default: http
+      sp_host:
+        default: sp-crawler-child.kearch.svc.cluster.local
+      port:
+        default: '10080'
+paths:
+  /crawl_a_page:
+    get:
+      parameters:
+        - in: query
+          name: url
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                  title:
+                    type: string
+                  text:
+                    type: string
+                  tfidf:
+                    $ref: '#/components/schemas/Tfidf'
+                  inner_links:
+                    type: array
+                    items:
+                      type: string
+                  outer_links:
+                    type: array
+                    items:
+                      type: string
+components:
+  schemas:
+    Tfidf:
+      type: object
+      additionalProperties:
+        type: number
+        format: float
+      example: {'lisp': 0.91}

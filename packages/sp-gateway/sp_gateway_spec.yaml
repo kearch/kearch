@@ -1,81 +1,75 @@
 openapi: 3.0.0
 info:
-  title: Kearch meta search engine gateway API
-  description: Kearch meta search engine gateway API
+  title: kearch specialist search engine gateway API
+  description: kearch specialist search engine gateway API
   version: 0.1.0
 servers:
-  - url: '{scheme}://{me_host}:{port}/v0/me/gateway'
+  - url: '{scheme}://{sp_host}:{port}/v0/sp/gateway'
     variables:
       scheme:
         enum:
           - http
           - https
         default: https
-      me_host:
+      sp_host:
         default: localhost
       port:
-        default: '32400'
+        default: '32500'
 paths:
-  /add_a_summary:
-    post:
-      summary: Add a summary to meta server.
-      requestBody:
-        description: A summary of the specialist server.
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Summary'
+  /get_a_summary:
+    get:
+      summary: Get summary of this specialist server.
+      parameters:
+        - in: query
+          name: me_host
+          schema:
+            type: string
+          description: A host name of the meta server.
       responses:
         '200':
-          description: An info about the specialist server of the added summary.
+          description: A summary of this specialist server.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  sp_host:
-                    type: string
-                  engine_name:
-                    type: string
+                $ref: '#/components/schemas/Summary'
   /add_a_connection_request:
     post:
-      summary: Add a connection request sent from specialist server to meta server.
+      summary: Add a connection request sent from meta server to specialist server.
       requestBody:
         description: A connection request.
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConnectionRequestOnME'
+              $ref: '#/components/schemas/ConnectionRequestOnSP'
       responses:
         '200':
-          description: An info about the specialist server that requested the connection.
+          description: An info about the meta server that requested the connection.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  sp_host:
+                  me_host:
                     type: string
   /delete_a_connection_request:
     delete:
-      summary: Delete a connection request sent from specialist server to this meta server.
+      summary: Delete a connection request sent from meta server to specialist server.
       parameters:
         - in: query
-          name: sp_host
+          name: me_host
           schema:
             type: string
-          description: A specialist host name of the connection request to delete.
+          description: A meta host name of the connection request to delete.
       responses:
         '200':
-          description: An info about the specialist server that requested the connection.
+          description: An info about the meta server that requested the connection.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  sp_host:
+                  me_host:
                     type: string
   /retrieve:
     get:
@@ -91,11 +85,6 @@ paths:
           schema:
             type: integer
           description: Max number of URLs to retrive from specialist servers
-        - in: query
-          name: sp_host
-          schema:
-            type: string
-          description: A host name to retrieve results from.
       responses:
         '200':
           description: Search results.
@@ -108,11 +97,9 @@ paths:
 
 components:
   schemas:
-    ConnectionRequestOnME:
+    ConnectionRequestOnSP:
       properties:
-        sp_host:
-          type: string
-        engine_name:
+        me_host:
           type: string
         scheme:
           type: string
