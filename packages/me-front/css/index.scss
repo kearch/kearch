@@ -4,9 +4,18 @@
 
 @import "~materialize-css/sass/materialize.scss";
 
-.logo {
+.logo-primary {
   max-width: 568px;
   width: 100%;
+}
+
+.logo {
+  max-width: 200px;
+  width: 100%;
+
+  @media #{$medium-and-up} {
+    margin-left: -16%;
+  }
 }
 
 .search {
@@ -18,6 +27,21 @@
 
   .search-right {
     padding-left: 10px;
+    @extend .valign-wrapper;
   }
 }
 
+.result {
+
+  .title {
+    color: black;
+  }
+
+  a:hover .title {
+    text-decoration: underline;
+  }
+
+  .url {
+    color: $secondary-color;
+  }
+}

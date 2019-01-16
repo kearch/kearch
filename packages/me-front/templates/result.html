@@ -1,54 +1,34 @@
 <html>
   <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <style type="text/css">
-.input{
-  width: 300px !important;
-}
-
-.results{
-  max-width: 600px;
-}
-
-.title{
-}
-
-.url{
-  color: green;
-}
-
-.summary{
-}
-
-.logo{
-  width: 100px;
-  height: 30px;
-}
-
-.more{
-}
-    </style>
+    <link rel="icon" href="/static/images/favicon.ico">
+    <link rel="stylesheet" href="/static/dist/main.css" type="text/css" media="screen" charset="utf-8">
+    <script src="/static/dist/main.bundle.js" charset="utf-8"></script>
 
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/start/jquery-ui.css" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
-    <script>$(function(){$("#source-viewer").text($("#source").html());});</script>
   </head>
   <body>
     <div class="container">
       <div class="row">
-        <div class="col-sm-2 text-right">
-          <img src="{{url_for('static', filename='logo.png')}}" alt="logo" title="keach logo" class="logo my-3">
+        <div class="col s12 m3">
+          <img src="/static/images/logo-text-side-white.png" alt="logo" title="keach logo" class="logo">
         </div>
-        <div class="col">
-          <form class="form-inline" action="/me/front/search" method="get">
-            <div class="form-group my-3">
-              <input class="input form-control" name="query" value="{{ query }}">
+        <div class="col s12 m9">
+          <form action="/me/front/search" method="get">
+            <div class="search">
+              <div class="search-left">
+                <div class="input-field">
+                  <input class="input" name="query" value="{{ query }}">
+                </div>
+              </div>
+              <div class="search-right">
+              <button class="btn">retrieve</button>
+              </div>
             </div>
-            <button class="btn btn-success m-3">retrieve</button>
-            <div class="form-gruop my-3">
-              <select name="sp" class="form-control">
+
+            <div class="input-field">
+              <select name="sp" id="sp_host">
                 <option value="">select automatically</option>
                 {% for h,d in sp_servers.items() %}
                 {% if selected_sp == h %}
@@ -58,36 +38,39 @@
                 {% endif %}
                 {% endfor %}
               </select>
+              <label for="sp_host">Specialist server name</label>
             </div>
           </form>
-          <div class="results">
-            {% for w in results %}
-            <div class="my-4 result">
-              <div class="title"><a href="{{ w['url'] }}">{{ w['title'] }}</a></div>
-              <div class="url text-success text-truncate"><small>{{ w['url'] }}</small></div>
-              <div class="summary">
-                <p class="my-0 text-justify">
-                  <small>{{ w['summary'] }}</small>
-                </p>
-              </div>
-              <div class="detail">
-                <p class="my-0 text-muted">
-                  <small>{{ w['score'] }}</small>
-                  <small>from {{ sp_servers.get(w['sp_host'], {}).get('engine_name', '') }} ({{ w['sp_host'] }})</small>
-                </p>
-              </div>
-            </div>
-            {% endfor %}
-          </div>
-          <script>
-            $(".results").each(function(){
-              $(this).find(".result:gt(10)").each(function(){$(this).hide();});
-              $(this).append('<p class="more">&raquo; More</p>');
-              $(this).parent().find(".more").click(function(){$(".result").each(function(){$(this).show(400)}); $(this).remove();});
-            });
-          </script>
         </div>
       </div>
+      <div class="results">
+        {% for w in results %}
+        <div class="result">
+          <a href="{{ w['url'] }}">
+            <h5 class="title">{{ w['title'] }}</h5>
+            <div class="url">{{ w['url'] }}</div>
+          </a>
+          <div class="summary">
+            <p class="">
+              {{ w['summary'] }}
+            </p>
+          </div>
+          <div class="detail">
+            <p class="grey-text">
+              {{ w['score'] }}
+              from {{ sp_servers.get(w['sp_host'], {}).get('engine_name', '') }} ({{ w['sp_host'] }})
+            </p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <script>
+        $(".results").each(function(){
+          $(this).find(".result:gt(10)").each(function(){$(this).hide();});
+          $(this).append('<p class="more">&raquo; More</p>');
+          $(this).parent().find(".more").click(function(){$(".result").each(function(){$(this).show(400)}); $(this).remove();});
+        });
+      </script>
     </div>
   </body>
 </html>
