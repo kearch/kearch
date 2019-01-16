@@ -3,3 +3,21 @@
 @import "./theme.scss";
 
 @import "~materialize-css/sass/materialize.scss";
+
+.logo {
+  max-width: 568px;
+  width: 100%;
+}
+
+.search {
+  display: flex;
+
+  .search-left {
+    flex: 1;
+  }
+
+  .search-right {
+    padding-left: 10px;
+  }
+}
+
