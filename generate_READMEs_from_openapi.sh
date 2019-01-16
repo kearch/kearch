@@ -1,4 +1,6 @@
 #! /bin/bash
+# We use widdershins in this script.
+# You must install widdershins by "npm install -g widdershins".
 
 widdershins -c packages/sp-gateway/sp_gateway_spec.yaml -o packages/sp-gateway/README.md
 widdershins -c packages/me-gateway/me_gateway_spec.yaml -o packages/me-gateway/README.md
