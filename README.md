@@ -1,4 +1,4 @@
-<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/master/logo-text-side-white.png" width="400"/></div>
+<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/dev/logo-text-side-white.png" width="400"/></div>
 
 # kearch: Open and distributed search engine
 
