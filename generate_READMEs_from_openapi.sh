@@ -11,3 +11,4 @@ widdershins -c packages/me-admin/me_admin_spec.yaml -o packages/me-admin/README.
 widdershins -c packages/sp-front/sp_front_spec.yaml -o packages/sp-front/README.md
 widdershins -c packages/me-front/me_front_spec.yaml -o packages/me-front/README.md
 widdershins -c packages/me-evaluater/me_evaluater_spec.yaml -o packages/me-evaluater/README.md
+widdershins -c packages/sp-query-processor/sp_query_processor_spec.yaml -o packages/sp-query-processor/README.md
