@@ -1,14 +1,6 @@
 ---
 title: kearch specialist search engine admin API
-language_tabs:
-  - shell: Shell
-  - http: HTTP
-  - javascript: JavaScript
-  - javascript--nodejs: Node.JS
-  - ruby: Ruby
-  - python: Python
-  - java: Java
-  - go: Go
+language_tabs: []
 toc_footers: []
 includes: []
 search: true
@@ -19,7 +11,7 @@ headingLevel: 2
 
 <h1 id="kearch-specialist-search-engine-admin-api">kearch specialist search engine admin API v0.1.0</h1>
 
-> Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
+> Scroll down for example requests and responses.
 
 kearch specialist search engine admin API
 
