@@ -22,4 +22,7 @@ RUN python /kearch/packages/kearch_classifier/kearch_classifier/classifier.py co
 # RUN python average_document.py random_ja_url_list_short ja
 # RUN python classifier.py computer_science_ja_url_list random_ja_url_list ja
 
+# Restart flask server periodically to suppress memory usage.
+ENV KEARCH_SP_CRAWLER_CHILD_RESTART_SEC=3600
+
 CMD ["python", "-u", "flask_main.py"]
