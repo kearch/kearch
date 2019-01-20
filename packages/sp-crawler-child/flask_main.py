@@ -3,6 +3,7 @@
 # http://localhost:10080/crawl_a_page?url=https%3A//en.wikipedia.org/wiki/Haskell_%28programming_language%29
 
 import os
+import random
 import signal
 import sys
 import flask
@@ -27,6 +28,7 @@ def shutdown(signum, frame):
 
 if __name__ == '__main__':
     restart_sec = int(os.getenv('KEARCH_SP_CRAWLER_CHILD_RESTART_SEC', '0'))
+    restart_sec += random.randint(0, restart_sec)
     if restart_sec > 0:
         signal.signal(signal.SIGALRM, shutdown)
         signal.alarm(restart_sec)
