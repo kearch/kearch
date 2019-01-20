@@ -41,10 +41,10 @@ After updating password, Please **set engine name** here.
 And **set the global IP adress** of your server here.
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-set-ip-adress.png" width="300"/></div>
 
-Now, you can set a topic to your specialist search engine. There are two way to set a topic. One is using word frequency dictionary and another is using URLs. You must choose one of them. I think word frequency dictionary is better.
-###### A: using word frequency dictionary
+Now, you can **set a topic to your specialist search engine**. There are two way to set a topic. One is using word frequency dictionary and another is using URLs. You must choose one of them. I think word frequency dictionary is better.
+###### Method A: using word frequency dictionary
 
-###### B: using word frequency dictionary
+###### Method B: using word frequency dictionary
 
 ## 2. How to connect your specialist search engine to a meta search engine
 
