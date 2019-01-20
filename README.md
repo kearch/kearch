@@ -26,12 +26,25 @@ And then clone this repository your **local machine** by the following command.
 ```
 ~$ git clone https://github.com/kearch/kearch.git
 ```
-Finally, deploy a specialist search engine using Ansible. Please replace `<HOSTNAME>` and `<USERNAME>` depending on your environment. This takes some time to finish. I recommend you to take a coffee brake.
+Finally, deploy a specialist search engine using Ansible. Please replace `<HOSTNAME>` and `<USERNAME>` depending on your environment. (In most cases, `<HOSTNAME>` is the IP adress of your server.) This takes some time to finish. I recommend you to take a coffee brake.
 ```
 ~/kearch$ ansible-playbook sp-playbook.yml -i <HOSTNAME>, -u <USERNAME> --ask-become-pass -vvv
 ```
 #### Confiure a topic on your specialist search engine and start crawling
-## How to deploy a meta search engine 
+Please access [http://HOSTNAME-OR-IP-ADRESS-OFYOUR-SERVER:32700](http://HOSTNAME-OR-IP-ADRESS-OFYOUR-SERVER:32700). You can see this screen if you succeeded to set up. 
+<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-signin.png" width="200"/></div>
+
+The default Username and Password are "root" and "password". We strongly recommend you to **update password** immdiately after login.
+
+After updating password, Please **set engine name** here.
+<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-set-engine-name.png" width="200"/></div>
+
+And **set the global IP adress** of your server here.
+<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-set-ip-adress.png" width="200"/></div>
+
+Now, you can set a topic to your specialist search engine. There are two way to set a topic. One is using word frequency dictionary and another is using URLs. You must choose one of them. I think word frequency dictionary is better.
+###### A: using word frequency dictionary
+###### B: using word frequency dictionary
 
 ## How to deploy kearch to your kubernetes cluster
 
