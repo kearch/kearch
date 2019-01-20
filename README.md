@@ -21,14 +21,16 @@ You can get a qualified server using [Sakura Cloud](https://cloud.sakura.ad.jp/)
 Second, deploy a specialist search engine using Ansible. If you don't install Ansible to your **local machine**, please install it first. You can install Ansible by following commands.
 - Debian/Ubuntu: `sudo apt install ansible`
 - Mac: `brew install ansible`
+
 And then clone this repository your **local machine** by the following command.
 ```
 ~$ git clone https://github.com/kearch/kearch.git
 ```
-Finally, deploy a specialist search engine using Ansible. Please replace `<HOSTNAME>` and `<USERNAME>` depending on your environment.
+Finally, deploy a specialist search engine using Ansible. Please replace `<HOSTNAME>` and `<USERNAME>` depending on your environment. This takes some time to finish. I recommend you to take a coffee brake.
 ```
 ~/kearch$ ansible-playbook sp-playbook.yml -i <HOSTNAME>, -u <USERNAME> --ask-become-pass -vvv
 ```
+#### Confiure a topic on your specialist search engine and start crawling
 ## How to deploy a meta search engine 
 
 ## How to deploy kearch to your kubernetes cluster
