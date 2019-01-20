@@ -8,7 +8,6 @@ import signal
 import sys
 import flask
 from flask import jsonify
-from flask import request
 import sp_crawler_child
 
 app = flask.Flask(__name__)
