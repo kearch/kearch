@@ -34,7 +34,7 @@ class User(UserMixin):
         self.name = 'root'
 
 
-@app.route("/me/admin/login", methods=["GET"])
+@app.route("/me/admin/login", methods=["GET", "POST"])
 def login():
     if request.method == 'POST':
         username = request.form['username']
