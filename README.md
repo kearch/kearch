@@ -70,6 +70,8 @@ After sending a connection request, the administrator of the meta search engine 
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-from-req-status.png" width="500"/></div>
 
 #### 2.B Connect from a meta search engine to your specialist search engine
+In this case, you receive a **connection request** from a meta search engine. When a meta search engine send a connection request to your specialist search engine, it is displayed in this way.
+
 ## Appendix
 #### Appendix 1. How to deploy kearch to your kubernetes cluster
 
