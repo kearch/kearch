@@ -45,10 +45,15 @@ Now, you can **set a topic to your specialist search engine**. There are two way
 ###### Method A: using word frequency dictionary
 You must choose a **language** and then input **word frequencies in your crawling topic** and **Word frequencies in random topic**.
 
-You shoud input characteristic words and their ration in **word frequencies in your crawling topic**. If you feel troublesome to input, please have a look [Appendix4](#Appendix-4-Generate-word-frequencies-from-URLs). You can find easy way to generate text to input there.
+You shoud input characteristic words and their ratio in **word frequencies in your crawling topic**. If you feel troublesome to input, please have a look [Appendix4](#Appendix-4-Generate-word-frequencies-from-URLs). You can find easy way to generate text to input there.
+
+You should input all words and their ratio in the Web in **Word frequencies in random topic**. But it is very difficult. So I recommend you to check **use default dict**.
+
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-frequency.png" width="500"/></div>
 
-###### Method B: using word frequency dictionary
+###### Method B: using URLs
+
+<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-urls" width="500"/></div>
 
 ## 2. How to connect your specialist search engine to a meta search engine
 
