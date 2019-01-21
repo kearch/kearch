@@ -43,7 +43,10 @@ And **set the global IP adress** of your server here.
 
 Now, you can **set a topic to your specialist search engine**. There are two way to set a topic. One is using word frequency dictionary and another is using URLs. You must choose one of them. I think word frequency dictionary is better.
 ###### Method A: using word frequency dictionary
+You must choose a **language** and then input **word frequencies in your crawling topic** and **Word frequencies in random topic**.
 
+You shoud input characteristic words and their ration in **word frequencies in your crawling topic**. If you feel troublesome to input, please have a look [Appendix4](#Appendix-4.-Generate word-frequencies-from-URLs).
+<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-frequency.png" width="300"/></div>
 ###### Method B: using word frequency dictionary
 
 ## 2. How to connect your specialist search engine to a meta search engine
@@ -76,3 +79,4 @@ Check the meta DB.
 ```
 ./me_db_checker.sh
 ```
+#### Appendix 4. Generate word frequencies from URLs
