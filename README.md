@@ -41,7 +41,7 @@ After updating password, Please **set engine name** here.
 And **set the global IP adress** of your server here.
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-set-ip-adress.png" width="300"/></div>
 
-Now, you can **set a topic to your specialist search engine**. There are two way to set a topic. One is using word frequency dictionary and another is using URLs. You must choose one of them. I think word frequency dictionary is better.
+Now, you can **set a topic to your specialist search engine**. There are two way to set a topic. One is using word frequency dictionary (Method A) and another is using URLs (Method B). You must choose one of them. I think word frequency dictionary is better.
 ###### Method A: using word frequency dictionary
 You must choose a **language** and then input **word frequencies in your crawling topic** and **Word frequencies in random topic**.
 
@@ -59,7 +59,17 @@ Though this method is easier than frequency dictionary one, it is rougher. This 
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-urls.png" width="500"/></div>
 
 ## 2. How to connect your specialist search engine to a meta search engine
+There are two cases for connecting a specialist search engine and a meta search engine. One is sending a **connection request** from a specialist search and another is sendinf from a meta search engine.
+#### 2.A Connect from your specialist search engine to a meta search engine
+In this case, you send a **connection request** from your specialist search engine.
 
+<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-send-req.png" width="500"/></div>
+
+After sending a connection request, the administrator of the meta search engine will approve your request. Then, two search engines are connected. You can confirm it by check here.
+
+<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-from-req-status.png" width="500"/></div>
+
+#### 2.B Connect from a meta search engine to your specialist search engine
 ## Appendix
 #### Appendix 1. How to deploy kearch to your kubernetes cluster
 
