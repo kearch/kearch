@@ -52,8 +52,11 @@ You should input all words and their ratio in the Web in **Word frequencies in r
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-frequency.png" width="500"/></div>
 
 ###### Method B: using URLs
+You must choose a **language** and input some URLs related your own topic in **URLs in your crawling topic**. And then, input some URLs about random topics in **URLs in random topic**.
 
-<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-urls" width="500"/></div>
+Though this method is easier than frequency dictionary one, it is rougher. This is because I recommend you to use [Method A](#Method-A-using-word-frequency-dictionary).
+
+<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-urls.png" width="500"/></div>
 
 ## 2. How to connect your specialist search engine to a meta search engine
 
