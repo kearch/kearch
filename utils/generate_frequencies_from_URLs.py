@@ -2,17 +2,17 @@ from bs4 import BeautifulSoup
 import requests
 import nltk
 import re
+import sys
 from nltk.corpus import stopwords
 
-urls_computer = [
-        'https://en.wikipedia.org/wiki/Python_(programming_language)'
-]
-
-urls = urls_computer
 
 if __name__ == '__main__':
-    res = dict()
+    infile = sys.argv[1]
+    with open(infile) as f:
+        urls = f.read().split('\n')
+        urls = filter(lambda x: not x.isspace() and not x == '', urls)
 
+    res = dict()
     for url in urls:
         content = requests.get(url).content
         soup = BeautifulSoup(content, "lxml")
@@ -32,8 +32,8 @@ if __name__ == '__main__':
                 res[w] += 1
             else:
                 res[w] = 1
-    l = list(res.items())
-    l.sort(key=lambda x:x[1], reverse=True)
-    for k,v in l:
+    aslist = list(res.items())
+    aslist.sort(key=lambda x: x[1], reverse=True)
+    for k, v in aslist:
         if 1 < v:
             print(k, v)
