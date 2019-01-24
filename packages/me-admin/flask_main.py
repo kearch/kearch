@@ -1,5 +1,5 @@
 import flask
-from flask import Response, jsonify, request, redirect, abort
+from flask import Response, request, redirect, abort
 from flask_login import LoginManager, logout_user, UserMixin, login_required, \
     login_user, current_user
 import os
@@ -92,9 +92,9 @@ def update_password():
     print(u, h, file=sys.stderr)
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, conn_type='sql')
-    ret = db_req.request(path='/me/db/update_password_hash',
-                         payload={'username': u, 'password_hash': h},
-                         method='POST')
+    db_req.request(path='/me/db/update_password_hash',
+                   payload={'username': u, 'password_hash': h},
+                   method='POST')
     return flask.render_template('login.html')
 
 
@@ -112,8 +112,8 @@ def learn_params_for_evaluater():
     tparam = base64.b64encode(bparam).decode('utf-8')
     params = {'name': kearch_evaluater.evaluater.PARAMS_FILE,
               'body': tparam}
-    res = db_req.request(path='/me/db/push_binary_file', params=params)
-    return jsonify(res)
+    db_req.request(path='/me/db/push_binary_file', params=params)
+    return flask.redirect(flask.url_for("index"))
 
 
 @app.route("/")
@@ -162,7 +162,8 @@ def approve_a_connection_request():
     db_req.request(path='/me/db/approve_a_connection_request',
                    payload={'in_or_out': 'in', 'sp_host': sp_host},
                    method='POST')
-    return jsonify(summary)
+
+    return flask.redirect(flask.url_for("index"))
 
 
 @app.route('/me/admin/delete_a_connection_request', methods=['DELETE'])
@@ -197,8 +198,9 @@ def send_a_connection_request():
     gw_req = KearchRequester(sp_host, SP_GATEWAY_PORT)
 
     db_req.request(path='/me/db/add_a_connection_request',
-                   payload={'in_or_out': 'out', 'sp_host': sp_host})
-    gw_req.request(path=SP_GATEWAY_BASEURL + 'send_a_connection_request',
+                   payload={'in_or_out': 'out', 'sp_host': sp_host,
+                            'scheme': 'http'})
+    gw_req.request(path=SP_GATEWAY_BASEURL + 'add_a_connection_request',
                    payload={'me_host': me_host, 'scheme': 'http'},
                    method='POST')
     return flask.redirect(flask.url_for("index"))
