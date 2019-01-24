@@ -101,3 +101,14 @@ Check the meta DB.
 ./me_db_checker.sh
 ```
 #### Appendix 4. Generate word frequencies from URLs
+You can generate frequencies from URLs easily using `generate_frequencies_from_URLs.py` in `utils` dicrtory.
+```
+$ cd utils
+$ python3 generate_frequencies_from_URLs.py haskell_list
+haskell 213
+language 55
+programming 43
+ghc 42
+...
+```
+Please replace `haskell_list` with your own URL list and generate your frequencies. URL list is just only a text file of newline-separated URLs.
