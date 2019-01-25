@@ -33,3 +33,13 @@ def retrieve(queries, max_urls):
              'score': d['_score']})
 
     return results
+
+
+def test_retrieve():
+    for q in ['google', 'linux', 'linux kernel']:
+        results = retrieve(q, 100)
+        for r in results:
+            assert('url' in r)
+            assert('title' in r)
+            assert('description' in r)
+            assert('score' in r)

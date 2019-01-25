@@ -50,7 +50,6 @@ def retrieve(queries, max_urls):
 
 
 def test_retrieve():
-    # This test is assumed to run on minikube.
     for q in ['google', 'linux', 'linux kernel']:
         results = retrieve(q, 100)
         for r in results:
