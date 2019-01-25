@@ -32,11 +32,7 @@ def update_param_file(filename):
         return
 
 
-@app.route('/sp/classifier/classify', methods=['POST'])
-def classify():
-    data = flask.request.get_json()
-    body_words = data['body_words']
-    title_words = data['title_words']
+def classify_main(body_words, title_words):
     print('Start checking parameter files.', file=sys.stderr)
     update_param_file(kearch_classifier.classifier.PARAMS_FILE)
     print('End checking parameter files.', file=sys.stderr)
@@ -44,7 +40,23 @@ def classify():
     cls = kearch_classifier.classifier.Classifier()
     cls.load_params(kearch_classifier.classifier.PARAMS_FILE)
     res = cls.classify(body_words, title_words)
+    return res
+
+
+@app.route('/sp/classifier/classify', methods=['POST'])
+def classify():
+    data = flask.request.get_json()
+    body_words = data['body_words']
+    title_words = data['title_words']
+    res = classify_main(body_words, title_words)
     return jsonify({'result': res})
+
+
+def test_classify_main():
+    res = classify_main(
+        'Linus is a greate programmer.'.split(), 'History of Linux'.split())
+    assert(res == kearch_classifier.classifier.IN_TOPIC or
+           res == kearch_classifier.classifier.OUT_OF_TOPIC)
 
 
 if __name__ == '__main__':
