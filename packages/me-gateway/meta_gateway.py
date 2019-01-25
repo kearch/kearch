@@ -1,4 +1,5 @@
 from kearch_common.requester import KearchRequester
+import pytest
 
 SPECIALIST_GATEWAY_PORT = 32500
 SP_GATEWAY_BASEURL = '/v0/sp/gateway/'
@@ -26,6 +27,7 @@ def retrieve(sp_host, queries, max_urls):
     return results
 
 
+@pytest.mark.minikube
 def test_retrieve():
     # This test is assumed to run on minikube.
     for q in ['google', 'linux', 'linux kernel']:

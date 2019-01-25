@@ -1,4 +1,5 @@
 from kearch_common.requester import KearchRequester
+import pytest
 
 META_GATEWAY_PORT = 32400
 
@@ -109,6 +110,7 @@ def get_a_summary(me_host):
     return dump
 
 
+@pytest.mark.minikube
 def test_get_a_summary():
     # This test is assumed to run on minikube(192.168.99.100).
     # And sp and me must be connected.
