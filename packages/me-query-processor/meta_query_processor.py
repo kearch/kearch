@@ -23,7 +23,7 @@ def get_result_from_sp(sp_host, query, max_urls):
         path=ME_GATEWAY_BASEURL + 'retrieve',
         params={'sp_host': sp_host, 'queries': query, 'max_urls': max_urls})
     res = list()
-    for d in r['data']:
+    for d in r:
         d['sp_host'] = sp_host
         res.append(d)
     return res
@@ -52,7 +52,17 @@ def retrieve(query, max_urls, sp=None):
             for a in r:
                 res.extend(a)
 
-        return {'data': res}
+        return res
     else:
         res = get_result_from_sp(sp, query, max_urls)
-        return {'data': res}
+        return res
+
+
+def test_retrieve():
+    for q in ['linux kernel', 'haskell', 'google']:
+        res = retrieve(q, 100)
+        for r in res:
+            assert('url' in r)
+            assert('title' in r)
+            assert('description' in r)
+            assert('score' in r)
