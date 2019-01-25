@@ -18,7 +18,7 @@ def search():
         results = kr.request(path='/sp/query-processor/retrieve', method='GET',
                              params={'queries': ' '.join(queries),
                                      'max_urls': MAX_URLS})
-        return flask.render_template('result.html', results=results['data'],
+        return flask.render_template('result.html', results=results,
                                      query=query)
     else:
         return flask.redirect(flask.url_for('index.html'))

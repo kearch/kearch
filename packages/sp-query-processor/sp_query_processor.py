@@ -24,9 +24,9 @@ def retrieve(queries, max_urls):
         hits = resp['hits']['hits']
 
     print(hits, file=sys.stderr)
-    results = {'data': []}
+    results = []
     for d in hits:
-        results['data'].append(
+        results.append(
             {'url': d['_source']['url'],
              'title': d['_source']['title'],
              'description': d['_source']['text'][0:200],
