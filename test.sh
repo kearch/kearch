@@ -20,3 +20,8 @@ kubectl --namespace=kearch exec ${me_summary_updater_pod_name} pytest main.py
 sp_classifier_pod_name=$(kubectl --namespace=kearch get po -l engine=sp,app=classifier -o go-template --template '{{(index .items 0).metadata.name}}')
 echo $sp_classifier_pod_name
 kubectl --namespace=kearch exec ${sp_classifier_pod_name} pytest flask_main.py
+
+
+sp_gateway_pod_name=$(kubectl --namespace=kearch get po -l engine=sp,app=gateway -o go-template --template '{{(index .items 0).metadata.name}}')
+echo $sp_gateway_pod_name
+kubectl --namespace=kearch exec ${sp_gateway_pod_name} pytest sp_gateway.py

@@ -49,6 +49,17 @@ def retrieve(queries, max_urls):
     return results
 
 
+def test_retrieve():
+    # This test is assumed to run on minikube.
+    for q in ['google', 'linux', 'linux kernel']:
+        results = retrieve(q, 100)
+        for r in results:
+            assert('url' in r)
+            assert('title' in r)
+            assert('description' in r)
+            assert('score' in r)
+
+
 def send_a_dump(sp_host, me_host, summary):
     d = dict()
     d['host'] = sp_host
@@ -84,7 +95,7 @@ def delete_a_connection_request(me_host):
     return res
 
 
-def get_a_dump(me_host):
+def get_a_summary(me_host):
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, conn_type='sql')
     reqs = db_req.request(path='/sp/db/get_connection_requests')
@@ -97,3 +108,18 @@ def get_a_dump(me_host):
         db_req.request(path='/sp/db/approve_a_connection_request',
                        payload={'me_host': me_host, 'in_or_out': 'out'})
     return dump
+
+
+def test_get_a_summary():
+    # This test is assumed to run on minikube(192.168.99.100).
+    # And sp and me must be connected.
+    summary = get_a_summary('192.168.99.100')
+    assert('sp_host' in summary)
+    assert(type(summary['sp_host']) is str)
+    assert('engine_name' in summary)
+    assert(type(summary['engine_name']) is str)
+    assert('dump' in summary)
+    assert(type(summary['dump']) is dict)
+    for k, v in summary['dump'].items():
+        assert(type(k) is str)
+        assert(type(v) is int)
