@@ -1,6 +1,8 @@
 #! /bin/bash
+# If you don't use minikube, please comment in 'not minikube'.
 
-MINIKUBE='not minikube'
+MINIKUBE=''
+# MINIKUBE='not minikube'
 
 sp_classifier_pod_name=$(kubectl --namespace=kearch get po -l engine=sp,app=classifier -o go-template --template '{{(index .items 0).metadata.name}}')
 echo $sp_classifier_pod_name
