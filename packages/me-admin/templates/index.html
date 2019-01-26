@@ -8,6 +8,8 @@
     <div class="container">
       <h3>Meta server admin</h3>
 
+      <h4 class="config-section-header">Server config</h4>
+
       <div class="card">
         <div class="card-content">
           <span class="card-title">Update password</span>
@@ -21,80 +23,6 @@
               <input id="password-again" type="password" name="password_again">
             </div>
             <button class="btn" type="submit">update</button>
-          </form>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">Requests from specialist servers to this meta server</span>
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">sp_host</th>
-                <th scope="col">is_approved</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for name,state in requests['in'].items(): %}
-              <tr>
-                <td>{{ name }}</td>
-                <td>{{ state }}</td>
-                <td>
-                  {% if state == 0 %}
-                  <form action="/me/admin/approve_a_connection_request" method="post">
-                    <button type="submit" class="btn" name="sp_host" value="{{ name }}">Approve</button>
-                  </form>
-                  {% endif %}
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">Requests from this meta server to specialist servers</span>
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">sp_host</th>
-                <th scope="col">is_approved</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for name,state in requests['out'].items(): %}
-              <tr>
-                <td>{{ sp_servers.get(name, {}).get('engine_name', '')  }} ({{ name }})</td>
-                <td>{{ state }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">Learn params for evaluater</span>
-          <form action="/me/admin/learn_params_for_evaluater" method="GET">
-            <button class="btn">learn</button>
-          </form>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">Send a requests from this meta server to specialist servers</span>
-          <form action="/me/admin/send_a_connection_request" method="post">
-            <div class="input-field">
-              <label for="sp_host">Specialist host name</label>
-              <input type="text" id="sp_host" name="sp_host" cols="50" />
-            </div>
-            <button class="btn">send a request to specialist search engine</button>
           </form>
         </div>
       </div>
@@ -128,6 +56,85 @@
           </form>
         </div>
       </div>
+
+      <h4 class="config-section-header">Connection requests</h4>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Send a requests from this meta server to specialist servers</span>
+          <form action="/me/admin/send_a_connection_request" method="post">
+            <div class="input-field">
+              <label for="sp_host">Specialist host name</label>
+              <input type="text" id="sp_host" name="sp_host" cols="50" />
+            </div>
+            <button class="btn">send a request to specialist search engine</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Requests from this meta server to specialist servers</span>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">sp_host</th>
+                <th scope="col">is_approved</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for name,state in requests['out'].items(): %}
+              <tr>
+                <td>{{ sp_servers.get(name, {}).get('engine_name', '')  }} ({{ name }})</td>
+                <td>{{ state }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Requests from specialist servers to this meta server</span>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">sp_host</th>
+                <th scope="col">is_approved</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for name,state in requests['in'].items(): %}
+              <tr>
+                <td>{{ name }}</td>
+                <td>{{ state }}</td>
+                <td>
+                  {% if state == 0 %}
+                  <form action="/me/admin/approve_a_connection_request" method="post">
+                    <button type="submit" class="btn" name="sp_host" value="{{ name }}">Approve</button>
+                  </form>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h4 class="config-section-header">Evaluater</h4>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Learn params for evaluater</span>
+          <form action="/me/admin/learn_params_for_evaluater" method="GET">
+            <button class="btn">learn</button>
+          </form>
+        </div>
+      </div>
+
     </div>
   </body>
 </html>
