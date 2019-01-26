@@ -38,7 +38,7 @@ def search():
         print('results = ', results, file=sys.stderr)
 
         return flask.render_template(
-            'result.html', results=results['data'], selected_sp=sp,
+            'result.html', results=results, selected_sp=sp,
             sp_servers=sp_servers, query=query)
     else:
         return flask.redirect(flask.url_for('index.html'))

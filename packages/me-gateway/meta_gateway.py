@@ -1,4 +1,5 @@
 from kearch_common.requester import KearchRequester
+import pytest
 
 SPECIALIST_GATEWAY_PORT = 32500
 SP_GATEWAY_BASEURL = '/v0/sp/gateway/'
@@ -26,6 +27,18 @@ def retrieve(sp_host, queries, max_urls):
     return results
 
 
+@pytest.mark.minikube
+def test_retrieve():
+    # This test is assumed to run on minikube.
+    for q in ['google', 'linux', 'linux kernel']:
+        results = retrieve('192.168.99.100', q, 100)
+        for r in results:
+            assert('url' in r)
+            assert('title' in r)
+            assert('description' in r)
+            assert('score' in r)
+
+
 def add_new_sp_server(summary):
     db_req = KearchRequester(DATABASE_HOST, DATABASE_PORT,
                              conn_type='sql')
@@ -43,15 +56,6 @@ def delete_a_connection_request(sp_host):
     res = db_req.request(path='/me/db/delete_a_connection_request',
                          payload={'sp_host': sp_host})
     return res
-
-
-def fetch_a_dump(sp_host):
-    me_host = get_me_host()
-
-    gw_req = KearchRequester(sp_host, SPECIALIST_GATEWAY_PORT)
-    results = gw_req.request(path=SP_GATEWAY_BASEURL + 'get_a_dump',
-                             params={'me_host': me_host}, method='GET')
-    return results
 
 
 def add_a_connection_request(sp_host, engine_name, scheme):

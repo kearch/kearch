@@ -24,12 +24,22 @@ def retrieve(queries, max_urls):
         hits = resp['hits']['hits']
 
     print(hits, file=sys.stderr)
-    results = {'data': []}
+    results = []
     for d in hits:
-        results['data'].append(
+        results.append(
             {'url': d['_source']['url'],
              'title': d['_source']['title'],
              'description': d['_source']['text'][0:200],
              'score': d['_score']})
 
     return results
+
+
+def test_retrieve():
+    for q in ['google', 'linux', 'linux kernel']:
+        results = retrieve(q, 100)
+        for r in results:
+            assert('url' in r)
+            assert('title' in r)
+            assert('description' in r)
+            assert('score' in r)

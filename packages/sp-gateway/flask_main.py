@@ -9,9 +9,9 @@ app = flask.Flask(__name__)
 
 
 @app.route(BASEURL + 'get_a_summary', methods=['GET'])
-def get_a_dump():
+def get_a_summary():
     me_host = flask.request.args.get('me_host')
-    result = sp_gateway.get_a_dump(me_host)
+    result = sp_gateway.get_a_summary(me_host)
     return jsonify(result)
 
 
