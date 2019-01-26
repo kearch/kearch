@@ -142,9 +142,9 @@ do
         # sp-front
         echo
         echo "----- Start deployment of specialist front. -----"
-        cd $KEARCH_ROOT_DIR/packages/sp-front
+        cd $KEARCH_ROOT_DIR
 
-        $CMD_DOCKER_BUILD -t kearch/sp-front .
+        $CMD_DOCKER_BUILD -f packages/sp-front/Dockerfile -t kearch/sp-front .
 
         cd $KEARCH_ROOT_DIR/services/sp-front
 
