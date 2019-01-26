@@ -1,12 +1,14 @@
 <html>
   <head>
-    <link rel="icon" href="/static/images/favicon.ico">
-    <link rel="stylesheet" href="/static/dist/main.css" type="text/css" media="screen" charset="utf-8">
-    <script src="/static/dist/main.bundle.js" charset="utf-8"></script>
+    <link rel="icon" href="../static/images/favicon.ico">
+    <link rel="stylesheet" href="../static/dist/main.css" type="text/css" media="screen" charset="utf-8">
+    <script src="../static/dist/main.bundle.js" charset="utf-8"></script>
   </head>
   <body>
     <div class="container">
       <h3>Specialist server admin</h3>
+
+      <h4 class="config-section-header">Server config</h4>
 
       <div class="card">
         <div class="card-content">
@@ -40,31 +42,15 @@
 
       <div class="card">
         <div class="card-content">
-          <span class="card-title">Requests from meta servers to this specialist server</span>
-          <table class="highlight">
-            <thead>
-              <tr>
-                <th scope="col">me_host</th>
-                <th scope="col">is_approved</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for name,state in requests['in'].items(): %}
-              <tr>
-                <td>{{ name }}</td>
-                <td>{{ state }}</td>
-                <td>
-                  {% if state == 0 %}
-                  <form action="/sp/admin/approve_a_connection_request" method="post">
-                    <button type="submit" class="btn" name="me_host" value="{{ name }}">Approve</button>
-                  </form>
-                  {% endif %}
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+          <span class="card-title">Set your global IP adress or hostname here</span>
+          <p>The current IP adress or hostname = {{ config['host_name'] }} </p>
+          <form action="/sp/admin/update_config" method="post">
+            <div class="input-field">
+              <label for="host_name">Global IP adress or hostname</label>
+              <input type="text" id="host_name" name="host_name" cols="50" />
+            </div>
+            <button class="btn">update</button>
+          </form>
         </div>
       </div>
 
@@ -84,67 +70,7 @@
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">Requests from this specialist server to meta servers</span>
-          <table class="highlight">
-            <thead>
-              <tr>
-                <th scope="col">me_host</th>
-                <th scope="col">is_approved</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for name,state in requests['out'].items(): %}
-              <tr>
-                <td>{{ name }}</td>
-                <td>{{ state }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">Send a requests from this specialist server to meta servers</span>
-          <form action="/sp/admin/send_a_connection_request" method="post">
-            <div class="input-field">
-              <label for="me_host">Meta host name</label>
-              <input type="text" id="me_host" name="me_host" cols="50" />
-            </div>
-            <button class="btn">send a request to meta search engine</button>
-          </form>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">Set your global IP adress or hostname here</span>
-          <p>The current IP adress or hostname = {{ config['host_name'] }} </p>
-          <form action="/sp/admin/update_config" method="post">
-            <div class="input-field">
-              <label for="host_name">Global IP adress or hostname</label>
-              <input type="text" id="host_name" name="host_name" cols="50" />
-            </div>
-            <button class="btn">update</button>
-          </form>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">URLs to crawl separated by newlines</span>
-          <form action="/sp/admin/init_crawl_urls" method="post">
-            <div class="input-field">
-              <label>URLs</label>
-              <textarea class="materialize-textarea" name="urls" rows="5"></textarea>
-            </div>
-            <button class="btn">init crawl urls</button>
-          </form>
-        </div>
-      </div>
+      <h4 class="config-section-header">Topic definition</h4>
 
       <div class="card">
         <div class="card-content">
@@ -216,6 +142,87 @@ function disableForm( textid, ischecked ) {
           </form>
         </div>
       </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">URLs to crawl separated by newlines</span>
+          <form action="/sp/admin/init_crawl_urls" method="post">
+            <div class="input-field">
+              <label>URLs</label>
+              <textarea class="materialize-textarea" name="urls" rows="5"></textarea>
+            </div>
+            <button class="btn">init crawl urls</button>
+          </form>
+        </div>
+      </div>
+
+      <h4 class="config-section-header">Connection requests</h4>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Send a requests from this specialist server to meta servers</span>
+          <form action="/sp/admin/send_a_connection_request" method="post">
+            <div class="input-field">
+              <label for="me_host">Meta host name</label>
+              <input type="text" id="me_host" name="me_host" cols="50" />
+            </div>
+            <button class="btn">send a request to meta search engine</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Requests from this specialist server to meta servers</span>
+          <table class="highlight">
+            <thead>
+              <tr>
+                <th scope="col">me_host</th>
+                <th scope="col">is_approved</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for name,state in requests['out'].items(): %}
+              <tr>
+                <td>{{ name }}</td>
+                <td>{{ state }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Requests from meta servers to this specialist server</span>
+          <table class="highlight">
+            <thead>
+              <tr>
+                <th scope="col">me_host</th>
+                <th scope="col">is_approved</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for name,state in requests['in'].items(): %}
+              <tr>
+                <td>{{ name }}</td>
+                <td>{{ state }}</td>
+                <td>
+                  {% if state == 0 %}
+                  <form action="/sp/admin/approve_a_connection_request" method="post">
+                    <button type="submit" class="btn" name="me_host" value="{{ name }}">Approve</button>
+                  </form>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </body>
 </html>
