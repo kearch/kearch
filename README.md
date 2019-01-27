@@ -6,7 +6,7 @@ There are two types of search engines in kearch. One is **specialist search engi
 
 On the other side, a **meta search engine** is used for connecting specialized search engines. You can conect any specialist search engines using a meta search engine. For example, you can get search engine about some programming languages when you connect specialized search engines about Lisp, Haskell, C#, etc..
 
-## 1. How to deploy and configure a specialist search engine 
+## 1. Specialist search engine
 ### 1.1 Prepare a server for a specialist search engine
 First of all, you need to prepare a server for a specialist search engine. Minimum spec for a specialist search engine is following.
 - RAM: 8GiB
@@ -43,16 +43,16 @@ And **set the global IP adress** of your server here.
 
 ### 1.4 Set a topic to your specialist search engine and start crawling
 Now, you can **set a topic to your specialist search engine**. There are two way to set a topic. One is using word frequency dictionary (Method A) and another is using URLs (Method B). You must choose one of them. **I think word frequency dictionary is better**.
-#### 1.4.1.A using word frequency dictionary
+#### 1.4.1.A Use word frequency dictionary
 You must choose a **language** and then input **word frequencies in your crawling topic** and **Word frequencies in random topic**.
 
 You shoud input characteristic words and their ratio in **word frequencies in your crawling topic**. If you feel troublesome to input, please have a look [Appendix4](#Appendix-4-Generate-word-frequencies-from-URLs). You can find easy way to generate text to input there.
 
-You should input all words and their ratio in the Web in **Word frequencies in random topic**. But it is very difficult. So I recommend you to check **use default dict**.
+You should input all words and their ratio in the Web in **word frequencies in random topic**. But it is very difficult. So I recommend you to check **use default dict**.
 
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-frequency.png" width="500"/></div>
 
-#### 1.4.1.B using URLs
+#### 1.4.1.B Use URLs
 You must choose a **language** and input some URLs related your own topic in **URLs in your crawling topic**. And then, input some URLs about random topics in **URLs in random topic**.
 
 Though this method is easier than frequency dictionary one, it is rougher. This is because I recommend you to use [Method A](#Method-A-using-word-frequency-dictionary).
@@ -63,10 +63,14 @@ Though this method is easier than frequency dictionary one, it is rougher. This 
 Then, you can start crawling from some URLs. Please specify some URLs from here.
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-init-crawl.png" width="500"/></div>
 
-## 2. How to connect your specialist search engine to a meta search engine
+### 1.5 Use your specialist search engine
+Now, you can use your specialist search engine from [http://HOSTNAME-OR-IP-ADRESS-OF-YOUR-SERVER:32550](http://HOSTNAME-OR-IP-ADRESS-OFYOUR-SERVER:32550).
+<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-front.png" width="500"/></div>
+
+### 1.6 Connect your specialist search engine to a meta search engine
 There are two cases for connecting a specialist search engine and a meta search engine. One is sending a **connection request** from a specialist search and another is sendinf from a meta search engine.
-#### 2.A Connect from your specialist search engine to a meta search engine
-In this case, you send a **connection request** from your specialist search engine.
+#### 1.6.1.A Connect from your specialist search engine to a meta search engine
+In this case, you **send** a **connection request** from your specialist search engine.
 
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-send-req.png" width="500"/></div>
 
@@ -74,8 +78,8 @@ After sending a connection request, the administrator of the meta search engine 
 
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-from-req-status.png" width="500"/></div>
 
-#### 2.B Connect from a meta search engine to your specialist search engine
-In this case, you receive a **connection request** from a meta search engine. When a meta search engine send a connection request to your specialist search engine, it is displayed in this way.
+#### 1.6.1.B Connect from a meta search engine to your specialist search engine
+In this case, you **receive** a **connection request** from a meta search engine. When a meta search engine send a connection request to your specialist search engine, it is displayed in this way.
 
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-received-req-status.png" width="500"/></div>
 
