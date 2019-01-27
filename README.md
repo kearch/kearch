@@ -10,12 +10,13 @@ If you want to set up your own **specialist search engine**, please read from [1
 
 ## 1. Specialist search engine
 ### 1.1 Prepare a server for a specialist search engine
-First of all, you need to prepare a server for a specialist search engine. Minimum spec for a specialist search engine is following. You must set up a server so that you can login with public key authentication.
+First of all, you need to prepare a server for a specialist search engine. Minimum spec for a specialist search engine is following.
 - RAM: 8GiB
 - SSD/HDD: 100GiB
 - CPU: Dual core processor
 - OS: Ubuntu 18.04
 - Global IP adress or domain 
+- SSH login using public key authentication
 
 You can get a qualified server using [Sakura Cloud](https://cloud.sakura.ad.jp/), [AWS](https://aws.amazon.com/), [GCP](https://cloud.google.com/) or [Microsoft Azure](https://azure.microsoft.com/).
 ### 1.2 Deploy a specialist search engine to your server using Ansible
@@ -89,12 +90,13 @@ You can approve a connection request just pushing **approve** button.
 
 ## 2. Meta search engine
 ### 2.1 Prepare a server for a meta search engine
-First of all, you need to prepare a server for a specialist search engine. Minimum spec for a specialist search engine is following. You must set up a server so that you can login with public key authentication.
+First of all, you need to prepare a server for a specialist search engine. Minimum spec for a specialist search engine is following.
 - RAM: 4GiB
 - SSD/HDD: 100GiB
 - CPU: Dual core processor
 - OS: Ubuntu 18.04
 - Global IP adress or domain 
+- SSH login using public key authentication
 
 You can get a qualified server using [Sakura Cloud](https://cloud.sakura.ad.jp/), [AWS](https://aws.amazon.com/), [GCP](https://cloud.google.com/) or [Microsoft Azure](https://azure.microsoft.com/).
 
