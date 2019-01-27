@@ -6,6 +6,8 @@ There are two types of search engines in kearch. One is **specialist search engi
 
 On the other side, a **meta search engine** is used for connecting specialized search engines. You can conect any specialist search engines using a meta search engine. For example, you can get search engine about some programming languages when you connect specialized search engines about Lisp, Haskell, C#, etc..
 
+If you want to set up your own **specialist search engine**, please read from [1. Specialist search engine](#1-Specialist-search-engine). If you want to set up your own **meta search engine**, please read from [2. Meta search engine](#2-Meta-search-engine). 
+
 ## 1. Specialist search engine
 ### 1.1 Prepare a server for a specialist search engine
 First of all, you need to prepare a server for a specialist search engine. Minimum spec for a specialist search engine is following.
@@ -42,7 +44,7 @@ And **set the global IP adress** of your server here.
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-set-ip-adress.png" width="300"/></div>
 
 ### 1.4 Set a topic to your specialist search engine and start crawling
-Now, you can **set a topic to your specialist search engine**. There are two way to set a topic. One is using word frequency dictionary (Method A) and another is using URLs (Method B). You must choose one of them. **I think word frequency dictionary is better**.
+Now, you can **set a topic to your specialist search engine**. There are two way to set a topic. One is using word frequency dictionary (Method A) and another is using URLs (Method B). You must choose one of them. **I think word frequency dictionary ([Method A](#141A-Use-word-frequency-dictionary)) is better**.
 #### 1.4.1.A Use word frequency dictionary
 You must choose a **language** and then input **word frequencies in your crawling topic** and **Word frequencies in random topic**.
 
@@ -55,7 +57,7 @@ You should input all words and their ratio in the Web in **word frequencies in r
 #### 1.4.1.B Use URLs
 You must choose a **language** and input some URLs related your own topic in **URLs in your crawling topic**. And then, input some URLs about random topics in **URLs in random topic**.
 
-Though this method is easier than frequency dictionary one, it is rougher. This is because I recommend you to use [Method A](#Method-A-using-word-frequency-dictionary).
+Though this method is easier than frequency dictionary one, it is rougher. This is because I recommend you to use [Method A](#141A-Use-word-frequency-dictionary).
 
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-urls.png" width="500"/></div>
 
@@ -121,7 +123,7 @@ And **set the global IP adress** of your server here.
 
 ### 2.4 Connect your meta search engine to a meta search engine
 There are two cases for connecting a meta search engine and a specialist search engine. One is sending a **connection request** from a meta search and another is sending from a specialist search engine.
-#### 1.6.1.A Connect from your meta search engine to a specialist search engine
+#### 2.4.1.A Connect from your meta search engine to a specialist search engine
 In this case, you **send** a **connection request** from your meta search engine.
 
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/me-admin-send-req.png" width="500"/></div>
@@ -130,12 +132,16 @@ After sending a connection request, the administrator of the specialist search e
 
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/me-admin-from-req-status.png" width="500"/></div>
 
-#### 1.6.1.B Connect from a meta search engine to your specialist search engine
+#### 2.4.1.B Connect from a meta search engine to your specialist search engine
 In this case, you **receive** a **connection request** from a meta search engine. When a meta search engine send a connection request to your specialist search engine, it is displayed in this way.
 
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/me-admin-received-req-status.png" width="500"/></div>
 
 You can approve a connection request just pushing **approve** button.
+
+### 2.5 Use your meta search engine
+Now, you can use your meta search engine from [http://HOSTNAME-OR-IP-ADRESS-OF-YOUR-SERVER:32450](http://HOSTNAME-OR-IP-ADRESS-OFYOUR-SERVER:32450).
+<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/me-front.png" width="500"/></div>
 
 ## Appendix
 ### Appendix 1. How to deploy kearch to your kubernetes cluster
