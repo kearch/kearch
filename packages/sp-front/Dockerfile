@@ -1,12 +1,20 @@
+FROM node:8-alpine as builder
+COPY /packages/sp-front /kearch/packages/sp-front
+WORKDIR /kearch/packages/sp-front
+RUN yarn && yarn build-prod
+
+
 From python:3.6
 ARG KEARCH_COMMON_BRANCH="dev"
 
 RUN pip install flask
-RUN git clone https://github.com/kearch/kearch
-RUN cd /kearch/packages/kearch_common && git checkout $KEARCH_COMMON_BRANCH && pip install -e .
 
-COPY . /kearch/packages/specialist_front
-WORKDIR /kearch/packages/specialist_front
+COPY packages/kearch_common /kearch/packages/kearch_common
+RUN cd /kearch/packages/kearch_common && pip install -e .
+
+COPY /packages/sp-front /kearch/packages/sp-front
+COPY --from=builder /kearch/packages/sp-front/static/dist /kearch/packages/sp-front/static/dist
+WORKDIR /kearch/packages/sp-front
 
 # Following 4 lines are for debug.
 # COPY ./flask_main.py ./flask_main.py

@@ -102,9 +102,9 @@ do
         # me-front
         echo
         echo "----- Start deployment of meta front. -----"
-        cd $KEARCH_ROOT_DIR/packages/me-front
+        cd $KEARCH_ROOT_DIR
 
-        $CMD_DOCKER_BUILD -t kearch/me-front .
+        $CMD_DOCKER_BUILD -f packages/me-front/Dockerfile -t kearch/me-front .
 
         cd $KEARCH_ROOT_DIR/services/me-front
 

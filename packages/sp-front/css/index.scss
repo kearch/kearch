@@ -1,0 +1,58 @@
+@import "~materialize-css/sass/components/color-variables";
+
+@import "./theme.scss";
+
+@import "~materialize-css/sass/materialize.scss";
+
+.logo-primary {
+  max-width: 568px;
+  width: 100%;
+}
+
+.logo {
+  max-width: 200px;
+  width: 100%;
+
+  @media #{$medium-and-up} {
+    margin-left: -16%;
+  }
+}
+
+.search {
+  display: flex;
+
+  .search-left {
+    flex: 1;
+  }
+
+  .search-right {
+    padding-left: 10px;
+    @extend .valign-wrapper;
+  }
+}
+
+.result {
+
+  margin-bottom: 35px;
+
+  .title {
+    color: black;
+    font-weight: bold;
+  }
+
+  a:hover .title {
+    text-decoration: underline;
+  }
+
+  .url {
+    color: $secondary-color;
+  }
+
+  .detail {
+    color: grey;
+  }
+
+  p {
+    margin: 5px 0;
+  }
+}
