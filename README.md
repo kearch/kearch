@@ -79,13 +79,66 @@ After sending a connection request, the administrator of the meta search engine 
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-from-req-status.png" width="500"/></div>
 
 #### 1.6.1.B Connect from a meta search engine to your specialist search engine
-In this case, you **receive** a **connection request** from a meta search engine. When a meta search engine send a connection request to your specialist search engine, it is displayed in this way.
+In this case, you **receive** a **connection request** from a specialist search engine. When a specialist search engine send a connection request to your meta search engine, it is displayed in this way.
 
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-received-req-status.png" width="500"/></div>
 
 You can approve a connection request just pushing **approve** button.
+
+## 2. Meta search engine
+### 2.1 Prepare a server for a meta search engine
+First of all, you need to prepare a server for a specialist search engine. Minimum spec for a specialist search engine is following.
+- RAM: 4GiB
+- SSD/HDD: 100GiB
+- CPU: Dual core processor
+- OS: Ubuntu 18.04
+- Global IP adress or domain 
+
+You can get a qualified server using [Sakura Cloud](https://cloud.sakura.ad.jp/), [AWS](https://aws.amazon.com/), [GCP](https://cloud.google.com/) or [Microsoft Azure](https://azure.microsoft.com/).
+
+### 2.2 Deploy a meta search engine to your server using Ansible
+Second, deploy a meta search engine using Ansible. If you don't install Ansible to your **local machine**, please install it first. You can install Ansible by following commands.
+- Debian/Ubuntu: `sudo apt install ansible`
+- Mac: `brew install ansible`
+
+And then clone this repository your **local machine** by the following command.
+```
+~$ git clone https://github.com/kearch/kearch.git
+```
+Finally, deploy a meta search engine using Ansible. Please replace `<HOSTNAME>` and `<USERNAME>` depending on your environment. (In most cases, `<HOSTNAME>` is the IP adress of your server.) This takes some time to finish. I recommend you to take a coffee brake.
+```
+~/kearch$ ansible-playbook me-playbook.yml -i <HOSTNAME>, -u <USERNAME> --ask-become-pass -vvv
+```
+
+### 2.3 Configuration of your meta search engine
+Please access [http://HOSTNAME-OR-IP-ADRESS-OF-YOUR-SERVER:32700](http://HOSTNAME-OR-IP-ADRESS-OFYOUR-SERVER:32700). You can see this screen if you succeeded to set up. 
+<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-signin.png" width="200"/></div>
+
+The default Username and Password are "root" and "password". We strongly recommend you to **update password** immdiately after login.
+
+And **set the global IP adress** of your server here.
+<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-set-ip-adress.png" width="300"/></div>
+
+### 2.4 Connect your meta search engine to a meta search engine
+There are two cases for connecting a meta search engine and a specialist search engine. One is sending a **connection request** from a meta search and another is sending from a specialist search engine.
+#### 1.6.1.A Connect from your meta search engine to a specialist search engine
+In this case, you **send** a **connection request** from your meta search engine.
+
+<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/me-admin-send-req.png" width="500"/></div>
+
+After sending a connection request, the administrator of the specialist search engine will approve your request. Then, two search engines are connected. You can confirm it by check here.
+
+<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/me-admin-from-req-status.png" width="500"/></div>
+
+#### 1.6.1.B Connect from a meta search engine to your specialist search engine
+In this case, you **receive** a **connection request** from a meta search engine. When a meta search engine send a connection request to your specialist search engine, it is displayed in this way.
+
+<div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/me-admin-received-req-status.png" width="500"/></div>
+
+You can approve a connection request just pushing **approve** button.
+
 ## Appendix
-#### Appendix 1. How to deploy kearch to your kubernetes cluster
+### Appendix 1. How to deploy kearch to your kubernetes cluster
 
 ```
 git clone https://github.com/kearch/kearch.git
@@ -94,7 +147,7 @@ cd kearch
 ./me_deploy.sh medb all
 ```
 
-#### Appendix 2. Port numbers for services
+### Appendix 2. Port numbers for services
 - 32700: Admin setting page port of specialist search engines
 - 32600: Admin setting page port of meta search engines
 - 32500: Gateway port of specialist search engines
@@ -102,7 +155,7 @@ cd kearch
 - 32550: Search engine front page port of specialist search engines
 - 32450: Search engine front page port of meta search engines
 
-#### Appendix 3. Check your DB in kearch
+### Appendix 3. Check your DB in kearch
 
 Check the specialist DB.
 ```
@@ -112,7 +165,7 @@ Check the meta DB.
 ```
 ./me_db_checker.sh
 ```
-#### Appendix 4. Generate word frequencies from URLs
+### Appendix 4. Generate word frequencies from URLs
 You can generate frequencies from URLs easily using `generate_frequencies_from_URLs.py` in `utils` dicrtory.
 ```
 $ cd utils
