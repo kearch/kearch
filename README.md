@@ -10,7 +10,7 @@ If you want to set up your own **specialist search engine**, please read from [1
 
 ## 1. Specialist search engine
 ### 1.1 Prepare a server for a specialist search engine
-First of all, you need to prepare a server for a specialist search engine. Minimum spec for a specialist search engine is following.
+First of all, you need to prepare a server for a specialist search engine. Minimum spec for a specialist search engine is following. You must set up a server so that you can login with public key authentication.
 - RAM: 8GiB
 - SSD/HDD: 100GiB
 - CPU: Dual core processor
@@ -89,7 +89,7 @@ You can approve a connection request just pushing **approve** button.
 
 ## 2. Meta search engine
 ### 2.1 Prepare a server for a meta search engine
-First of all, you need to prepare a server for a specialist search engine. Minimum spec for a specialist search engine is following.
+First of all, you need to prepare a server for a specialist search engine. Minimum spec for a specialist search engine is following. You must set up a server so that you can login with public key authentication.
 - RAM: 4GiB
 - SSD/HDD: 100GiB
 - CPU: Dual core processor
