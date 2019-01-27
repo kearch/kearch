@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <link rel="icon" href="/static/images/favicon.ico">
+    <link rel="stylesheet" href="/static/dist/main.css" type="text/css" media="screen" charset="utf-8">
+    <script src="/static/dist/main.bundle.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col s12 offset-m1 m10 offset-xl2 xl8">
+          <div class="center-align">
+            <img src="/static/images/logo-text-white.png" alt="logo" title="keach logo" class="logo-primary">
+          </div>
+          <form action="/me/front/search" method="get">
+            <div class="search">
+              <div class="search-left">
+                <div class="input-field">
+                  <input type="text" name="query" placeholder="Search">
+                </div>
+              </div>
+              <div class="search-right">
+                <button class="btn">retrieve</button>
+              </div>
+            </div>
+
+            <div class="input-field">
+              <select name="sp" id="sp_host">
+                <option value="">select automatically</option>
+                {% for h,d in sp_servers.items() %}
+                <option value="{{ h }}">{{ d['engine_name'] }} ({{ d['name'] }})</option>
+                {% endfor %}
+              </select>
+              <label for="sp_host">Specialist server name</label>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

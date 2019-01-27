@@ -1,3 +1,5 @@
 *.db
-*.pickle
 *.dict
+*.retry
+
+__pycache__

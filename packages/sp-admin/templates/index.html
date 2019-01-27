@@ -1,0 +1,228 @@
+<html>
+  <head>
+    <link rel="icon" href="/static/images/favicon.ico">
+    <link rel="stylesheet" href="/static/dist/main.css" type="text/css" media="screen" charset="utf-8">
+    <script src="/static/dist/main.bundle.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h3>Specialist server admin</h3>
+
+      <h4 class="config-section-header">Server config</h4>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Update password</span>
+          <form action="/sp/admin/update_password" method="post">
+            <div class="input-field">
+              <label for="password">New password</label>
+              <input id="password" type="password" name="password">
+            </div>
+            <div class="input-field">
+              <label for="password-again">New password again</label>
+              <input id="password-again" type="password" name="password_again">
+            </div>
+            <button class="btn" type="submit">update</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Set engine name</span>
+          <form action="/sp/admin/update_config" method="post">
+            <div class="input-field">
+              <label for="engine-name">Engine name</label>
+              <input id="engine-name" type="text" name="engine_name" value="{{ config['engine_name'] }}">
+            </div>
+            <button class="btn" type="submit">update</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Set your global IP adress or hostname here</span>
+          <p>The current IP adress or hostname = {{ config['host_name'] }} </p>
+          <form action="/sp/admin/update_config" method="post">
+            <div class="input-field">
+              <label for="host_name">Global IP adress or hostname</label>
+              <input type="text" id="host_name" name="host_name" cols="50" />
+            </div>
+            <button class="btn">update</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class=card-title>Select connection policy of this specialist search engine</span>
+          <p>The current connection policy = "{{ config['connection_policy'] }}"</p>
+          <form action="/sp/admin/update_config" method="post">
+            <div class="input-field">
+              <select name="connection_policy">
+                <option value="protected">protected</option>
+                <option value="public">public</option>
+              </select>
+            </div>
+            <button class="btn">set connection policy</button>
+          </form>
+        </div>
+      </div>
+
+      <h4 class="config-section-header">Topic definition</h4>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Learn Parameter for the classifier in the crawler using url lists</span>
+          <form name=learn_params_from_url_form action="/sp/admin/learn_params_from_url" method="post">
+            <div class="input-field">
+              <select id="language" name="language">
+                <option value="en">en</option>
+                <option value="jp">jp</option>
+              </select>
+              <label for="language">language</label>
+            </div>
+            <div class="input-field">
+              <label for="topic_urls">URLs in your crawling topic</label>
+              <textarea class="materialize-textarea" name="topic_urls" id="topic_urls" cols="50" rows="5"></textarea>
+            </div>
+            <div class="input-field">
+              <label>URLs in random topic</label>
+              <textarea class="materialize-textarea" name="random_urls" id="random_urls" cols="50" rows="5"></textarea>
+            </div>
+            <button class="btn" type="submit">learn crawler parameters</button>
+          </form>
+        </div>
+      </div>
+
+      <script>
+        <!--
+function disableForm( textid, ischecked ) {
+  if( ischecked == true ) {
+    document.getElementById(textid).disabled = true;
+  }
+  else {
+    document.getElementById(textid).disabled = false;
+  }
+}
+// -->
+      </script>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Learn Parameter for the classifier in the crawler using word frequency</span>
+          <form name=learn_params_from_dict_form action="/sp/admin/learn_params_from_dict" method="post">
+            <div class="input-field">
+              <select id="language" name="language">
+                <option value="en">en</option>
+                <option value="jp">jp</option>
+              </select>
+              <label for="language">language</label>
+            </div>
+            <div class="input-field">
+              <label for="topic_dict">Word frequencies in your crawling topic</label>
+              <textarea class="materialize-textarea" name="topic_dict" id="topic_dict" cols="50" rows="5"></textarea>
+            </div>
+            <label>
+              <input
+                type="checkbox"
+                class="form-check-input"
+                name="use_default_dict"
+                id="use_default_dict"
+                value="on"
+                onclick="disableForm('random_dict_textbox', this.checked);">
+              <span>use default dict</span>
+            </label>
+            <div class="input-field">
+              <label for="random_dict_textbox">Word frequencies in random topic</label>
+              <textarea class="materialize-textarea" name="random_dict" id="random_dict_textbox" cols="50" rows="5"></textarea>
+            </div>
+            <button class="btn" type="submit">learn crawler parameters</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">URLs to crawl separated by newlines</span>
+          <form action="/sp/admin/init_crawl_urls" method="post">
+            <div class="input-field">
+              <label>URLs</label>
+              <textarea class="materialize-textarea" name="urls" rows="5"></textarea>
+            </div>
+            <button class="btn">init crawl urls</button>
+          </form>
+        </div>
+      </div>
+
+      <h4 class="config-section-header">Connection requests</h4>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Send a requests from this specialist server to meta servers</span>
+          <form action="/sp/admin/send_a_connection_request" method="post">
+            <div class="input-field">
+              <label for="me_host">Meta host name</label>
+              <input type="text" id="me_host" name="me_host" cols="50" />
+            </div>
+            <button class="btn">send a request to meta search engine</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Requests from this specialist server to meta servers</span>
+          <table class="highlight">
+            <thead>
+              <tr>
+                <th scope="col">me_host</th>
+                <th scope="col">is_approved</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for name,state in requests['out'].items(): %}
+              <tr>
+                <td>{{ name }}</td>
+                <td>{{ state }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Requests from meta servers to this specialist server</span>
+          <table class="highlight">
+            <thead>
+              <tr>
+                <th scope="col">me_host</th>
+                <th scope="col">is_approved</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for name,state in requests['in'].items(): %}
+              <tr>
+                <td>{{ name }}</td>
+                <td>{{ state }}</td>
+                <td>
+                  {% if state == 0 %}
+                  <form action="/sp/admin/approve_a_connection_request" method="post">
+                    <button type="submit" class="btn" name="me_host" value="{{ name }}">Approve</button>
+                  </form>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>

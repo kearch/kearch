@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kearch
+  name: sp-gateway
+  labels:
+    engine: sp
+    app: gateway
+spec:
+  type: NodePort
+  ports:
+  - port: 10080
+    nodePort: 32500
+  selector:
+    engine: sp
+    app: gateway

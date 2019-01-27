@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kearch
+  name: me-front
+  labels:
+    engine: me
+    app: front
+spec:
+  type: NodePort
+  ports:
+  - port: 2222
+    nodePort: 32450
+  selector:
+    engine: me
+    app: front

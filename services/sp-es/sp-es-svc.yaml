@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kearch
+  name: sp-es
+  labels:
+    engine: sp
+    app: es
+    component: elasticsearch
+    role: data
+spec:
+  selector:
+    component: elasticsearch
+    role: data
+  type: NodePort
+  ports:
+  - name: http
+    port: 9200
+#type: LoadBalancer

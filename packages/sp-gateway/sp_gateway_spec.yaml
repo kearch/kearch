@@ -1,0 +1,125 @@
+openapi: 3.0.0
+info:
+  title: kearch specialist search engine gateway API
+  description: kearch specialist search engine gateway API
+  version: 0.1.0
+servers:
+  - url: '{scheme}://{sp_host}:{port}/v0/sp/gateway'
+    variables:
+      scheme:
+        enum:
+          - http
+          - https
+        default: https
+      sp_host:
+        default: localhost
+      port:
+        default: '32500'
+paths:
+  /get_a_summary:
+    get:
+      summary: Get summary of this specialist server.
+      parameters:
+        - in: query
+          name: me_host
+          schema:
+            type: string
+          description: A host name of the meta server.
+      responses:
+        '200':
+          description: A summary of this specialist server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Summary'
+  /add_a_connection_request:
+    post:
+      summary: Add a connection request sent from meta server to specialist server.
+      requestBody:
+        description: A connection request.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectionRequestOnSP'
+      responses:
+        '200':
+          description: An info about the meta server that requested the connection.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  me_host:
+                    type: string
+  /delete_a_connection_request:
+    delete:
+      summary: Delete a connection request sent from meta server to specialist server.
+      parameters:
+        - in: query
+          name: me_host
+          schema:
+            type: string
+          description: A meta host name of the connection request to delete.
+      responses:
+        '200':
+          description: An info about the meta server that requested the connection.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  me_host:
+                    type: string
+  /retrieve:
+    get:
+      summary: Retrieve search results.
+      parameters:
+        - in: query
+          name: queries
+          schema:
+            type: string
+          description: Space-separated query words
+        - in: query
+          name: max_urls
+          schema:
+            type: integer
+          description: Max number of URLs to retrive from specialist servers
+      responses:
+        '200':
+          description: Search results.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+
+components:
+  schemas:
+    ConnectionRequestOnSP:
+      properties:
+        me_host:
+          type: string
+        scheme:
+          type: string
+    Summary:
+      properties:
+        sp_host:
+          type: string
+        engine_name:
+          type: string
+        dump:
+          type: object
+          additionalProperties:
+            type: integer
+    Document:
+      properties:
+        url:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        score:
+          type: number

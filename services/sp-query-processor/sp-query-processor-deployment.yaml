@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kearch
+  name: sp-query-processor
+  labels:
+    engine: sp
+    app: query-processor
+spec:
+  selector:
+    matchLabels:
+      engine: sp
+      app: query-processor
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        engine: sp
+        app: query-processor
+    spec:
+      containers:
+      - image: kearch/sp-query-processor
+        name: sp-query-processor
+        ports:
+        - containerPort: 10080
+        imagePullPolicy: Never

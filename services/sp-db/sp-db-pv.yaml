@@ -1,0 +1,17 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  namespace: kearch
+  name: sp-db-pv
+  labels:
+    engine: sp
+    app: db
+    volume: sp-db-pv
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 30Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: /data/sp-db-pv/

@@ -1,0 +1,56 @@
+openapi: 3.0.0
+info:
+  title: kearch meta search engine query processor API
+  description: kearch meta search engine query processor API
+  version: 0.1.0
+servers:
+  - url: '{scheme}://{me_host}:{port}/me/query-processor'
+    variables:
+      scheme:
+        enum:
+          - http
+          - https
+        default: http
+      me_host:
+        default: me-query-processor.kearch.svc.cluster.local
+      port:
+        default: '10080'
+paths:
+  /retrieve:
+    get:
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: max_urls
+          schema:
+            type: integer
+          required: true
+        - in: query
+          name: sp
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Search results.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+components:
+  schemas:
+    Document:
+      properties:
+        url:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        score:
+          type: number

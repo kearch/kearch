@@ -1,0 +1,83 @@
+openapi: 3.0.0
+info:
+  title: kearch meta search engine admin API
+  description: kearch meta search engine admin API
+  version: 0.1.0
+servers:
+  - url: '{scheme}://{me_host}:{port}/me/admin'
+    variables:
+      scheme:
+        enum:
+          - http
+          - https
+        default: http
+      me_host:
+        default: localhost
+      port:
+        default: '32600'
+paths:
+  /login:
+    get:
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: password
+          schema:
+            type: string
+          required: true
+  /logout:
+    get:
+      summary:
+  /update_password:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                required: true
+                password:
+                  type: string
+                password_again:
+                  type: string
+  /learn_params_for_evaluater:
+    get:
+      summary:
+  /approve_a_connection_request:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                required: true
+                sp_host:
+                  type: string
+  /delete_a_connection_request:
+    delete:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                required: true
+                sp_host:
+                  type: string
+  /send_a_connection_request:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                required: true
+                sp_host:
+                  type: string                

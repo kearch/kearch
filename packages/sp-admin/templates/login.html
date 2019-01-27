@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <link rel="icon" href="/static/images/favicon.ico">
+    <link rel="stylesheet" href="/static/dist/main.css" type="text/css" media="screen" charset="utf-8">
+    <script src="/static/dist/main.bundle.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h3>Specialist server admin</h3>
+      <form action="/sp/admin/login" method="post">
+        <div class="input-field">
+          <label for="username">Username</label>
+          <input id="username" type="text" name="username">
+        </div>
+        <div class="input-field">
+          <label for="password">Password</label>
+          <input id="password" type="password" name="password">
+        </div>
+        <button class="btn" type="submit">login</button>
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kearch
+  name: me-evaluater
+  labels:
+    engine: me
+    app: evaluater
+spec:
+  type: NodePort
+  ports:
+  - port: 10080
+  selector:
+    engine: me
+    app: evaluater

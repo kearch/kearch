@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kearch
+  name: sp-admin
+  labels:
+    engine: sp
+    app: admin
+spec:
+  selector:
+    matchLabels:
+      engine: sp
+      app: admin
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        engine: sp
+        app: admin
+    spec:
+      containers:
+      - image: kearch/sp-admin
+        name: sp-admin
+        ports:
+        - containerPort: 10080
+        imagePullPolicy: Never

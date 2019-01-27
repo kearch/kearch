@@ -1,0 +1,150 @@
+openapi: 3.0.0
+info:
+  title: kearch specialist search engine admin API
+  description: kearch specialist search engine admin API
+  version: 0.1.0
+servers:
+  - url: '{scheme}://{sp_host}:{port}/sp/admin'
+    variables:
+      scheme:
+        enum:
+          - http
+          - https
+        default: http
+      sp_host:
+        default: localhost
+      port:
+        default: '32600'
+paths:
+  /login:
+    get:
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: password
+          schema:
+            type: string
+          required: true
+  /logout:
+    get:
+      summary:
+  /update_password:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                required: true
+                password:
+                  type: string
+                password_again:
+                  type: string
+  /init_crawl_urls:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                required: true
+                urls:
+                  type: string
+                  example: www.google.com\nwww.facebook.com
+  /learn_params_from_url:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                required: true
+                topic_urls:
+                  type: string
+                  example: www.google.com\nwww.facebook.com
+                random_urls:
+                  type: string
+                  example: www.google.com\nwww.facebook.com
+  /learn_params_from_dict:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dict'
+  /update_config:
+    post:
+      requestBody:
+        description: Designated configs(connection_policy, host_name or engine_name) are updated  
+        required: true        
+        content:
+          application/json:
+            schema:
+              properties:
+                connection_policy:
+                  type: string
+                host_name:
+                  type: string
+                engine_name:
+                  type: string
+  /approve_a_connection_request:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                required: true
+                me_host:
+                  type: string
+  /delete_a_connection_request:
+    delete:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                required: true
+                me_host:
+                  type: string
+  /send_a_connection_request:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                required: true
+                me_host:
+                  type: string
+components:
+  schemas:
+    Dict:
+      properties:
+        language:
+          type: string
+        use_default_dict:
+          type: string
+        topic_dict:
+          type: object
+          additionalProperties:
+            type: number
+            format: integer
+          example: {'lisp': 91}
+        random_dict:
+          type: object
+          additionalProperties:
+            type: number
+            format: integer
+          example: {'OCaml': 91}

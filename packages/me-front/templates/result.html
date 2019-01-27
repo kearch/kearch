@@ -1,0 +1,69 @@
+<html>
+  <head>
+    <link rel="icon" href="/static/images/favicon.ico">
+    <link rel="stylesheet" href="/static/dist/main.css" type="text/css" media="screen" charset="utf-8">
+    <script src="/static/dist/main.bundle.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col s12 m3">
+          <img src="/static/images/logo-text-side-white.png" alt="logo" title="keach logo" class="logo">
+        </div>
+        <div class="col s12 m9">
+          <form action="/me/front/search" method="get">
+            <div class="search">
+              <div class="search-left">
+                <div class="input-field">
+                  <input class="input" name="query" value="{{ query }}" placeholder="Search">
+                </div>
+              </div>
+              <div class="search-right">
+              <button class="btn">retrieve</button>
+              </div>
+            </div>
+
+            <div class="input-field">
+              <select name="sp" id="sp_host">
+                <option value="">select automatically</option>
+                {% for h,d in sp_servers.items() %}
+                {% if selected_sp == h %}
+                <option value="{{ h }}" selected>{{ d['engine_name'] }} ({{ d['name'] }})</option>
+                {% else %}
+                <option value="{{ h }}">{{ d['engine_name'] }} ({{ d['name'] }})</option>
+                {% endif %}
+                {% endfor %}
+              </select>
+              <label for="sp_host">Specialist server name</label>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="results">
+        {% for w in results %}
+        <div class="result">
+          <a href="{{ w['url'] }}">
+            <h6 class="title">{{ w['title'] }}</h6>
+            <div class="url">
+              <p>
+                {{ w['url'] }}
+              </p>
+            </div>
+          </a>
+          <div class="description">
+            <p>
+              {{ w['description'] }}
+            </p>
+          </div>
+          <div class="detail">
+            <p>
+              {{ w['score'] }}
+              from {{ sp_servers.get(w['sp_host'], {}).get('engine_name', '') }} ({{ w['sp_host'] }})
+            </p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+</html>

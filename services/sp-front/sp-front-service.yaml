@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kearch
+  name: sp-front
+  labels:
+    engine: sp
+    app: front
+spec:
+  type: NodePort
+  ports:
+  - port: 2222
+    nodePort: 32550
+  selector:
+    engine: sp
+    app: front

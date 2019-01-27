@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: kearch
+  name: sp-es-data-00
+  labels:
+    volume: sp-es-data
+spec:
+  capacity:
+    storage: 12Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /data/sp-es-data-00
+  # TODO: tie this PersistentVolume to a specific node
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: storage
+          operator: In
+          values:
+          - sp-es
+          - sp-es-data
+          - sp-es-data-00

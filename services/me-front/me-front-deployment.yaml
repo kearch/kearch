@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kearch
+  name: me-front
+  labels:
+    engine: me
+    app: front
+spec:
+  selector:
+    matchLabels:
+      engine: me
+      app: front
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        engine: me
+        app: front
+    spec:
+      containers:
+      - image: kearch/me-front
+        name: me-front
+        ports:
+        - containerPort: 2222
+        imagePullPolicy: Never
