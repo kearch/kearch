@@ -20,9 +20,5 @@ spec:
     required:
       nodeSelectorTerms:
       - matchExpressions:
-        - key: storage
-          operator: In
-          values:
-          - sp
-          - sp-db
-          - sp-db-00
+        - key: storage-sp-db
+          operator: Exists

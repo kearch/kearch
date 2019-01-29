@@ -123,8 +123,12 @@
        register: nodename
        become_user: kearch
 
-     - name: set label
-       command: kubectl label nodes {{ nodename.stdout }} storage=sp
+     - name: set labels for db
+       command: kubectl label nodes {{ nodename.stdout }} storage-sp-db=
+       become_user: kearch
+
+     - name: set labels for es
+       command: kubectl label nodes {{ nodename.stdout }} storage=sp-es
        become_user: kearch
 
      - name: kearch deploy script
