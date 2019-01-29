@@ -55,7 +55,7 @@ do
         kubectl --namespace=kearch apply --prune -l engine=me,app=db --recursive -f .
 
         # Wait until the pod is ready
-        while ! kubectl rollout status deployment me-db --namespace=kearch
+        while ! kubectl rollout status statefulset me-db --namespace=kearch
         do
             sleep 1
         done
