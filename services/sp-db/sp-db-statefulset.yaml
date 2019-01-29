@@ -11,6 +11,7 @@ spec:
     matchLabels:
       engine: sp
       app: db
+  serviceName: sp-db
   replicas: 1
   template:
     metadata:
@@ -53,4 +54,4 @@ spec:
       accessModes: [ ReadWriteOnce ]
       resources:
         requests:
-          storage: 12Gi
+          storage: 30Gi

@@ -23,5 +23,6 @@ spec:
         - key: storage
           operator: In
           values:
+          - sp
           - sp-db
           - sp-db-00
