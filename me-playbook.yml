@@ -77,6 +77,11 @@
           path: /data
           state: directory
 
+     - name: Make db directory
+       file:
+          path: /data/me-db-00
+          state: directory
+
      - name: clone kearch
        become_user: kearch
        command: git clone https://github.com/kearch/kearch.git
@@ -95,6 +100,15 @@
 
      - name: use context
        command: kubectl config use-context kearch-dev
+       become_user: kearch
+
+     - name: get nodename
+       command: kubectl get nodes -o go-template --template {{ "'{{" }}(index .items 0).metadata.name {{ "}}'" }}
+       register: nodename
+       become_user: kearch
+
+     - name: set labels for db
+       command: kubectl label nodes {{ nodename.stdout }} storage-me-db=
        become_user: kearch
 
      - name: kearch deploy script

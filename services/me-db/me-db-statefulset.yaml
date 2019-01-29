@@ -1,5 +1,5 @@
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
-kind: Deployment
+kind: StatefulSet
 metadata:
   namespace: kearch
   name: me-db
@@ -11,8 +11,8 @@ spec:
     matchLabels:
       engine: me
       app: db
-  strategy:
-    type: Recreate
+  serviceName: me-db
+  replicas: 1
   template:
     metadata:
       namespace: kearch
@@ -31,17 +31,27 @@ spec:
         - containerPort: 3306
           name: mysql
         volumeMounts:
-        - name: mysql-persistent-storage
+        - name: me-db-storage
           mountPath: /var/lib/mysql
         - name: config-volume
           mountPath: /etc/mysql/conf.d
       volumes:
-      - name: mysql-persistent-storage
-        persistentVolumeClaim:
-          claimName: me-mysql-pvc
       - name: config-volume
         configMap:
           name: me-db
           items:
           - key: me-db-mysql.cnf
             path: me-db-mysql.cnf
+  volumeClaimTemplates:
+  - metadata:
+      namespace: kearch
+      name: me-db-storage
+    spec:
+      selector:
+        matchLabels:
+          volume: me-db
+      storageClassName: local-storage
+      accessModes: [ ReadWriteOnce ]
+      resources:
+        requests:
+          storage: 30Gi

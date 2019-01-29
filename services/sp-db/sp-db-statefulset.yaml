@@ -1,5 +1,5 @@
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
-kind: Deployment
+kind: StatefulSet
 metadata:
   namespace: kearch
   name: sp-db
@@ -11,8 +11,8 @@ spec:
     matchLabels:
       engine: sp
       app: db
-  strategy:
-    type: Recreate
+  serviceName: sp-db
+  replicas: 1
   template:
     metadata:
       namespace: kearch
@@ -31,17 +31,27 @@ spec:
         - containerPort: 3306
           name: mysql
         volumeMounts:
-        - name: mysql-persistent-storage
+        - name: sp-db-storage
           mountPath: /var/lib/mysql
         - name: config-volume
           mountPath: /etc/mysql/conf.d
       volumes:
-      - name: mysql-persistent-storage
-        persistentVolumeClaim:
-          claimName: mysql-pvc
       - name: config-volume
         configMap:
           name: sp-db
           items:
           - key: sp-db-mysql.cnf
             path: sp-db-mysql.cnf
+  volumeClaimTemplates:
+  - metadata:
+      namespace: kearch
+      name: sp-db-storage
+    spec:
+      selector:
+        matchLabels:
+          volume: sp-db
+      storageClassName: local-storage
+      accessModes: [ ReadWriteOnce ]
+      resources:
+        requests:
+          storage: 30Gi
