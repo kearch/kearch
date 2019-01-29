@@ -78,6 +78,11 @@
           path: /data
           state: directory
 
+     - name: Make db directory
+       file:
+          path: /data/sp-db-00
+          state: directory
+
      - name: Make es directory
        file:
           path: /data/sp-es-data-00
