@@ -22,6 +22,7 @@ spec:
         - key: storage
           operator: In
           values:
+          - sp
           - sp-es
           - sp-es-master
           - sp-es-master-00
@@ -50,6 +51,7 @@ spec:
         - key: storage
           operator: In
           values:
+          - sp
           - sp-es
           - sp-es-master
           - sp-es-master-01

@@ -124,7 +124,7 @@
        become_user: kearch
 
      - name: set label
-       command: kubectl label nodes {{ nodename.stdout }} storage=sp-es
+       command: kubectl label nodes {{ nodename.stdout }} storage=sp
        become_user: kearch
 
      - name: kearch deploy script
