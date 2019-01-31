@@ -123,7 +123,7 @@ The default Username and Password are "root" and "password". We strongly recomme
 And **set the global IP adress** of your server here.
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-set-ip-adress.png" width="300"/></div>
 
-### 2.4 Connect your meta search engine to a meta search engine
+### 2.4 Connect your meta search engine to a specialist search engine
 There are two cases for connecting a meta search engine and a specialist search engine. One is sending a **connection request** from a meta search and another is sending from a specialist search engine.
 #### 2.4.1.A Connect from your meta search engine to a specialist search engine
 In this case, you **send** a **connection request** from your meta search engine.
