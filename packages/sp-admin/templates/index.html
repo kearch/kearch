@@ -179,13 +179,15 @@ function disableForm( textid, ischecked ) {
               <tr>
                 <th scope="col">me_host</th>
                 <th scope="col">is_approved</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
               {% for name,state in requests['out'].items(): %}
               <tr>
                 <td>{{ name }}</td>
-                <td>{{ state }}</td>
+                <td>{{ "true" if state == 1 else "false" }}</td>
+                <td></td>
               </tr>
               {% endfor %}
             </tbody>
@@ -208,7 +210,7 @@ function disableForm( textid, ischecked ) {
               {% for name,state in requests['in'].items(): %}
               <tr>
                 <td>{{ name }}</td>
-                <td>{{ state }}</td>
+                <td>{{ "true" if state == 1 else "false" }}</td>
                 <td>
                   {% if state == 0 %}
                   <form action="/sp/admin/approve_a_connection_request" method="post">
