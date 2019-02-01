@@ -188,7 +188,7 @@ function disableForm( textid, ischecked ) {
                 <td>{{ name }}</td>
                 <td>{{ "true" if state == 1 else "false" }}</td>
                 <td>
-                  <form action="/sp/admin/delete_a_connection_request" method="delete">
+                  <form class="form-inline" onsubmit="deleteAConnectionRequest('{{ name }}')">
                     <button type="submit" class="btn" name="me_host" value="{{ name }}">Delete</button>
                   </form>
                 </td>
@@ -216,10 +216,10 @@ function disableForm( textid, ischecked ) {
                 <td>{{ name }}</td>
                 <td>{{ "true" if state == 1 else "false" }}</td>
                 <td>
-                  <form action="/sp/admin/approve_a_connection_request" method="post">
+                  <form class="form-inline" action="/sp/admin/approve_a_connection_request" method="post">
                     <button type="submit" class="btn" name="me_host" value="{{ name }}" {% if state == 1 %}disabled{% endif %}>Approve</button>
                   </form>
-                  <form action="/sp/admin/delete_a_connection_request" method="delete" onsubmit="return confirm('Are you sure?');">
+                  <form class="form-inline" onsubmit="deleteAConnectionRequest('{{ name }}')">
                     <button type="submit" class="btn" name="me_host" value="{{ name }}">Delete</button>
                   </form>
                 </td>
