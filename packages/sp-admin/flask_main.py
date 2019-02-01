@@ -126,7 +126,7 @@ def approve_a_connection_request():
     return flask.redirect(flask.url_for("index"))
 
 
-@app.route('/sp/admin/delete_a_connection_request', methods=['DELETE'])
+@app.route('/sp/admin/delete_a_connection_request', methods=['POST'])
 @login_required
 def delete_a_connection_request():
     me_host = flask.request.form['me_host']

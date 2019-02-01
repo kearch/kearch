@@ -83,8 +83,8 @@ paths:
   /update_config:
     post:
       requestBody:
-        description: Designated configs(connection_policy, host_name or engine_name) are updated  
-        required: true        
+        description: Designated configs(connection_policy, host_name or engine_name) are updated
+        required: true
         content:
           application/json:
             schema:
@@ -107,7 +107,7 @@ paths:
                 me_host:
                   type: string
   /delete_a_connection_request:
-    delete:
+    post:
       requestBody:
         required: true
         content:
