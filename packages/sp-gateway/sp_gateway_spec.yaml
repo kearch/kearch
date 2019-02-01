@@ -53,7 +53,7 @@ paths:
                   me_host:
                     type: string
   /delete_a_connection_request:
-    delete:
+    post:
       summary: Delete a connection request sent from meta server to specialist server.
       parameters:
         - in: query
