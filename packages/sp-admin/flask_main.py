@@ -140,7 +140,7 @@ def delete_a_connection_request():
     sp_host = config['host_name']
     gw_req = KearchRequester(me_host, ME_GATEWAY_PORT)
     gw_req.request(path=ME_GATEWAY_BASEURL + 'delete_a_connection_request',
-                   payload={'sp_host': sp_host}, method='DELETE')
+                   payload={'sp_host': sp_host}, method='POST')
 
     return flask.redirect(flask.url_for("index"))
 
