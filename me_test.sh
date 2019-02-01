@@ -4,7 +4,7 @@
 MINIKUBE=''
 # MINIKUBE='not minikube'
 
-me_eval_pod_name=$(kubectl --namespace=kearch get po -l engine=me,app=evaluater -o go-template --template '{{(index .items 0).metadata.name}}')
+me_eval_pod_name=$(kubectl --namespace=kearch get po -l engine=me,app=evaluator -o go-template --template '{{(index .items 0).metadata.name}}')
 echo $me_eval_pod_name
 kubectl --namespace=kearch exec ${me_eval_pod_name} -- pytest -m "${MINIKUBE}" flask_main.py
 

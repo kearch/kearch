@@ -9,10 +9,10 @@ import tempfile
 import zipfile
 import os
 
-PARAMS_FILE = 'evaluater_cache_params.zip'
+PARAMS_FILE = 'evaluator_cache_params.zip'
 
 
-class AbsEvaluater(metaclass=abc.ABCMeta):
+class AbsEvaluator(metaclass=abc.ABCMeta):
     @abc.abstractclassmethod
     def learn_params(self, summaries):
         pass
@@ -31,7 +31,7 @@ class AbsEvaluater(metaclass=abc.ABCMeta):
         pass
 
 
-class Evaluater(AbsEvaluater):
+class Evaluator(AbsEvaluator):
     def alist2vec(self, al, dictionary):
         r = [0 for i in range(len(dictionary))]
         for (i, f) in al:
@@ -39,7 +39,7 @@ class Evaluater(AbsEvaluater):
         return r
 
     def learn_params(self, summaries):
-        print('evaluater.py -- Making Classifier start',
+        print('evaluator.py -- Making Classifier start',
               file=sys.stderr)
         texts = list()
         for s in summaries:
@@ -64,7 +64,7 @@ class Evaluater(AbsEvaluater):
 
         self.clf = MultinomialNB()
         self.clf.fit(sc_samples, sc_labels)
-        print('evaluater.py -- Making Classifier finish',
+        print('evaluator.py -- Making Classifier finish',
               file=sys.stderr)
 
     def evaluate(self, query):
@@ -109,7 +109,7 @@ if __name__ == '__main__':
                  '192.168.99.200': {'haskell': 200, 'ocaml': 200}}
     query1 = ['google', 'yahoo']
     query2 = ['haskell', 'yahoo']
-    e = Evaluater()
+    e = Evaluator()
     e.learn_params(summaries)
     e.dump_params(PARAMS_FILE)
     e.load_params(PARAMS_FILE)

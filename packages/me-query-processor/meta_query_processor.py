@@ -3,8 +3,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 DATABASE_HOST = 'me-db.kearch.svc.cluster.local'
 DATABASE_PORT = 3306
-EVALUATER_HOST = 'me-evaluater.kearch.svc.cluster.local'
-EVALUATER_PORT = 10080
+EVALUATOR_HOST = 'me-evaluator.kearch.svc.cluster.local'
+EVALUATOR_PORT = 10080
 GATEWAY_HOST = 'me-gateway.kearch.svc.cluster.local'
 GATEWAY_PORT = 10080
 ME_GATEWAY_BASEURL = '/v0/me/gateway/'
@@ -35,8 +35,8 @@ def get_result_from_sp_tuple(t):
 
 def retrieve(query, max_urls, sp=None):
     if sp is None:
-        e_req = KearchRequester(EVALUATER_HOST, EVALUATER_PORT)
-        sp_hosts = e_req.request(path='/me/evaluater/evaluate',
+        e_req = KearchRequester(EVALUATOR_HOST, EVALUATOR_PORT)
+        sp_hosts = e_req.request(path='/me/evaluator/evaluate',
                                  params={'query': query})
         a = list(sp_hosts.items())
         a.sort(key=lambda x: x[1], reverse=True)

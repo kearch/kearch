@@ -1,5 +1,5 @@
 ---
-title: kearch meta search engine evaluater API
+title: kearch meta search engine evaluator API
 language_tabs: []
 toc_footers: []
 includes: []
@@ -9,21 +9,21 @@ headingLevel: 2
 
 ---
 
-<h1 id="kearch-meta-search-engine-evaluater-api">kearch meta search engine evaluater API v0.1.0</h1>
+<h1 id="kearch-meta-search-engine-evaluator-api">kearch meta search engine evaluator API v0.1.0</h1>
 
 > Scroll down for example requests and responses.
 
-kearch meta search engine evaluater API
+kearch meta search engine evaluator API
 
 Base URLs:
 
-* <a href="http://{me_host}:{port}/me/evaluater">http://{me_host}:{port}/me/evaluater</a>
+* <a href="http://{me_host}:{port}/me/evaluator">http://{me_host}:{port}/me/evaluator</a>
 
-    * **me_host** -  Default: me-evaluater.kearch.svc.cluster.local
+    * **me_host** -  Default: me-evaluator.kearch.svc.cluster.local
 
     * **port** -  Default: 10080
 
-<h1 id="kearch-meta-search-engine-evaluater-api-default">Default</h1>
+<h1 id="kearch-meta-search-engine-evaluator-api-default">Default</h1>
 
 ## get__evaluate
 

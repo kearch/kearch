@@ -6,15 +6,15 @@ from setuptools import find_packages, setup
 
 here = os.path.abspath(os.path.dirname(__file__))
 __version__ = imp.load_source(
-    '_version', os.path.join(here, 'kearch_evaluater', '_version.py')).__version__
+    '_version', os.path.join(here, 'kearch_evaluator', '_version.py')).__version__
 
 with open('requirements.txt') as f:
     required = f.read().splitlines()
 
 setup(
-    name='kearch_evaluater',
+    name='kearch_evaluator',
     version=__version__,
-    description='kearch_evaluater',
+    description='kearch_evaluator',
     packages=find_packages(exclude=['test', 'test.*']),
     install_requires=required,
     tests_require=['pytest'],
