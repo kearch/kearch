@@ -15,8 +15,8 @@ RUN pip install flask-login
 COPY packages/kearch_common /kearch/packages/kearch_common
 RUN cd /kearch/packages/kearch_common && pip install -e .
 
-COPY packages/kearch_evaluater /kearch/packages/kearch_evaluater
-RUN cd /kearch/packages/kearch_evaluater && pip install -e .
+COPY packages/kearch_evaluator /kearch/packages/kearch_evaluator
+RUN cd /kearch/packages/kearch_evaluator && pip install -e .
 
 COPY /packages/me-admin /kearch/packages/me-admin
 COPY --from=builder /kearch/packages/me-admin/static/dist /kearch/packages/me-admin/static/dist

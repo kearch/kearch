@@ -93,11 +93,11 @@ This operation does not require authentication
 This operation does not require authentication
 </aside>
 
-## get__learn_params_for_evaluater
+## get__learn_params_for_evaluator
 
-`GET /learn_params_for_evaluater`
+`GET /learn_params_for_evaluator`
 
-<h3 id="get__learn_params_for_evaluater-responses">Responses</h3>
+<h3 id="get__learn_params_for_evaluator-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|

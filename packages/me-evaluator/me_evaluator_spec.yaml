@@ -1,13 +1,13 @@
 openapi: 3.0.0
 info:
-  title: kearch meta search engine evaluater API
-  description: kearch meta search engine evaluater API
+  title: kearch meta search engine evaluator API
+  description: kearch meta search engine evaluator API
   version: 0.1.0
 servers:
-  - url: 'http://{me_host}:{port}/me/evaluater'
+  - url: 'http://{me_host}:{port}/me/evaluator'
     variables:
       me_host:
-        default: me-evaluater.kearch.svc.cluster.local
+        default: me-evaluator.kearch.svc.cluster.local
       port:
         default: '10080'
 paths:
