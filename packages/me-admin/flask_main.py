@@ -22,6 +22,7 @@ ME_ADMIN_PORT = 10080
 
 app = flask.Flask(__name__)
 app.secret_key = os.urandom(24)
+app.config['SESSION_COOKIE_NAME'] = 'session_me_admin'
 
 login_manager = LoginManager()
 login_manager.init_app(app)

@@ -25,6 +25,7 @@ ME_GATEWAY_BASEURL = '/v0/me/gateway/'
 
 app = flask.Flask(__name__)
 app.secret_key = os.urandom(24)
+app.config['SESSION_COOKIE_NAME'] = 'session_sp_admin'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
