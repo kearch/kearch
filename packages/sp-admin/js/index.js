@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 window.deleteAConnectionRequest = (me_host) => {
   console.log({ me_host });
+  console.log({ data: $(this).data() });
   if (confirm('Are you sure?')) {
     $.ajax({
       url: '/sp/admin/delete_a_connection_request',
