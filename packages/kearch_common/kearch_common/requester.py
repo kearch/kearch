@@ -395,7 +395,7 @@ class KearchRequester(object):
                 cur.execute(sp_host_statement, (sp_host,))
 
                 sp_servers_statement = """
-                DELETE FROM `sp_servers` WHERE `name` = %s"""
+                DELETE FROM `sp_servers` WHERE `host` = %s"""
                 cur.execute(sp_servers_statement, (sp_host,))
                 db.commit()
 
