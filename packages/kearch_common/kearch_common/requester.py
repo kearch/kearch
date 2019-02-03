@@ -361,24 +361,41 @@ class KearchRequester(object):
             elif splited_path[0] == 'sp' and splited_path[1] == 'db' and \
                     splited_path[2] == 'delete_a_connection_request':
                 me_host = payload['me_host']
-                statement = """DELETE FROM %s WHERE `me_host` = %s"""
-                cur.execute(statement, ('in_requests', me_host))
-                cur.execute(statement, ('out_requests', me_host))
+
+                host_id_statement = """
+                SELECT `id` FROM `me_hosts` WHERE `name` = %s"""
+                cur.execute(host_id_statement, (me_host,))
+                host_id = cur.fetchone()[0]
+
+                statement = """DELETE FROM {} WHERE `host_id` = %s"""
+                cur.execute(statement.format('in_requests'), (host_id,))
+                cur.execute(statement.format('out_requests'), (host_id,))
+
+                me_host_statement = """
+                DELETE FROM `me_hosts` WHERE `name` = %s"""
+                cur.execute(me_host_statement, (me_host,))
+
                 db.commit()
                 ret = {'me_host': me_host}
             elif splited_path[0] == 'me' and splited_path[1] == 'db' and \
                     splited_path[2] == 'delete_a_connection_request':
                 sp_host = payload['sp_host']
-                statement = """DELETE FROM %s WHERE `sp_host` = %s"""
-                cur.execute(statement, ('in_requests', sp_host))
-                cur.execute(statement, ('out_requests', sp_host))
+
+                host_id_stateme = """
+                SELECT `id` FROM `sp_hosts` WHERE `name` = %s"""
+                cur.execute(host_id_stateme, (sp_host,))
+                host_id = cur.fetchone()[0]
+
+                statement = """DELETE FROM {} WHERE `host_id` = %s"""
+                cur.execute(statement.format('in_requests'), (host_id,))
+                cur.execute(statement.format('out_requests'), (host_id,))
 
                 sp_host_statement = """
                 DELETE FROM `sp_hosts` WHERE `name` = %s"""
                 cur.execute(sp_host_statement, (sp_host,))
 
                 sp_servers_statement = """
-                DELETE FROM `sp_servers` WHERE `name` = %s"""
+                DELETE FROM `sp_servers` WHERE `host` = %s"""
                 cur.execute(sp_servers_statement, (sp_host,))
                 db.commit()
 

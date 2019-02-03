@@ -80,13 +80,18 @@
               <tr>
                 <th scope="col">sp_host</th>
                 <th scope="col">is_approved</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
               {% for name,state in requests['out'].items(): %}
               <tr>
                 <td>{{ sp_servers.get(name, {}).get('engine_name', '')  }} ({{ name }})</td>
-                <td>{{ state }}</td>
+                <td>{{ "true" if state == 1 else "false"  }}</td>
+                <td>
+                  <form class="form-inline" action="/me/admin/delete_a_connection_request" method="post" onsubmit="return confirm('Are you sure?');">
+                    <button type="submit" class="btn" name="sp_host" value="{{ name }}">Delete</button>
+                  </form>
               </tr>
               {% endfor %}
             </tbody>
@@ -109,13 +114,14 @@
               {% for name,state in requests['in'].items(): %}
               <tr>
                 <td>{{ name }}</td>
-                <td>{{ state }}</td>
+                <td>{{ "true" if state == 1 else "false"  }}</td>
                 <td>
-                  {% if state == 0 %}
-                  <form action="/me/admin/approve_a_connection_request" method="post">
-                    <button type="submit" class="btn" name="sp_host" value="{{ name }}">Approve</button>
+                  <form class="form-inline" action="/me/admin/approve_a_connection_request" method="post">
+                    <button type="submit" class="btn" name="sp_host" value="{{ name }}" {% if state == 1 %}disabled{% endif %}>Approve</button>
                   </form>
-                  {% endif %}
+                  <form class="form-inline" action="/me/admin/delete_a_connection_request" method="post" onsubmit="return confirm('Are you sure?');">
+                    <button type="submit" class="btn" name="sp_host" value="{{ name }}">Delete</button>
+                  </form>
                 </td>
               </tr>
               {% endfor %}

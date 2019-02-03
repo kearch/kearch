@@ -22,6 +22,7 @@ ME_ADMIN_PORT = 10080
 
 app = flask.Flask(__name__)
 app.secret_key = os.urandom(24)
+app.config['SESSION_COOKIE_NAME'] = 'session_me_admin'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -166,7 +167,7 @@ def approve_a_connection_request():
     return flask.redirect(flask.url_for("index"))
 
 
-@app.route('/me/admin/delete_a_connection_request', methods=['DELETE'])
+@app.route('/me/admin/delete_a_connection_request', methods=['POST'])
 @login_required
 def delete_a_connection_request():
     sp_host = flask.request.form['sp_host']
@@ -180,7 +181,7 @@ def delete_a_connection_request():
     me_host = config['host_name']
     gw_req = KearchRequester(sp_host, SP_GATEWAY_PORT)
     gw_req.request(path=SP_GATEWAY_BASEURL + 'delete_a_connection_request',
-                   payload={'me_host': me_host}, method='DELETE')
+                   payload={'me_host': me_host}, method='POST')
 
     return flask.redirect(flask.url_for("index"))
 

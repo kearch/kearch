@@ -26,7 +26,7 @@ def add_a_connection_request():
     return jsonify(result)
 
 
-@app.route(BASEURL + 'delete_a_connection_request', methods=['DELETE'])
+@app.route(BASEURL + 'delete_a_connection_request', methods=['POST'])
 def send_a_connection_request():
     data = flask.request.get_json()
     sp_host = data['sp_host']

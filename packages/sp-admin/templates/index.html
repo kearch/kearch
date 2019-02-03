@@ -179,13 +179,19 @@ function disableForm( textid, ischecked ) {
               <tr>
                 <th scope="col">me_host</th>
                 <th scope="col">is_approved</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
               {% for name,state in requests['out'].items(): %}
               <tr>
                 <td>{{ name }}</td>
-                <td>{{ state }}</td>
+                <td>{{ "true" if state == 1 else "false" }}</td>
+                <td>
+                  <form class="form-inline" action="/sp/admin/delete_a_connection_request" method="post" onsubmit="return confirm('Are you sure?');">
+                    <button type="submit" class="btn" name="me_host" value="{{ name }}">Delete</button>
+                  </form>
+                </td>
               </tr>
               {% endfor %}
             </tbody>
@@ -208,13 +214,14 @@ function disableForm( textid, ischecked ) {
               {% for name,state in requests['in'].items(): %}
               <tr>
                 <td>{{ name }}</td>
-                <td>{{ state }}</td>
+                <td>{{ "true" if state == 1 else "false" }}</td>
                 <td>
-                  {% if state == 0 %}
-                  <form action="/sp/admin/approve_a_connection_request" method="post">
-                    <button type="submit" class="btn" name="me_host" value="{{ name }}">Approve</button>
+                  <form class="form-inline" action="/sp/admin/approve_a_connection_request" method="post">
+                    <button type="submit" class="btn" name="me_host" value="{{ name }}" {% if state == 1 %}disabled{% endif %}>Approve</button>
                   </form>
-                  {% endif %}
+                  <form class="form-inline" action="/sp/admin/delete_a_connection_request" method="post" onsubmit="return confirm('Are you sure?');">
+                    <button type="submit" class="btn" name="me_host" value="{{ name }}">Delete</button>
+                  </form>
                 </td>
               </tr>
               {% endfor %}
