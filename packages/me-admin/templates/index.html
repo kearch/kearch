@@ -117,7 +117,7 @@
                 <td>{{ "true" if state == 1 else "false"  }}</td>
                 <td>
                   <form class="form-inline" action="/me/admin/approve_a_connection_request" method="post">
-                    <button type="submit" class="btn" name="sp_host" value="{{ name }}">Approve</button>
+                    <button type="submit" class="btn" name="sp_host" value="{{ name }}" {% if state == 1 %}disabled{% endif %}>Approve</button>
                   </form>
                   <form class="form-inline" action="/me/admin/delete_a_connection_request" method="post" onsubmit="return confirm('Are you sure?');">
                     <button type="submit" class="btn" name="sp_host" value="{{ name }}">Delete</button>
