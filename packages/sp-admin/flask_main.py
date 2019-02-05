@@ -5,7 +5,7 @@ from flask_login import LoginManager, logout_user, UserMixin, login_required, \
     login_user, current_user
 import base64
 import os
-from flask import Response, jsonify, request, redirect, abort
+from flask import Response, request, redirect, abort
 from kearch_common.requester import KearchRequester
 import kearch_classifier.classifier
 import kearch_classifier.average_document as ave
@@ -182,9 +182,9 @@ def init_crawl_urls():
 
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, conn_type='sql')
-    ret = db_req.request(path='/sp/db/push_urls_to_queue',
-                         payload=payload, method='POST')
-    return jsonify(ret)
+    db_req.request(path='/sp/db/push_urls_to_queue',
+                   payload=payload, method='POST')
+    return flask.redirect(flask.url_for("index"))
 
 
 @app.route('/sp/admin/learn_params_from_url', methods=['POST'])
