@@ -30,11 +30,11 @@
       <div class="card">
         <div class="card-content">
           <span class="card-title">Set your global IP adress or hostname here</span>
-          <p>The current IP adress or hostname = {{ config['host_name'] }} </p>
+          <p>The current IP adress or hostname</p>
           <form action="/me/admin/update_config" method="post">
             <div class="input-field">
               <label for="host_name">Global IP adress or hostname</label>
-              <input type="text" id="host_name" name="host_name" cols="50" />
+              <input type="text" id="host_name" name="host_name" cols="50" value="{{ config['host_name'] }}" />
             </div>
             <button class="btn">update</button>
           </form>
@@ -48,8 +48,8 @@
           <form action="/me/admin/update_config" method="post">
             <div class="input-field">
               <select name="connection_policy">
-                <option value="protected">protected</option>
-                <option value="public">public</option>
+                <option value="protected" {% if config['connection_policy'] == 'protected' %}selected{% endif %}>protected</option>
+                <option value="public" {% if config['connection_policy'] == 'public' %}selected{% endif %}>public</option>
               </select>
             </div>
             <button class="btn">set connection policy</button>
