@@ -106,10 +106,10 @@ def update_password():
     print(u, h, file=sys.stderr)
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, conn_type='sql')
-    ret = db_req.request(path='/sp/db/update_password_hash',
-                         payload={'username': u, 'password_hash': h},
-                         method='POST')
-    return jsonify(ret)
+    db_req.request(path='/sp/db/update_password_hash',
+                   payload={'username': u, 'password_hash': h},
+                   method='POST')
+    return flask.redirect(flask.url_for("index"))
 
 
 @app.route('/sp/admin/approve_a_connection_request', methods=['POST'])
