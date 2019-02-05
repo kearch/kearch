@@ -72,30 +72,6 @@
 
       <h4 class="config-section-header">Topic definition</h4>
 
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">Learn Parameter for the classifier in the crawler using url lists</span>
-          <form name=learn_params_from_url_form action="/sp/admin/learn_params_from_url" method="post">
-            <div class="input-field">
-              <select id="language" name="language">
-                <option value="en">en</option>
-                <option value="jp">jp</option>
-              </select>
-              <label for="language">language</label>
-            </div>
-            <div class="input-field">
-              <label for="topic_urls">URLs in your crawling topic</label>
-              <textarea class="materialize-textarea" name="topic_urls" id="topic_urls" cols="50" rows="5"></textarea>
-            </div>
-            <div class="input-field">
-              <label>URLs in random topic</label>
-              <textarea class="materialize-textarea" name="random_urls" id="random_urls" cols="50" rows="5"></textarea>
-            </div>
-            <button class="btn" type="submit">learn crawler parameters</button>
-          </form>
-        </div>
-      </div>
-
       <script>
         <!--
 function disableForm( textid, ischecked ) {
@@ -137,6 +113,30 @@ function disableForm( textid, ischecked ) {
             <div class="input-field">
               <label for="random_dict_textbox">Word frequencies in random topic</label>
               <textarea class="materialize-textarea" name="random_dict" id="random_dict_textbox" cols="50" rows="5"></textarea>
+            </div>
+            <button class="btn" type="submit">learn crawler parameters</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Learn Parameter for the classifier in the crawler using url lists</span>
+          <form name=learn_params_from_url_form action="/sp/admin/learn_params_from_url" method="post">
+            <div class="input-field">
+              <select id="language" name="language">
+                <option value="en">en</option>
+                <option value="jp">jp</option>
+              </select>
+              <label for="language">language</label>
+            </div>
+            <div class="input-field">
+              <label for="topic_urls">URLs in your crawling topic</label>
+              <textarea class="materialize-textarea" name="topic_urls" id="topic_urls" cols="50" rows="5"></textarea>
+            </div>
+            <div class="input-field">
+              <label>URLs in random topic</label>
+              <textarea class="materialize-textarea" name="random_urls" id="random_urls" cols="50" rows="5"></textarea>
             </div>
             <button class="btn" type="submit">learn crawler parameters</button>
           </form>
