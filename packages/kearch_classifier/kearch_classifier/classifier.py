@@ -171,7 +171,7 @@ class Classifier(AbsClassifier):
         topic_bow = [(self.dictionary_body.token2id[w], f)
                      for w, f in topic_dict.items()]
         random_bow = [(self.dictionary_body.token2id[w], f)
-                      for w, f in topic_dict.items()]
+                      for w, f in random_dict.items()]
         samples = [self.alist_to_vector(topic_bow, self.dictionary_body),
                    self.alist_to_vector(random_bow, self.dictionary_body)]
         labels = [IN_TOPIC, OUT_OF_TOPIC]
