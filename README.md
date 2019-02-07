@@ -2,15 +2,15 @@
 
 kearch is a distributed search engine. You can set up your own search engine using kearch and connect your search engine to another search engine.
 
-There are two types of search engines in kearch. One is **specialist search engine** and another is **meta search engine**. A **specialist search engine** is a specialized search engine for a topic. For example, a search engine for history, programming language ... anything you want. 
+There are two types of search engines in kearch. One is **specialist search engine** and the other is **meta search engine**. A **specialist search engine** is a specialized search engine for a topic. For example, a search engine for history, programming language ... anything you want.
 
-On the other side, a **meta search engine** is used for connecting specialized search engines. You can conect any specialist search engines using a meta search engine. For example, you can get search engine about some programming languages when you connect specialized search engines about Lisp, Haskell, C#, etc..
+On the other hand, a **meta search engine** is used for connecting specialized search engines. You can conect any specialist search engines using a meta search engine. For example, you can get search engine about some programming languages when you connect specialized search engines about Lisp, Haskell, C#, etc..
 
 If you want to set up your own **specialist search engine**, please read from [1. Specialist search engine](#1-Specialist-search-engine). If you want to set up your own **meta search engine**, please read from [2. Meta search engine](#2-Meta-search-engine). 
 
 ## 1. Specialist search engine
 ### 1.1 Prepare a server for a specialist search engine
-First of all, you need to prepare a server for a specialist search engine. Minimum spec for a specialist search engine is following.
+First of all, you need to prepare a server for a specialist search engine. Minimum spec for a specialist search engine is as follows.
 - RAM: 8GiB
 - SSD/HDD: 100GiB
 - CPU: Dual core processor
@@ -28,7 +28,7 @@ And then clone this repository your **local machine** by the following command.
 ```
 ~$ git clone https://github.com/kearch/kearch.git
 ```
-Finally, deploy a specialist search engine using Ansible. Please replace `<HOSTNAME>` and `<USERNAME>` depending on your environment. (In most cases, `<HOSTNAME>` is the IP adress of your server.) This takes some time to finish. I recommend you to take a coffee brake.
+Finally, deploy a specialist search engine using Ansible. Please replace `<HOSTNAME>` and `<USERNAME>` depending on your environment. (In most cases, `<HOSTNAME>` is the IP adress of your server.) This takes some time to finish. I recommend you to take a coffee break.
 ```
 ~/kearch$ ansible-playbook sp-playbook.yml -i <HOSTNAME>, -u <USERNAME> --ask-become-pass -vvv
 ```
@@ -45,7 +45,7 @@ And **set the global IP adress** of your server here.
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-set-ip-adress.png" width="300"/></div>
 
 ### 1.4 Set a topic to your specialist search engine and start crawling
-Now, you can **set a topic to your specialist search engine**. There are two way to set a topic. One is using word frequency dictionary (Method A) and another is using URLs (Method B). You must choose one of them. **I think word frequency dictionary ([Method A](#141A-Use-word-frequency-dictionary)) is better**.
+Now, you can **set a topic to your specialist search engine**. There are two way to set a topic. One is using word frequency dictionary (Method A) and the other is using URLs (Method B). You must choose one of them. **I think word frequency dictionary ([Method A](#141A-Use-word-frequency-dictionary)) is better**.
 #### 1.4.1.A Use word frequency dictionary
 You must choose a **language** and then input **word frequencies in your crawling topic** and **Word frequencies in random topic**.
 
