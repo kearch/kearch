@@ -2,6 +2,8 @@
 
 kearch is a distributed search engine. You can set up your own search engine using kearch and connect your search engine to another search engine.
 
+You can accerss our search engine from [https://kearch.info](https://kearch.info).
+
 There are two types of search engines in kearch. One is **specialist search engine** and another is **meta search engine**. A **specialist search engine** is a specialized search engine for a topic. For example, a search engine for history, programming language ... anything you want. 
 
 On the other side, a **meta search engine** is used for connecting specialized search engines. You can conect any specialist search engines using a meta search engine. For example, you can get search engine about some programming languages when you connect specialized search engines about Lisp, Haskell, C#, etc..
