@@ -30,11 +30,11 @@
       <div class="card">
         <div class="card-content">
           <span class="card-title">Set your global IP adress or hostname here</span>
-          <p>The current IP adress or hostname = {{ config['host_name'] }} </p>
+          <p>The current IP adress or hostname</p>
           <form action="/me/admin/update_config" method="post">
             <div class="input-field">
               <label for="host_name">Global IP adress or hostname</label>
-              <input type="text" id="host_name" name="host_name" cols="50" />
+              <input type="text" id="host_name" name="host_name" cols="50" value="{{ config['host_name'] }}" />
             </div>
             <button class="btn">update</button>
           </form>
@@ -44,12 +44,11 @@
       <div class="card">
         <div class="card-content">
           <span class=card-title>Select connection policy of this specialist search engine</span>
-          <p>The current connection policy = "{{ config['connection_policy'] }}"</p>
           <form action="/me/admin/update_config" method="post">
             <div class="input-field">
               <select name="connection_policy">
-                <option value="protected">protected</option>
-                <option value="public">public</option>
+                <option value="protected" {% if config['connection_policy'] == 'protected' %}selected{% endif %}>protected</option>
+                <option value="public" {% if config['connection_policy'] == 'public' %}selected{% endif %}>public</option>
               </select>
             </div>
             <button class="btn">set connection policy</button>
@@ -80,13 +79,18 @@
               <tr>
                 <th scope="col">sp_host</th>
                 <th scope="col">is_approved</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
               {% for name,state in requests['out'].items(): %}
               <tr>
                 <td>{{ sp_servers.get(name, {}).get('engine_name', '')  }} ({{ name }})</td>
-                <td>{{ state }}</td>
+                <td>{{ "true" if state == 1 else "false"  }}</td>
+                <td>
+                  <form class="form-inline" action="/me/admin/delete_a_connection_request" method="post" onsubmit="return confirm('Are you sure?');">
+                    <button type="submit" class="btn" name="sp_host" value="{{ name }}">Delete</button>
+                  </form>
               </tr>
               {% endfor %}
             </tbody>
@@ -109,13 +113,14 @@
               {% for name,state in requests['in'].items(): %}
               <tr>
                 <td>{{ name }}</td>
-                <td>{{ state }}</td>
+                <td>{{ "true" if state == 1 else "false"  }}</td>
                 <td>
-                  {% if state == 0 %}
-                  <form action="/me/admin/approve_a_connection_request" method="post">
-                    <button type="submit" class="btn" name="sp_host" value="{{ name }}">Approve</button>
+                  <form class="form-inline" action="/me/admin/approve_a_connection_request" method="post">
+                    <button type="submit" class="btn" name="sp_host" value="{{ name }}" {% if state == 1 %}disabled{% endif %}>Approve</button>
                   </form>
-                  {% endif %}
+                  <form class="form-inline" action="/me/admin/delete_a_connection_request" method="post" onsubmit="return confirm('Are you sure?');">
+                    <button type="submit" class="btn" name="sp_host" value="{{ name }}">Delete</button>
+                  </form>
                 </td>
               </tr>
               {% endfor %}
@@ -124,12 +129,12 @@
         </div>
       </div>
 
-      <h4 class="config-section-header">Evaluater</h4>
+      <h4 class="config-section-header">Evaluator</h4>
 
       <div class="card">
         <div class="card-content">
-          <span class="card-title">Learn params for evaluater</span>
-          <form action="/me/admin/learn_params_for_evaluater" method="GET">
+          <span class="card-title">Learn params for evaluator</span>
+          <form action="/me/admin/learn_params_for_evaluator" method="GET">
             <button class="btn">learn</button>
           </form>
         </div>

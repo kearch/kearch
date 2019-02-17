@@ -6,7 +6,7 @@ import os
 import sys
 import base64
 import hashlib
-import kearch_evaluater.evaluater
+import kearch_evaluator.evaluator
 from kearch_common.requester import KearchRequester
 
 DATABASE_HOST = 'me-db.kearch.svc.cluster.local'
@@ -22,6 +22,7 @@ ME_ADMIN_PORT = 10080
 
 app = flask.Flask(__name__)
 app.secret_key = os.urandom(24)
+app.config['SESSION_COOKIE_NAME'] = 'session_me_admin'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -98,19 +99,19 @@ def update_password():
     return flask.render_template('login.html')
 
 
-@app.route('/me/admin/learn_params_for_evaluater', methods=['GET'])
+@app.route('/me/admin/learn_params_for_evaluator', methods=['GET'])
 @login_required
-def learn_params_for_evaluater():
+def learn_params_for_evaluator():
     db_req = KearchRequester(
         DATABASE_HOST, DATABASE_PORT, conn_type='sql')
     summaries = db_req.request(path='/me/db/get_sp_summaries')
-    e = kearch_evaluater.evaluater.Evaluater()
+    e = kearch_evaluator.evaluator.Evaluator()
     e.learn_params(summaries)
-    e.dump_params(kearch_evaluater.evaluater.PARAMS_FILE)
+    e.dump_params(kearch_evaluator.evaluator.PARAMS_FILE)
 
-    bparam = open(kearch_evaluater.evaluater.PARAMS_FILE, 'rb').read()
+    bparam = open(kearch_evaluator.evaluator.PARAMS_FILE, 'rb').read()
     tparam = base64.b64encode(bparam).decode('utf-8')
-    params = {'name': kearch_evaluater.evaluater.PARAMS_FILE,
+    params = {'name': kearch_evaluator.evaluator.PARAMS_FILE,
               'body': tparam}
     db_req.request(path='/me/db/push_binary_file', params=params)
     return flask.redirect(flask.url_for("index"))
@@ -166,7 +167,7 @@ def approve_a_connection_request():
     return flask.redirect(flask.url_for("index"))
 
 
-@app.route('/me/admin/delete_a_connection_request', methods=['DELETE'])
+@app.route('/me/admin/delete_a_connection_request', methods=['POST'])
 @login_required
 def delete_a_connection_request():
     sp_host = flask.request.form['sp_host']
@@ -180,7 +181,7 @@ def delete_a_connection_request():
     me_host = config['host_name']
     gw_req = KearchRequester(sp_host, SP_GATEWAY_PORT)
     gw_req.request(path=SP_GATEWAY_BASEURL + 'delete_a_connection_request',
-                   payload={'me_host': me_host}, method='DELETE')
+                   payload={'me_host': me_host}, method='POST')
 
     return flask.redirect(flask.url_for("index"))
 

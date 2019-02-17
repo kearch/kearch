@@ -43,11 +43,11 @@
       <div class="card">
         <div class="card-content">
           <span class="card-title">Set your global IP adress or hostname here</span>
-          <p>The current IP adress or hostname = {{ config['host_name'] }} </p>
+          <p>The current IP adress or hostname</p>
           <form action="/sp/admin/update_config" method="post">
             <div class="input-field">
               <label for="host_name">Global IP adress or hostname</label>
-              <input type="text" id="host_name" name="host_name" cols="50" />
+              <input type="text" id="host_name" name="host_name" cols="50" value="{{ config['host_name'] }}" />
             </div>
             <button class="btn">update</button>
           </form>
@@ -57,12 +57,11 @@
       <div class="card">
         <div class="card-content">
           <span class=card-title>Select connection policy of this specialist search engine</span>
-          <p>The current connection policy = "{{ config['connection_policy'] }}"</p>
           <form action="/sp/admin/update_config" method="post">
             <div class="input-field">
               <select name="connection_policy">
-                <option value="protected">protected</option>
-                <option value="public">public</option>
+                <option value="protected" {% if config['connection_policy'] == 'protected' %}selected{% endif %}>protected</option>
+                <option value="public" {% if config['connection_policy'] == 'public' %}selected{% endif %}>public</option>
               </select>
             </div>
             <button class="btn">set connection policy</button>
@@ -71,30 +70,6 @@
       </div>
 
       <h4 class="config-section-header">Topic definition</h4>
-
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">Learn Parameter for the classifier in the crawler using url lists</span>
-          <form name=learn_params_from_url_form action="/sp/admin/learn_params_from_url" method="post">
-            <div class="input-field">
-              <select id="language" name="language">
-                <option value="en">en</option>
-                <option value="jp">jp</option>
-              </select>
-              <label for="language">language</label>
-            </div>
-            <div class="input-field">
-              <label for="topic_urls">URLs in your crawling topic</label>
-              <textarea class="materialize-textarea" name="topic_urls" id="topic_urls" cols="50" rows="5"></textarea>
-            </div>
-            <div class="input-field">
-              <label>URLs in random topic</label>
-              <textarea class="materialize-textarea" name="random_urls" id="random_urls" cols="50" rows="5"></textarea>
-            </div>
-            <button class="btn" type="submit">learn crawler parameters</button>
-          </form>
-        </div>
-      </div>
 
       <script>
         <!--
@@ -145,6 +120,30 @@ function disableForm( textid, ischecked ) {
 
       <div class="card">
         <div class="card-content">
+          <span class="card-title">Learn Parameter for the classifier in the crawler using url lists</span>
+          <form name=learn_params_from_url_form action="/sp/admin/learn_params_from_url" method="post">
+            <div class="input-field">
+              <select id="language" name="language">
+                <option value="en">en</option>
+                <option value="jp">jp</option>
+              </select>
+              <label for="language">language</label>
+            </div>
+            <div class="input-field">
+              <label for="topic_urls">URLs in your crawling topic</label>
+              <textarea class="materialize-textarea" name="topic_urls" id="topic_urls" cols="50" rows="5"></textarea>
+            </div>
+            <div class="input-field">
+              <label>URLs in random topic</label>
+              <textarea class="materialize-textarea" name="random_urls" id="random_urls" cols="50" rows="5"></textarea>
+            </div>
+            <button class="btn" type="submit">learn crawler parameters</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
           <span class="card-title">URLs to crawl separated by newlines</span>
           <form action="/sp/admin/init_crawl_urls" method="post">
             <div class="input-field">
@@ -179,13 +178,19 @@ function disableForm( textid, ischecked ) {
               <tr>
                 <th scope="col">me_host</th>
                 <th scope="col">is_approved</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
               {% for name,state in requests['out'].items(): %}
               <tr>
                 <td>{{ name }}</td>
-                <td>{{ state }}</td>
+                <td>{{ "true" if state == 1 else "false" }}</td>
+                <td>
+                  <form class="form-inline" action="/sp/admin/delete_a_connection_request" method="post" onsubmit="return confirm('Are you sure?');">
+                    <button type="submit" class="btn" name="me_host" value="{{ name }}">Delete</button>
+                  </form>
+                </td>
               </tr>
               {% endfor %}
             </tbody>
@@ -208,13 +213,14 @@ function disableForm( textid, ischecked ) {
               {% for name,state in requests['in'].items(): %}
               <tr>
                 <td>{{ name }}</td>
-                <td>{{ state }}</td>
+                <td>{{ "true" if state == 1 else "false" }}</td>
                 <td>
-                  {% if state == 0 %}
-                  <form action="/sp/admin/approve_a_connection_request" method="post">
-                    <button type="submit" class="btn" name="me_host" value="{{ name }}">Approve</button>
+                  <form class="form-inline" action="/sp/admin/approve_a_connection_request" method="post">
+                    <button type="submit" class="btn" name="me_host" value="{{ name }}" {% if state == 1 %}disabled{% endif %}>Approve</button>
                   </form>
-                  {% endif %}
+                  <form class="form-inline" action="/sp/admin/delete_a_connection_request" method="post" onsubmit="return confirm('Are you sure?');">
+                    <button type="submit" class="btn" name="me_host" value="{{ name }}">Delete</button>
+                  </form>
                 </td>
               </tr>
               {% endfor %}

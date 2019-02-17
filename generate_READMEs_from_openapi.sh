@@ -10,5 +10,5 @@ widdershins -cl packages/sp-crawler-child/sp_crawler_child_spec.yaml packages/sp
 widdershins -cl packages/me-admin/me_admin_spec.yaml -o packages/me-admin/README.md
 widdershins -cl packages/sp-front/sp_front_spec.yaml -o packages/sp-front/README.md
 widdershins -cl packages/me-front/me_front_spec.yaml -o packages/me-front/README.md
-widdershins -cl packages/me-evaluater/me_evaluater_spec.yaml -o packages/me-evaluater/README.md
+widdershins -cl packages/me-evaluator/me_evaluator_spec.yaml -o packages/me-evaluator/README.md
 widdershins -cl packages/sp-query-processor/sp_query_processor_spec.yaml -o packages/sp-query-processor/README.md

@@ -2,6 +2,8 @@
 
 kearch is a distributed search engine. You can set up your own search engine using kearch and connect your search engine to another search engine.
 
+You can accerss our search engine from [https://kearch.info](https://kearch.info).
+
 There are two types of search engines in kearch. One is **specialist search engine** and another is **meta search engine**. A **specialist search engine** is a specialized search engine for a topic. For example, a search engine for history, programming language ... anything you want. 
 
 On the other side, a **meta search engine** is used for connecting specialized search engines. You can conect any specialist search engines using a meta search engine. For example, you can get search engine about some programming languages when you connect specialized search engines about Lisp, Haskell, C#, etc..
@@ -16,6 +18,7 @@ First of all, you need to prepare a server for a specialist search engine. Minim
 - CPU: Dual core processor
 - OS: Ubuntu 18.04
 - Global IP adress or domain 
+- SSH login using public key authentication
 
 You can get a qualified server using [Sakura Cloud](https://cloud.sakura.ad.jp/), [AWS](https://aws.amazon.com/), [GCP](https://cloud.google.com/) or [Microsoft Azure](https://azure.microsoft.com/).
 ### 1.2 Deploy a specialist search engine to your server using Ansible
@@ -95,6 +98,7 @@ First of all, you need to prepare a server for a specialist search engine. Minim
 - CPU: Dual core processor
 - OS: Ubuntu 18.04
 - Global IP adress or domain 
+- SSH login using public key authentication
 
 You can get a qualified server using [Sakura Cloud](https://cloud.sakura.ad.jp/), [AWS](https://aws.amazon.com/), [GCP](https://cloud.google.com/) or [Microsoft Azure](https://azure.microsoft.com/).
 
@@ -121,7 +125,7 @@ The default Username and Password are "root" and "password". We strongly recomme
 And **set the global IP adress** of your server here.
 <div align="center"><img src="https://raw.githubusercontent.com/kearch/kearch/feature/improve-top-README/figure/sp-admin-set-ip-adress.png" width="300"/></div>
 
-### 2.4 Connect your meta search engine to a meta search engine
+### 2.4 Connect your meta search engine to a specialist search engine
 There are two cases for connecting a meta search engine and a specialist search engine. One is sending a **connection request** from a meta search and another is sending from a specialist search engine.
 #### 2.4.1.A Connect from your meta search engine to a specialist search engine
 In this case, you **send** a **connection request** from your meta search engine.

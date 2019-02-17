@@ -45,7 +45,7 @@ paths:
                   type: string
                 password_again:
                   type: string
-  /learn_params_for_evaluater:
+  /learn_params_for_evaluator:
     get:
       summary:
   /approve_a_connection_request:
@@ -60,7 +60,7 @@ paths:
                 sp_host:
                   type: string
   /delete_a_connection_request:
-    delete:
+    post:
       requestBody:
         required: true
         content:
@@ -80,4 +80,4 @@ paths:
               properties:
                 required: true
                 sp_host:
-                  type: string                
+                  type: string

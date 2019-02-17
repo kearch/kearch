@@ -13,7 +13,7 @@ if [ $# -lt 1 ]; then
     echo "\"megate\": Deploy me-gateway."
     echo "\"meadmin\": Deploy me-admin."
     echo "\"mesup\": Deploy me-summary-updater."
-    echo "\"meeval\": Deploy me-evaluater."
+    echo "\"meeval\": Deploy me-evaluator."
     exit 1
 fi
 
@@ -55,7 +55,7 @@ do
         kubectl --namespace=kearch apply --prune -l engine=me,app=db --recursive -f .
 
         # Wait until the pod is ready
-        while ! kubectl rollout status deployment me-db --namespace=kearch
+        while ! kubectl rollout status statefulset me-db --namespace=kearch
         do
             sleep 1
         done
@@ -152,18 +152,18 @@ do
     if [ $arg = meeval ] || [ $arg = all ]; then
         # me-eval
         echo
-        echo "----- Start deployment of meta evaluater. -----"
+        echo "----- Start deployment of meta evaluator. -----"
         cd $KEARCH_ROOT_DIR
 
-        $CMD_DOCKER_BUILD -f packages/me-evaluater/Dockerfile -t kearch/me-evaluater .
+        $CMD_DOCKER_BUILD -f packages/me-evaluator/Dockerfile -t kearch/me-evaluator .
 
-        cd $KEARCH_ROOT_DIR/services/me-evaluater
+        cd $KEARCH_ROOT_DIR/services/me-evaluator
 
         kubectl --namespace=kearch apply --recursive -f .
 
-        kubectl delete pods --namespace=kearch -l engine=me,app=evaluater
+        kubectl delete pods --namespace=kearch -l engine=me,app=evaluator
 
-        echo "----- Finish deployment of meta evaluater. -----"
+        echo "----- Finish deployment of meta evaluator. -----"
     fi
 
     if [ $arg = meadmin ] || [ $arg = all ]; then

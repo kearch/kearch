@@ -66,7 +66,7 @@ def send_a_dump(sp_host, me_host, summary):
     d['summary'] = summary
 
     kr = KearchRequester(me_host, META_GATEWAY_PORT)
-    result = kr.request(path='/me/gateway/add_new_sp_server', method='POST',
+    result = kr.request(path='/v0/me/gateway/add_a_summary', method='POST',
                         payload=d)
     return result
 
