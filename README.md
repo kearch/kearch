@@ -30,7 +30,7 @@ And then clone this repository your **local machine** by the following command.
 ```
 ~$ git clone https://github.com/kearch/kearch.git
 ```
-Finally, deploy a specialist search engine using Ansible. Please replace `<HOSTNAME>` and `<USERNAME>` depending on your environment. (In most cases, `<HOSTNAME>` is the IP adress of your server.) This takes some time to finish. I recommend you to take a coffee break.
+Finally, deploy a specialist search engine using Ansible. Please replace `<HOSTNAME>` and `<USERNAME>` depending on your environment. (In most cases, `<HOSTNAME>` is the IP adress of your server. **Don't forget a comma after `<HOSTNAME>`.** ) This takes some time to finish. I recommend you to take a coffee break.
 ```
 ~/kearch$ ansible-playbook sp-playbook.yml -i <HOSTNAME>, -u <USERNAME> --ask-become-pass -vvv
 ```
@@ -111,7 +111,7 @@ And then clone this repository your **local machine** by the following command.
 ```
 ~$ git clone https://github.com/kearch/kearch.git
 ```
-Finally, deploy a meta search engine using Ansible. Please replace `<HOSTNAME>` and `<USERNAME>` depending on your environment. (In most cases, `<HOSTNAME>` is the IP adress of your server.) This takes some time to finish. I recommend you to take a coffee brake.
+Finally, deploy a meta search engine using Ansible. Please replace `<HOSTNAME>` and `<USERNAME>` depending on your environment. (In most cases, `<HOSTNAME>` is the IP adress of your server. **Don't forget a comma after `<HOSTNAME>`.** ) This takes some time to finish. I recommend you to take a coffee brake.
 ```
 ~/kearch$ ansible-playbook me-playbook.yml -i <HOSTNAME>, -u <USERNAME> --ask-become-pass -vvv
 ```
